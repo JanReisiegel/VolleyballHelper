@@ -15,7 +15,7 @@
     </style>
 
     <style name="Theme.VolleyballHelper.NoActionBar">
-        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
         <item name="windowNoTitle">true</item>
     </style>
 
