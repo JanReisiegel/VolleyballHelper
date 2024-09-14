@@ -22,4 +22,10 @@
         android:name="com.reisiegel.volleyballhelper.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_create"
+        android:name="com.reisiegel.volleyballhelper.ui.create.CreateFragment"
+        android:label="Create"
+        tools:layout="@layout/fragment_create" />
 </navigation>
