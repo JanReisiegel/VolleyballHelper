@@ -5,9 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.reisiegel.volleyballhelper.R
 import com.reisiegel.volleyballhelper.databinding.FragmentHomeBinding
 import java.io.File
 
@@ -48,6 +51,11 @@ class HomeFragment : Fragment() {
         var adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, listFileNames)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         filesView.adapter = adapter
+
+        val button: Button = binding.button
+        button.setOnClickListener {
+            findNavController().navigate(R.id.redirect_to_create_fragment)
+        }
 
         return root
     }
