@@ -32,8 +32,7 @@ class CreateFragment : Fragment() {
         _binding = FragmentCreateBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val dateButton = binding.datePicker
-        val selectedDate = binding.selectedDate
+        /*val dateButton = binding.datePicker
 
         dateButton.setOnClickListener {
             val c = Calendar.getInstance()
@@ -44,14 +43,14 @@ class CreateFragment : Fragment() {
             val datePickerDialog = DatePickerDialog(
                 requireContext(),
                 {
-                    view, year, monthOfYear, dayOfMonth -> selectedDate.text = (dayOfMonth.toString() + "-" + (monthOfYear+1) + "-" + year)
+                    view, year, monthOfYear, dayOfMonth -> dateButton.text = (dayOfMonth.toString() + "-" + (monthOfYear+1) + "-" + year)
                 },
                 year,
                 month,
                 day
             )
             datePickerDialog.show()
-        }
+        }*/
 
 
         return root

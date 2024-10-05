@@ -5,31 +5,16 @@
     android:layout_height="match_parent"
     tools:context=".ui.create.CreateFragment">
 
-    <LinearLayout
-        android:id="@+id/basicSettings"
+    <com.google.android.material.tabs.TabLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/addDate"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:textSize="30dp"
-            android:text="Select The match/Tournament start date" />
-        <TextView
-            android:id="@+id/selectedDate"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:textSize="30dp"
-            android:text="Not set" />
-
-        <Button
-            android:id="@+id/datePicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Date picker" />
-
-
-    </LinearLayout>
+        android:layout_height="100px">
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Tournament settings" />
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Matches" />
+    </com.google.android.material.tabs.TabLayout>
 </FrameLayout>
