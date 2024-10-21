@@ -8,6 +8,10 @@ class MatchScore(private var teamSets: Int = 0, private var opponentSets: Int = 
             teamSets++
         else if (opponentPoint >= 25 && (opponentPoint-teamPoint)>=2)
             opponentSets++
+        else
+            return
+        teamPoints.add(0)
+        opponentPoints.add(0)
     }
     fun opponentPoint(){
         var lastIndex = opponentPoints.lastIndex
@@ -21,5 +25,19 @@ class MatchScore(private var teamSets: Int = 0, private var opponentSets: Int = 
     }
     fun getNumberOfSet(): Int{
         return teamSets + opponentSets + 1
+    }
+
+    private fun getSetsScores(): String{
+        var finalScore: String = "("
+        for (index in 0..(teamPoints.lastIndex)){
+            finalScore += "${teamPoints[index]}:${opponentPoints[index]},"
+        }
+        finalScore+=")"
+        finalScore.replace(",)",")")
+        return finalScore
+    }
+
+    fun getFinalScore(): String{
+        return "${teamSets}:${opponentSets} ${getSetsScores()}"
     }
 }

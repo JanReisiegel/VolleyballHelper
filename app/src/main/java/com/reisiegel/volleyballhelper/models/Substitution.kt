@@ -1,4 +1,4 @@
 package com.reisiegel.volleyballhelper.models
 
-class Substitution(playerOut: Player, playerIn: Player, set: Int, teamScore: Int, opponentScore: Int) {
+class Substitution(var playerOut: Player, var playerIn: Player, var set: Int, var teamScore: Int, var opponentScore: Int) {
 }
