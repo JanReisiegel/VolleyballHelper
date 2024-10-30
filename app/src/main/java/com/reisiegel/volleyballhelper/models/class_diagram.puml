@@ -1,0 +1,136 @@
+@startuml
+class Tournament{
+    + name: String
+    + matches: ArrayList<Match>
+    + players: HashMap<Int, String>
+    + {static} createTournament(Srtring, ArrayList<Match>,
+    HashMap<Int, String>): Tournament
+    + {static} createTournament(): Tournament
+    + addPlayer(String, Int): void
+    + addMatch(String): void
+    + getMatch(Int): Match
+    + saveToGoogleSheet(): void
+    + saveJson(): void
+}
+
+class Match{
+    + opponentName: String
+    + players: ArrayList<Player>
+    - substitutions: ArrayList<Substitution>
+    - startSquads: ArrayList<ArrayList<Int>>
+    - rotations: Int
+    - score: MatchScore
+    - opponentError: Int
+    + addPlayer(): void
+    + opponentError(): void
+    + playerAttack(Int, AttackEnum): void
+    + playerServe(Int, ServeEnum): void
+    + playerBlock(Int, BlockEnum): void
+    + playerReceivedServe(Int,
+        ReceiveServeEnum): void
+    + rotate(): void
+}
+
+class MatchScore{
+    - teamSets: Int
+    - opponentSets: Int
+    - teamPoints: ArrayList<Int>
+    - opponentPoints: ArrayList<Int>
+    - setControl(): void
+    + opponentPoint(): void
+    + teamPoint(): void
+    + getNumberOfSet(): void
+    + getSetsScore(): String
+    + getFinalScore(): String
+}
+
+class Player{
+    + name: String
+    + jerseyNumber: Int
+    - errors: Int
+    - serveStats: ServiceStats
+    - blockStats: BlockStats
+    - attackStats: AttackStats
+    - receiveStats: ReceiveServeStats
+    + addServeStat(ServeEnum): void
+    + addBlockStat(BlockEnum): void
+    + addReceiveStat(ReceiveServeEnum): void
+    + addAttackStat(AttackEnum): void
+}
+
+class ReceiveServeStats{
+    - ideal: Int
+    - goods: Int
+    - bads: Int
+    - errors: Int
+    + receiveServe(ReceiveServeEnum): void
+    + getAttempts(): Int
+}
+class ServiceStats{
+    - receive: Int
+    - aces: Int
+    - errors: Int
+    + serve(ServeEnum): void
+    + getAttempts(): Int
+}
+class AttackStats{
+    - received: Int
+    - errors: Int
+    - hits: Int
+    + attack(AttackEnum): void
+    + getAttempts(): Int
+}
+class BlockStats{
+    - noPoint: Int
+    - points: Int
+    - errors: Int
+    + block(ReceiveServeEnum): void
+    + getAttempts(): Int
+}
+
+class Substitution{
+    + playerOut: Player
+    + playerIn: Player
+    + set: Int
+    + teamScore: Int
+    + opponentScore: Int
+}
+
+enum ReceiveServeEnum{
+    IDEAL
+    CAN_CONTINUE
+    CANT_CONTINUE
+    ERROR
+}
+
+enum ServeEnum{
+    ACE
+    RECEIVED
+    ERROR
+}
+
+enum AttackEnum{
+    HIT
+    RECEIVED
+    ERROR
+}
+
+enum BlockEnum{
+    ERROR
+    POINT
+    NO_POINT
+}
+
+Player -- ReceiveServeStats
+Player -- AttackStats
+Player -- BlockStats
+Player -- ServiceStats
+
+Tournament o-- Match
+Match o-- Player
+
+Match -- MatchScore
+Match o-- Substitution
+
+
+@enduml

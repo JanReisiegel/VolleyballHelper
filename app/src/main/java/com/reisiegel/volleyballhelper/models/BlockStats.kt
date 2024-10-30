@@ -5,18 +5,18 @@ class BlockStats {
         get() = field
     private var errors: Int = 0
         get() = field
-    private var point: Int = 0
+    private var points: Int = 0
         get() = field
 
     fun block(type: BlockEnum){
         when(type){
             BlockEnum.ERROR -> errors++
-            BlockEnum.POINT -> point++
+            BlockEnum.POINT -> points++
             BlockEnum.NO_POINT -> noPoint++
         }
     }
 
     fun getAttempts(): Int{
-        return noPoint + errors + point
+        return noPoint + errors + points
     }
 }

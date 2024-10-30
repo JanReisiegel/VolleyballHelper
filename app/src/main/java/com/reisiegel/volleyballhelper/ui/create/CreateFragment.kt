@@ -27,8 +27,7 @@ class CreateFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val createViewModel =
-            ViewModelProvider(this).get(CreateViewModel::class.java)
-
+            ViewModelProvider(this)[CreateViewModel::class.java]
         _binding = FragmentCreateBinding.inflate(inflater, container, false)
         val root: View = binding.root
 

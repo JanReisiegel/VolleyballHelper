@@ -91,6 +91,7 @@ class Match(var opponentName: String, var players: ArrayList<Player>) {
      * Function for remembering rotations. This will be use while the application drop down
      */
     fun rotate(){
-        rotations++
+        var temp: Int = rotations
+        rotations = (temp+1)%6
     }
 }
