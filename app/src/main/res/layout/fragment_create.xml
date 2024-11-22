@@ -5,16 +5,159 @@
     android:layout_height="match_parent"
     tools:context=".ui.create.CreateFragment">
 
-    <com.google.android.material.tabs.TabLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100px">
-        <com.google.android.material.tabs.TabItem
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/create_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vytvoření turnaje"
+            android:textAlignment="center"
+            android:textSize="30dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:layout_margin="10dp">
+            <TextView
+                android:id="@+id/_name"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Název události"
+                android:textSize="20dp"
+                android:textAlignment="textEnd"
+                android:layout_gravity="center"/>
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/editText"
+                    android:layout_width="300dp"
+                    android:layout_height="match_parent"
+                    android:textSize="20dp"
+                    android:inputType="text"
+                    android:hint="Název turnaje"
+                    android:textAlignment="textStart"/>
+            </FrameLayout>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Tournament settings" />
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Matches" />
-    </com.google.android.material.tabs.TabLayout>
+            android:orientation="horizontal">
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="10dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAlignment="center"
+                    android:textSize="20dp"
+                    android:text="Zápasy" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAlignment="textEnd"
+                        android:text="Soupeř"
+                        android:textSize="20dp" />
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textAlignment="center"
+                        android:hint="Jméno soupeře"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"/>
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Přidat" />
+                </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/matchesView"
+                    android:layout_marginTop="10dp"/>
+
+            </LinearLayout>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/darker_gray"
+                android:layout_marginHorizontal="10dp" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="10dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAlignment="center"
+                    android:textSize="20dp"
+                    android:text="Hráči/ky" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:textAlignment="textEnd"
+                        android:text="Dres"
+                        android:textSize="20dp" />
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:textAlignment="center"
+                        android:hint="9"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="textEnd"
+                        android:text="Jméno"
+                        android:textSize="20dp" />
+                    <EditText
+                        android:id="@+id/edit"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:hint="Jného a příjmení"/>
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Přidat"
+                        android:layout_marginLeft="10dp"/>
+                </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/playersView"
+                    android:layout_marginTop="10dp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 </FrameLayout>
