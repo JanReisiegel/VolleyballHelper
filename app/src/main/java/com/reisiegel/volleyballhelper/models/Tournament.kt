@@ -4,9 +4,10 @@ import android.content.Context
 import com.google.gson.Gson
 import com.reisiegel.volleyballhelper.models.Player
 import java.io.File
+import java.util.Date
 
 
-class Tournament private constructor(var name: String, private var matches: ArrayList<Match> = ArrayList<Match>(), private var players: HashMap<Int, String> = HashMap<Int, String>()) {
+class Tournament private constructor(var name: String, private var matches: ArrayList<Match> = ArrayList<Match>(), private var players: HashMap<Int, String> = HashMap<Int, String>(), var startDate: String, var endDate: String) {
 
     companion object{
         /**
@@ -23,11 +24,13 @@ class Tournament private constructor(var name: String, private var matches: Arra
          * @param name is name of Tournament
          * @param matches is list of matches of this Tournament, can be unknown
          * @param players is the roster participating in the Tournament, can be unknown
+         * @param startDate is the start date of the Tournament
+         * @param endDate is the end date of the Tournament
          *
          * @return new instance of [Tournament]
          */
-        fun createTournament(name: String, matches: ArrayList<Match> = ArrayList<Match>(), players: HashMap<Int, String> = HashMap<Int, String>()): Tournament {
-            return Tournament(name, matches, players)
+        fun createTournament(name: String, matches: ArrayList<Match> = ArrayList<Match>(), players: HashMap<Int, String> = HashMap<Int, String>(), startDate: String, endDate: String): Tournament {
+            return Tournament(name, matches, players, startDate, endDate)
         }
     }
 
@@ -49,12 +52,12 @@ class Tournament private constructor(var name: String, private var matches: Arra
      *
      * @param opponent is for opponent name like "Trentino Volley"
      */
-    fun addMatch(opponent: String){
+    fun addMatch(opponent: String, startTime: String){
         val playersList = ArrayList<Player>()
         for(number: Int in players.keys){
             var player = Player(players[number]!!, number)
         }
-        val match = Match(opponent, playersList)
+        val match = Match(opponent, playersList, startTime)
         matches.add(match)
     }
 

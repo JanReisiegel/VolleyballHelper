@@ -36,7 +36,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content">
                 <EditText
-                    android:id="@+id/editText"
+                    android:id="@+id/tournamentName"
                     android:layout_width="300dp"
                     android:layout_height="match_parent"
                     android:textSize="20dp"
@@ -44,6 +44,13 @@
                     android:hint="Název turnaje"
                     android:textAlignment="textStart"/>
             </FrameLayout>
+            <Button
+                android:id="@+id/createTournamentButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Vytvořit turnaj"
+                android:textSize="15dp" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -67,27 +74,39 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/addMatchTimeButton"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Začátek zápasu"
+                        android:layout_gravity="center" />
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textAlignment="textEnd"
                         android:text="Soupeř"
-                        android:textSize="20dp" />
+                        android:textSize="20dp"
+                        android:layout_gravity="center"/>
                     <EditText
+                        android:id="@+id/opponentName"
                         android:layout_width="0dp"
-                        android:layout_weight="3"
+                        android:layout_weight="2.3"
                         android:layout_height="wrap_content"
                         android:inputType="text"
                         android:textAlignment="center"
                         android:hint="Jméno soupeře"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"/>
+                        android:layout_marginRight="10dp"
+                        android:layout_gravity="center"/>
                     <Button
+                        android:id="@+id/addMatchButton"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="Přidat" />
+                        android:text="Přidat"
+                        android:layout_gravity="center" />
                 </LinearLayout>
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
@@ -123,34 +142,41 @@
                         android:layout_weight="0.5"
                         android:textAlignment="textEnd"
                         android:text="Dres"
-                        android:textSize="20dp" />
+                        android:textSize="20dp"
+                        android:layout_gravity="center"/>
                     <EditText
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
                         android:textAlignment="center"
-                        android:hint="9"/>
+                        android:hint="9"
+                        android:id="@+id/newJerseyNumber"
+                        android:layout_gravity="center"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:textAlignment="textEnd"
                         android:text="Jméno"
-                        android:textSize="20dp" />
+                        android:textSize="20dp"
+                        android:layout_gravity="center"/>
                     <EditText
-                        android:id="@+id/edit"
+                        android:id="@+id/newPlayerName"
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:layout_height="wrap_content"
                         android:inputType="text"
-                        android:hint="Jného a příjmení"/>
+                        android:hint="Jméno a příjmení"
+                        android:layout_gravity="center"/>
                     <Button
+                        android:id="@+id/addPlayerButton"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Přidat"
-                        android:layout_marginLeft="10dp"/>
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center" />
                 </LinearLayout>
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"

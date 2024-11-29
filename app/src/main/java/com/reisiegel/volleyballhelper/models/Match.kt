@@ -1,6 +1,6 @@
 package com.reisiegel.volleyballhelper.models
 
-class Match(var opponentName: String, var players: ArrayList<Player>) {
+class Match(var opponentName: String, var players: ArrayList<Player>, var startTime: String) {
     private var substitutions: ArrayList<Substitution>
     private var startSquads: ArrayList<ArrayList<Int>>
     private var rotations: Int = 0
