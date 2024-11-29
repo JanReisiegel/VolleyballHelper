@@ -19,6 +19,21 @@ class Tournament private constructor(var name: String, private var matches: Arra
         }
 
         /**
+         * Create Tournament from existing JSON file
+         *
+         * @param context is the context of the application
+         * @param fileName is the name of the file to be loaded
+         *
+         * @return new instance of [Tournament]
+         */
+        fun createTournament(context: Context, fileName: String): Tournament{
+            val file = File(context.filesDir, fileName)
+            val jsonString = file.readText()
+            val gson = Gson()
+            return gson.fromJson(jsonString, Tournament::class.java)
+        }
+
+        /**
          * Create Tournament with known properties
          *
          * @param name is name of Tournament

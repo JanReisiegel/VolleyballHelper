@@ -84,7 +84,7 @@ class MatchAdapter(private var items: MutableList<MatchItem>/*, private val onDe
         parent: ViewGroup,
         viewType: Int
     ): MatchViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.match_item_layout, parent, false) //TODO: Create layout
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.match_item_layout, parent, false)
         return MatchViewHolder(view)
     }
 
