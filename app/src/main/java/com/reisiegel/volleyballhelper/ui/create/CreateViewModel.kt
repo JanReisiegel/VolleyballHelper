@@ -55,12 +55,14 @@ class CreateViewModel() : ViewModel() {
     }
 
     private fun fileName(): String {
-        val normalizedName = Normalizer.normalize(_tournamentName.value, Normalizer.Form.NFD)
-        val withoutDiacritics = normalizedName.replace("[^\\p{InCombiningDiacriticalMarks}]".toRegex(), "")
+        val normalizedName = Normalizer.normalize(_tournamentName.value.toString(), Normalizer.Form.NFD)
+        val normalizedName2 = Normalizer.normalize(tournamentName.value.toString(), Normalizer.Form.NFD)
+        val withoutDiacritics = normalizedName.replace("\\p{InCombiningDiacriticalMarks}+".toRegex(), "")
         return withoutDiacritics.replace(" ", "").replace("[^a-zA-Z0-9-]".toRegex(), "") // vyčištění názvu turnaje od diakritiky a mezer
     }
 
     fun createTournament(context: Context){
+        val stringName = fileName()
         val file = File(context.filesDir, "Statistics/${fileName()}.json")
         val players : HashMap<Int, String> = HashMap()
         val matches : ArrayList<Match> = ArrayList()
@@ -73,6 +75,7 @@ class CreateViewModel() : ViewModel() {
         val startDate = _matches.value?.get(0)?.getStartTime() ?: ""
         val endDate = _matches.value?.get(_matches.value!!.size - 1)?.getStartTime() ?: ""
         val tournament = Tournament.createTournament(_tournamentName.value!!, matches, players, startDate, endDate)
+        tournament.saveJson(file)
     }
 
     /*fun removeMatch(item: MatchItem){

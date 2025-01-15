@@ -93,11 +93,9 @@ class Tournament private constructor(var name: String, private var matches: Arra
     /**
      * To save unshared match into local device
      */
-    fun saveJson(context: Context){
+    fun saveJson(file: File){
         val gson = Gson()
         val jsonString = gson.toJson(this)
-
-        val file = File(context.filesDir, "${name.replace(" ", "_")}.json")
         file.writeText(jsonString)
     }
 

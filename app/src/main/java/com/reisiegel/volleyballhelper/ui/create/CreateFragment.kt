@@ -11,8 +11,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.reisiegel.volleyballhelper.R
 import com.reisiegel.volleyballhelper.databinding.FragmentCreateBinding
 import java.util.Calendar
 
@@ -95,10 +97,21 @@ class CreateFragment : Fragment() {
 
         addPlayerButton.setOnClickListener {
             val player = PlayerItem(jerseyNumber.text.toString(), playerName.text.toString())
-            if (player.getJersey() > 0 && player.getName() != ""){
-                viewModel.addPlayer(player)
-                jerseyNumber.text.clear()
-                playerName.text.clear()
+            try {
+                if (player.getJersey() > 0 && player.getName() != ""){
+                    viewModel.addPlayer(player)
+                    jerseyNumber.text.clear()
+                    playerName.text.clear()
+                }
+                else{
+                    if(player.getJersey() == 0)
+                        jerseyNumber.error = "Číslo musí být větší než 0"
+                    if (player.getName() == "")
+                        playerName.error = "Jméno hráče musí být vyplněno"
+                }
+            }
+            catch (e: NumberFormatException){
+                jerseyNumber.error = "Číslo musí být vyplněno a větší než 0"
             }
             viewModel.sortPlayers()
         }
@@ -108,8 +121,13 @@ class CreateFragment : Fragment() {
             if (match.getOpponent() != "" && match.getStartTime() != ""){
                 viewModel.addMatch(match)
                 opponentName.text.clear()
+                viewModel.updateStartMatchTime("")
                 matchTimeButton.text = "Začátek zápasu"
             }
+            else {
+                opponentName.error = "Jméno soupeře a čas začátku utkání musí být vyplněno"
+            }
+
             viewModel.sortMatches()
         }
 
@@ -121,8 +139,11 @@ class CreateFragment : Fragment() {
                 playerName.error = "Seznam hráčů nesmí být prázdný"
             if (viewModel.matches.value.isNullOrEmpty())
                 opponentName.error = "Seznam zápasů nesmí být prázdný"
-            if (viewModel.tournamentName.value != "" && viewModel.players.value?.isNotEmpty() == true && viewModel.matches.value?.isNotEmpty() == true)
+            if (viewModel.tournamentName.value != "" && viewModel.players.value?.isNotEmpty() == true && viewModel.matches.value?.isNotEmpty() == true) {
                 viewModel.createTournament(requireContext())
+                //findNavController().navigate(R.id.redirect_to_home_fragment)
+            }
+
         }
 
     }
