@@ -1,10 +1,16 @@
 package com.reisiegel.volleyballhelper.ui.create
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.reisiegel.volleyballhelper.models.Match
+import com.reisiegel.volleyballhelper.models.Tournament
+import java.io.File
+import java.io.FileOutputStream
+import java.text.Normalizer
 
-class CreateViewModel : ViewModel() {
+class CreateViewModel() : ViewModel() {
     // TODO: Implement the ViewModel
     private val _tournamentName = MutableLiveData<String>()
     private val _startMatchTime = MutableLiveData<String>()
@@ -24,9 +30,6 @@ class CreateViewModel : ViewModel() {
         _startMatchTime.value = newStartMatchTime
     }
 
-    fun createSheetForTournament(){
-    }
-
     fun addPlayer(player: PlayerItem){
         val updatedListPlayers = _players.value ?: mutableListOf()
         updatedListPlayers.add(player)
@@ -43,6 +46,33 @@ class CreateViewModel : ViewModel() {
         val updatedListMatches = _matches.value ?: mutableListOf()
         updatedListMatches.sortBy { it.getStartTime() }
         _matches.value = updatedListMatches
+    }
+
+    fun sortPlayers(){
+        val updatedListPlayers = _players.value ?: mutableListOf()
+        updatedListPlayers.sortBy { it.getJersey() }
+        _players.value = updatedListPlayers
+    }
+
+    private fun fileName(): String {
+        val normalizedName = Normalizer.normalize(_tournamentName.value, Normalizer.Form.NFD)
+        val withoutDiacritics = normalizedName.replace("[^\\p{InCombiningDiacriticalMarks}]".toRegex(), "")
+        return withoutDiacritics.replace(" ", "").replace("[^a-zA-Z0-9-]".toRegex(), "") // vyčištění názvu turnaje od diakritiky a mezer
+    }
+
+    fun createTournament(context: Context){
+        val file = File(context.filesDir, "Statistics/${fileName()}.json")
+        val players : HashMap<Int, String> = HashMap()
+        val matches : ArrayList<Match> = ArrayList()
+        _players.value?.forEach {
+            players[it.getJersey()] = it.getName()
+        }
+        _matches.value?.forEach {
+            matches.add(Match(it.getOpponent(), ArrayList(), it.getStartTime()))
+        }
+        val startDate = _matches.value?.get(0)?.getStartTime() ?: ""
+        val endDate = _matches.value?.get(_matches.value!!.size - 1)?.getStartTime() ?: ""
+        val tournament = Tournament.createTournament(_tournamentName.value!!, matches, players, startDate, endDate)
     }
 
     /*fun removeMatch(item: MatchItem){

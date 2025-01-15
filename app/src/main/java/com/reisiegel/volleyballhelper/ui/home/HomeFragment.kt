@@ -37,27 +37,43 @@ class HomeFragment : Fragment() {
         val statisticsDirectory = File(context?.filesDir, "Statistics")
         if (!statisticsDirectory.isDirectory)
             statisticsDirectory.mkdir()
-        var statisticFiles = statisticsDirectory.listFiles()
+        val statisticFiles = statisticsDirectory.listFiles()
 
-        var filesAdapter = mutableMapOf<String, String>()
-        var listFileNames = ArrayList<String>()
+        val filesAdapter = mutableMapOf<String, String>()
+        val listFileNames = ArrayList<String>()
 
-        statisticFiles.forEach { file: File ->
+        statisticFiles?.forEach { file: File ->
             filesAdapter[file.name] = file.path
             listFileNames.add(file.name)
         }
 
-        var filesView: Spinner = binding.spinner
-        var adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, listFileNames)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        filesView.adapter = adapter
-
-        val button: Button = binding.button
-        button.setOnClickListener {
-            findNavController().navigate(R.id.redirect_to_create_fragment)
+        val filesView: Spinner = binding.spinner
+        var adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            listFileNames
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            filesView.adapter = adapter
         }
 
+
+
+
+        /*val button: Button = binding.button
+        button.setOnClickListener {
+            findNavController().navigate(R.id.redirect_to_create_fragment)
+        }*/
+
+        redirectButton(binding.button, R.id.redirect_to_create_fragment)
+
         return root
+    }
+
+    private fun redirectButton(button: Button, destination: Int) {
+        button.setOnClickListener {
+            findNavController().navigate(destination)
+        }
     }
 
     override fun onDestroyView() {

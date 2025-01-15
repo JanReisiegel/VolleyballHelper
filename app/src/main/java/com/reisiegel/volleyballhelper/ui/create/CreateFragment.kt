@@ -1,5 +1,6 @@
 package com.reisiegel.volleyballhelper.ui.create
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
@@ -45,6 +46,7 @@ class CreateFragment : Fragment() {
         return root
     }
 
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -57,6 +59,7 @@ class CreateFragment : Fragment() {
         addMatchButton = _binding?.addMatchButton ?: return
         recyclerMatchesView = _binding?.matchesView ?: return
         tournamentName = _binding?.tournamentName ?: return
+        createTournamentButton = _binding?.createTournamentButton ?: return
 
         recyclerPlayersView.layoutManager = LinearLayoutManager(requireContext())
         val playerAdapter = PlayerAdapter(emptyList<PlayerItem>().toMutableList())
@@ -70,6 +73,7 @@ class CreateFragment : Fragment() {
 
         viewModel.players.observe(viewLifecycleOwner){
             players -> playerAdapter.updateItems(players)
+                playerAdapter.notifyDataSetChanged()
         }
 
         viewModel.matches.observe(viewLifecycleOwner){
@@ -96,6 +100,7 @@ class CreateFragment : Fragment() {
                 jerseyNumber.text.clear()
                 playerName.text.clear()
             }
+            viewModel.sortPlayers()
         }
 
         addMatchButton.setOnClickListener {
@@ -106,6 +111,18 @@ class CreateFragment : Fragment() {
                 matchTimeButton.text = "Začátek zápasu"
             }
             viewModel.sortMatches()
+        }
+
+        createTournamentButton.setOnClickListener {
+            viewModel.updateActionName(tournamentName.text.toString())
+            if (viewModel.tournamentName.value.isNullOrEmpty())
+                tournamentName.error = "Název turnaje nesmí být prázdný"
+            if (viewModel.players.value.isNullOrEmpty())
+                playerName.error = "Seznam hráčů nesmí být prázdný"
+            if (viewModel.matches.value.isNullOrEmpty())
+                opponentName.error = "Seznam zápasů nesmí být prázdný"
+            if (viewModel.tournamentName.value != "" && viewModel.players.value?.isNotEmpty() == true && viewModel.matches.value?.isNotEmpty() == true)
+                viewModel.createTournament(requireContext())
         }
 
     }

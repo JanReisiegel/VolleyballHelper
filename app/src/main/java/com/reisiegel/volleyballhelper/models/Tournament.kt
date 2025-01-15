@@ -2,20 +2,25 @@ package com.reisiegel.volleyballhelper.models
 
 import android.content.Context
 import com.google.gson.Gson
-import com.reisiegel.volleyballhelper.models.Player
 import java.io.File
-import java.util.Date
 
 
 class Tournament private constructor(var name: String, private var matches: ArrayList<Match> = ArrayList<Match>(), private var players: HashMap<Int, String> = HashMap<Int, String>(), var startDate: String, var endDate: String) {
 
+    init {
+        for(item: Match in matches)
+            players.forEach { (number, name) ->
+                item.addPlayer(Player(name, number))
+            }
+    }
+
     companion object{
         /**
-         * Create Tournament from existing Google Sheet
+         * Create Tournament without any predefined properties
          *
          */
         fun createTournament(): Tournament{
-            TODO()
+            return Tournament("", ArrayList<Match>(), HashMap<Int, String>(), "", "")
         }
 
         /**
