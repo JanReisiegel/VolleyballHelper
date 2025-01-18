@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.reisiegel.volleyballhelper.R
 import com.reisiegel.volleyballhelper.databinding.FragmentHomeBinding
+import com.reisiegel.volleyballhelper.models.SelectedTournament
+import com.reisiegel.volleyballhelper.models.Tournament
 import java.io.File
 
 class HomeFragment : Fragment() {
@@ -57,18 +61,39 @@ class HomeFragment : Fragment() {
             filesView.adapter = adapter
         }
 
+        filesView.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedItem = parent?.getItemAtPosition(position).toString()
+                SelectedTournament.filePath = selectedItem
+                println("Selected item: $selectedItem")
+            }
 
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                println("Nothing selected")
+            }
+        }
 
+        redirectButton(binding.createButton, R.id.redirect_to_create_fragment)
 
-        /*val button: Button = binding.button
-        button.setOnClickListener {
-            findNavController().navigate(R.id.redirect_to_create_fragment)
-        }*/
-
-        redirectButton(binding.button, R.id.redirect_to_create_fragment)
+        binding.editButton.setOnClickListener {
+            if(SelectedTournament.filePath.isNullOrEmpty()){
+                val dialog = AlertDialog.Builder(context ?: return@setOnClickListener)
+                    .setTitle("Error")
+                    .setMessage("File not selected")
+                    .setPositiveButton("OK"){
+                        dialog, _ -> dialog.dismiss()
+                    }
+                    .create()
+                dialog.show()
+            }
+            else
+                findNavController().navigate(R.id.nav_home)
+        }
 
         return root
     }
+
+
 
     private fun redirectButton(button: Button, destination: Int) {
         button.setOnClickListener {

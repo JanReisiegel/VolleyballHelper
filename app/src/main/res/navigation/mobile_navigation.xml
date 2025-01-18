@@ -16,18 +16,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.reisiegel.volleyballhelper.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
-
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.reisiegel.volleyballhelper.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
-
-    <fragment
         android:id="@+id/nav_create"
         android:name="com.reisiegel.volleyballhelper.ui.create.CreateFragment"
         android:label="Create"
@@ -36,5 +24,14 @@
             android:id="@+id/redirect_to_home_fragment"
             app:destination="@+id/nav_home" />
     </fragment>
+
+    <fragment
+        android:id="@+id/nav_match_chooser"
+        android:name="com.reisiegel.volleyballhelper.ui.matchchooser.MatchChooser"
+        android:label="MatchChooser"
+        tools:layout="@layout/fragment_match_chooser">
+
+    </fragment>
+
 
 </navigation>

@@ -52,6 +52,18 @@ class Tournament private constructor(var name: String, private var matches: Arra
         fun createTournament(name: String, matches: ArrayList<Match> = ArrayList<Match>(), players: HashMap<Int, String> = HashMap<Int, String>(), startDate: String, endDate: String): Tournament {
             return Tournament(name, matches, players, startDate, endDate)
         }
+
+        fun loadFromJson(file: File): Tournament?{
+            return try {
+                val gson = Gson()
+                val fileJsonString = file.readText()
+                gson.fromJson(fileJsonString, Tournament::class.java)
+            }
+            catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        }
     }
 
     /**

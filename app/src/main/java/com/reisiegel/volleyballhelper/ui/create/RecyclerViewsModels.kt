@@ -74,6 +74,11 @@ class MatchItem(private var opponent: String = "", private var startTime: String
         return startTime
     }
 
+    fun getStartDate():  String{
+        val startDateParts = startTime.split(" ")
+        return startDateParts.take(3).joinToString(" ",)
+    }
+
     fun setStartTime(startTime: String) {
         this.startTime = startTime
     }

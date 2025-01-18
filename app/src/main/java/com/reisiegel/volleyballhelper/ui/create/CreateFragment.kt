@@ -141,13 +141,14 @@ class CreateFragment : Fragment() {
                 opponentName.error = "Seznam zápasů nesmí být prázdný"
             if (viewModel.tournamentName.value != "" && viewModel.players.value?.isNotEmpty() == true && viewModel.matches.value?.isNotEmpty() == true) {
                 viewModel.createTournament(requireContext())
-                //findNavController().navigate(R.id.redirect_to_home_fragment)
+                findNavController().navigate(R.id.redirect_to_home_fragment)
             }
 
         }
 
     }
 
+    @SuppressLint("DefaultLocale")
     private fun showDatePicker(){
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
@@ -167,6 +168,7 @@ class CreateFragment : Fragment() {
         )
         datePickerDialog.show()
     }
+    @SuppressLint("DefaultLocale")
     private fun showTimePicker(date: String){
         val c = Calendar.getInstance()
         val hour = c.get(Calendar.HOUR_OF_DAY)

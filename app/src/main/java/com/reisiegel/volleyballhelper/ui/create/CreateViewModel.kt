@@ -72,7 +72,7 @@ class CreateViewModel() : ViewModel() {
         _matches.value?.forEach {
             matches.add(Match(it.getOpponent(), ArrayList(), it.getStartTime()))
         }
-        val startDate = _matches.value?.get(0)?.getStartTime() ?: ""
+        val startDate = _matches.value?.get(0)?.getStartDate() ?: ""
         val endDate = _matches.value?.get(_matches.value!!.size - 1)?.getStartTime() ?: ""
         val tournament = Tournament.createTournament(_tournamentName.value!!, matches, players, startDate, endDate)
         tournament.saveJson(file)
