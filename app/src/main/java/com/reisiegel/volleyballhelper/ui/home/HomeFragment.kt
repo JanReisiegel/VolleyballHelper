@@ -87,7 +87,7 @@ class HomeFragment : Fragment() {
                 dialog.show()
             }
             else
-                findNavController().navigate(R.id.nav_home)
+                findNavController().navigate(R.id.nav_match_statistics)
         }
 
         return root

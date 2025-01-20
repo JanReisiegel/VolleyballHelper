@@ -14,9 +14,9 @@
             android:title="Create"
             tools:ignore="HardcodedText" />
         <item
-            android:id="@+id/nav_match_chooser"
+            android:id="@+id/nav_match_statistics"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Choose Match"
+            android:title="Match Statistics"
             tools:ignore="HardcodedText" />
     </group>
 </menu>
