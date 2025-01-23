@@ -7,35 +7,55 @@
 
 
     <FrameLayout
+        android:id="@+id/match_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/match_list">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Seznam zápasů" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Do statistik"
-            android:layout_marginTop="10dp"
-            android:id="@+id/to_statistics_button" />
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Seznam zápasů"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textSize="30dp"/>
+
+            <Button
+                android:id="@+id/to_statistics_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Do statistik" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/match_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/match_statistics"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/match_statistics">
+        android:visibility="invisible">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Statistiky" />
+
         <Button
-            android:layout_marginTop="10dp"
+            android:id="@+id/to_list_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Na seznam"
-            android:id="@+id/to_list_button" />
+            android:layout_marginTop="10dp"
+            android:text="Na seznam" />
     </FrameLayout>
 
 </FrameLayout>

@@ -103,6 +103,13 @@ class Tournament private constructor(var name: String, private var matches: Arra
     }
 
     /**
+     * This function is for get all matches in this tournament
+     */
+    fun getmatchesArrayList() : ArrayList<Match>{
+        return matches
+    }
+
+    /**
      * To save unshared match into local device
      */
     fun saveJson(file: File){

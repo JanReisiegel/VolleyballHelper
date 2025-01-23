@@ -168,6 +168,7 @@
                         android:layout_height="wrap_content"
                         android:inputType="text"
                         android:hint="Jméno a příjmení"
+                        android:layout_marginLeft="10dp"
                         android:layout_gravity="center"/>
                     <Button
                         android:id="@+id/addPlayerButton"

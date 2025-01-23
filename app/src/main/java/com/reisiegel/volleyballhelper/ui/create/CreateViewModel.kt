@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.reisiegel.volleyballhelper.models.Match
 import com.reisiegel.volleyballhelper.models.Tournament
 import java.io.File
-import java.io.FileOutputStream
 import java.text.Normalizer
 
 class CreateViewModel() : ViewModel() {

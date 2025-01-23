@@ -21,7 +21,6 @@ import java.util.Calendar
 class CreateFragment : Fragment() {
     private var _binding: FragmentCreateBinding? = null
     private lateinit var viewModel: CreateViewModel
-    private lateinit var adapter: PlayerAdapter
     private lateinit var recyclerPlayersView: RecyclerView
     private lateinit var jerseyNumber: EditText
     private lateinit var playerName: EditText
