@@ -23,6 +23,16 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
     }
 
     /**
+     * function for update match start time and opponent name
+     */
+    fun updateMatchInfo(newOpponent: String, newDateTime: String){
+        if (!newOpponent.contentEquals(opponentName))
+            opponentName = newOpponent
+        if (!newDateTime.contentEquals(startTime))
+            startTime = newDateTime
+    }
+
+    /**
      * Set opponent error in Match to statistics
      */
     fun opponentError(){

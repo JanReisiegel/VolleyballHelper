@@ -65,6 +65,7 @@ class MatchStatistics : Fragment() {
             match -> viewModel.addMatchItem(MatchItem(match.opponentName, match.startTime))
         }
 
+
         return root
     }
 
