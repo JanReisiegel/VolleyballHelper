@@ -6,6 +6,7 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
     private var rotations: Int = 0
     private var score: MatchScore
     private var opponentsError: Int = 0
+    private var isClosed: Boolean = false
 
     init {
         score = MatchScore(0,0)
@@ -20,6 +21,20 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
      */
     fun addPlayer(player: Player){
         players.add(player)
+    }
+
+    /**
+     *
+     */
+    fun isClosed(): Boolean {
+        return isClosed
+    }
+
+    /**
+     *
+     */
+    fun closeMatch(){
+        isClosed = true;
     }
 
     /**

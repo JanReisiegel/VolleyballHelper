@@ -7,7 +7,7 @@ enum class ServeEnum {
     ACE, RECEIVED, ERROR
 }
 enum class AttackEnum{
-    HIT,RECEIVED,ERROR
+    HIT,RECEIVED,ERROR, BLOCK
 }
 enum class BlockEnum {
     ERROR, POINT, NO_POINT

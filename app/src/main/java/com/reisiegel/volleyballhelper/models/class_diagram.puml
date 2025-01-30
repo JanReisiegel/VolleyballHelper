@@ -78,6 +78,7 @@ class AttackStats{
     - received: Int
     - errors: Int
     - hits: Int
+    - blocks: Int
     + attack(AttackEnum): void
     + getAttempts(): Int
 }
@@ -113,6 +114,7 @@ enum ServeEnum{
 enum AttackEnum{
     HIT
     RECEIVED
+    BLOCK
     ERROR
 }
 
