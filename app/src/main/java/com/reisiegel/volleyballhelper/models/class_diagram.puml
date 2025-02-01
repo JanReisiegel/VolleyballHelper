@@ -3,7 +3,7 @@ class Tournament{
     + name: String
     + matches: ArrayList<Match>
     + players: HashMap<Int, String>
-    + {static} createTournament(Srtring, ArrayList<Match>,
+    + {static} createTournament(String, ArrayList<Match>,
     HashMap<Int, String>): Tournament
     + {static} createTournament(): Tournament
     + addPlayer(String, Int): void
