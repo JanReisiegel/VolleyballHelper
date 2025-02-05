@@ -73,15 +73,21 @@ class MatchStatisticsViewModel() : ViewModel() {
         }
     }
 
-    fun matchSelected(){
-        val allPlayers = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.players
+    fun matchSelected(index: Int?){
+        if(index == null){
+
+            SelectedTournament.selectedMatchIndex = null
+            return
+        }
+        SelectedTournament.selectedMatchIndex = index
+        val allPlayers = SelectedTournament.selectedTournament?.getMatch(index)?.players
         if (allPlayers != null){
             val activeSquad: MutableList<Player?> = MutableList(6) { null }
             val bench: MutableList<Player> = mutableListOf()
             allPlayers.forEach(){
-                if (SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getActiveSquad()
+                if (SelectedTournament.selectedTournament?.getMatch(index)?.getActiveSquad()
                         ?.contains(it.jerseyNumber) == true){
-                    val position = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getActiveSquad()
+                    val position = SelectedTournament.selectedTournament?.getMatch(index)?.getActiveSquad()
                         ?.indexOf(it.jerseyNumber)
                     activeSquad[position!!] = it
                 }

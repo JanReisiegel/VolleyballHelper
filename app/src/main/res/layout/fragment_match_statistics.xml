@@ -27,12 +27,6 @@
                 android:text="Seznam zápasů"
                 android:textSize="30dp" />
 
-            <Button
-                android:id="@+id/to_statistics_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Do statistik" />
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/match_list_view"
                 android:layout_width="match_parent"
@@ -57,10 +51,13 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Statistiky" />
+                    android:textSize="30dp"
+                    android:layout_gravity="center"
+                    android:text="0:0" />
 
                 <Button
                     android:id="@+id/to_list_button"
@@ -88,7 +85,9 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_rowWeight="1"
-                    android:layout_columnWeight="1" />
+                    android:layout_columnWeight="1"
+                    android:layout_column="0"
+                    android:layout_row="0"/>
 
                 <include
                     android:id="@+id/zone6"
@@ -96,7 +95,9 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_rowWeight="1"
-                    android:layout_columnWeight="1" />
+                    android:layout_columnWeight="1"
+                    android:layout_column="1"
+                    android:layout_row="0" />
 
                 <include
                     android:id="@+id/zone5"
@@ -104,7 +105,9 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_rowWeight="1"
-                    android:layout_columnWeight="1" />
+                    android:layout_columnWeight="1"
+                    android:layout_column="2"
+                    android:layout_row="0" />
 
                 <include
                     android:id="@+id/zone2"
@@ -112,7 +115,9 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_rowWeight="1"
-                    android:layout_columnWeight="1" />
+                    android:layout_columnWeight="1"
+                    android:layout_column="0"
+                    android:layout_row="1" />
 
                 <include
                     android:id="@+id/zone3"
@@ -120,7 +125,9 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_rowWeight="1"
-                    android:layout_columnWeight="1" />
+                    android:layout_columnWeight="1"
+                    android:layout_column="1"
+                    android:layout_row="1" />
 
                 <include
                     android:id="@+id/zone4"
@@ -128,7 +135,9 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_rowWeight="1"
-                    android:layout_columnWeight="1" />
+                    android:layout_columnWeight="1"
+                    android:layout_column="2"
+                    android:layout_row="1" />
 
             </GridLayout>
 

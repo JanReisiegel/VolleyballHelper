@@ -45,7 +45,8 @@ class MatchItem(private var opponent: String = "", private var startTime: String
 class MatchAdapter(
     private var items: MutableList<MatchItem>,
     private val context: Context?,
-    private val view: View/*, private val onDeleteClick: (MatchItem) -> Unit*/
+    private val view: View,/*, private val onDeleteClick: (MatchItem) -> Unit*/
+    private val onClickSet: (Int) -> Unit
 ) : RecyclerView.Adapter<MatchAdapter.MatchViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -109,6 +110,7 @@ class MatchAdapter(
                 matchListLayout.visibility = View.INVISIBLE
                 statisticsLayout.visibility = View.VISIBLE
                 view.requestLayout()
+                onClickSet(position)
             }
         }
 

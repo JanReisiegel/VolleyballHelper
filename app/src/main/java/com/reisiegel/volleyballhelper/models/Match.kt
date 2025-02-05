@@ -8,6 +8,7 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
     private var opponentsError: Int = 0
     private var isFinished: Boolean = false
     var haveService: Boolean = true
+    var serveStart: Boolean = true
 
     init {
         score = MatchScore(0,0)

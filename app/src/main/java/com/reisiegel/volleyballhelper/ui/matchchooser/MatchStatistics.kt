@@ -51,16 +51,9 @@ class MatchStatistics : Fragment() {
             statisticsLayout.visibility = View.VISIBLE
         }
 
-        binding.toStatisticsButton.setOnClickListener {
-            SelectedTournament.selectedMatchIndex = 1
-            matchListLayout.visibility = View.INVISIBLE
-            statisticsLayout.visibility = View.VISIBLE
-            viewModel.matchSelected()
-            root.requestLayout()
-        }
 
         binding.toListButton.setOnClickListener {
-            SelectedTournament.selectedMatchIndex = null
+            viewModel.matchSelected(null)
             matchListLayout.visibility = View.VISIBLE
             statisticsLayout.visibility = View.INVISIBLE
             root.requestLayout()
@@ -73,8 +66,7 @@ class MatchStatistics : Fragment() {
         }
 
         val zoneIds = listOf(
-            R.id.zone1, R.id.zone6, R.id.zone5,
-            R.id.zone2, R.id.zone3, R.id.zone4,
+            R.id.zone1, R.id.zone2, R.id.zone3, R.id.zone4, R.id.zone5, R.id.zone6,
         )
 
         zoneIds.forEachIndexed { index, zoneId ->
@@ -150,8 +142,6 @@ class MatchStatistics : Fragment() {
 
             val receptionNoContinue = zoneView.findViewById<Button>(R.id.reception_no_continue)
 
-
-
         }
 
 
@@ -166,7 +156,9 @@ class MatchStatistics : Fragment() {
 
         recycleMatchesView.layoutManager = LinearLayoutManager(requireContext())
 
-        val matchesAdapter = MatchAdapter(viewModel.matchList.value?.toMutableList() ?: mutableListOf(), requireContext(), view)
+        val matchesAdapter = MatchAdapter(viewModel.matchList.value?.toMutableList() ?: mutableListOf(), requireContext(), view) {
+            viewModel.matchSelected(it)
+        }
         recycleMatchesView.adapter = matchesAdapter
 
         viewModel.matchList.observe(viewLifecycleOwner){
