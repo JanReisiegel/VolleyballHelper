@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.reisiegel.volleyballhelper.R
 import com.reisiegel.volleyballhelper.databinding.FragmentMatchStatisticsBinding
 import com.reisiegel.volleyballhelper.ui.matchchooser.MatchAdapter
@@ -54,6 +55,7 @@ class MatchStatistics : Fragment() {
             SelectedTournament.selectedMatchIndex = 1
             matchListLayout.visibility = View.INVISIBLE
             statisticsLayout.visibility = View.VISIBLE
+            viewModel.matchSelected()
             root.requestLayout()
         }
 
@@ -77,26 +79,77 @@ class MatchStatistics : Fragment() {
 
         zoneIds.forEachIndexed { index, zoneId ->
             val zoneView = root.findViewById<View>(zoneId)
-            val attackBlockLayout = zoneView.findViewById<LinearLayout>(R.id.attack_block_layout)
-            val receptionLayout = zoneView.findViewById<LinearLayout>(R.id.reception_layout)
-            val serviceLayout = zoneView.findViewById<LinearLayout>(R.id.service_layout)
-            val playerName = zoneView.findViewById<TextView>(R.id.player_name)
-            val playerNumber = zoneView.findViewById<TextView>(R.id.player_number)
+
             val setPlayer = zoneView.findViewById<Button>(R.id.set_to_zone)
+            setPlayer.setOnClickListener {
+                val players = viewModel.getBanchedPlayers() ?: emptyList()
+                val playerNames = players.map { "#${it.jerseyNumber} - ${it.name}" }.toTypedArray()
+                var selectedIndex = -1
+
+                MaterialAlertDialogBuilder(context ?: return@setOnClickListener)
+                    .setTitle("Select Player")
+                    .setSingleChoiceItems(playerNames, selectedIndex) { _, which ->
+                        selectedIndex = which
+                    }
+                    .setPositiveButton("OK") { _, _ ->
+                        if (selectedIndex != -1) {
+                            val player = players[selectedIndex]
+                            val playerName = zoneView.findViewById<TextView>(R.id.player_name)
+                            val playerNumber = zoneView.findViewById<TextView>(R.id.player_number)
+                            playerName.text = player.name
+                            playerNumber.text = player.jerseyNumber.toString()
+                            if (viewModel.containsPlayer(index)){
+                                viewModel.addPlayerToSquad(player.jerseyNumber, index, true)
+                            }
+                            else{
+                                viewModel.addPlayerToSquad(player.jerseyNumber, index)
+                            }
+                            root.requestLayout()
+                        }
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            }
+
+            val attackBlockLayout = zoneView.findViewById<LinearLayout>(R.id.attack_block_layout)
+
+            val receptionLayout = zoneView.findViewById<LinearLayout>(R.id.reception_layout)
+
+            val serviceLayout = zoneView.findViewById<LinearLayout>(R.id.service_layout)
+
+            val playerName = zoneView.findViewById<TextView>(R.id.player_name)
+            playerName.text = "Zóna ${index + 1}"
+
+            val playerNumber = zoneView.findViewById<TextView>(R.id.player_number)
+
             val serviceAce = zoneView.findViewById<Button>(R.id.service_ace)
+
             val serviceError = zoneView.findViewById<Button>(R.id.service_error)
+
             val serviceReceived = zoneView.findViewById<Button>(R.id.service_received)
+
             val attackError = zoneView.findViewById<Button>(R.id.attack_error)
+
             val attackHit = zoneView.findViewById<Button>(R.id.attack_hit)
+
             val attackReceived = zoneView.findViewById<Button>(R.id.attack_received)
+
             val attackBlocked = zoneView.findViewById<Button>(R.id.attack_block)
+
             val blockPoint = zoneView.findViewById<Button>(R.id.block_point)
+
             val blockError = zoneView.findViewById<Button>(R.id.block_error)
+
             val blockNoPoint = zoneView.findViewById<Button>(R.id.block_no_point)
+
             val receptionIdeal = zoneView.findViewById<Button>(R.id.reception_ideal)
+
             val receptionContinue = zoneView.findViewById<Button>(R.id.reception_continue)
+
             val receptionError = zoneView.findViewById<Button>(R.id.reception_error)
+
             val receptionNoContinue = zoneView.findViewById<Button>(R.id.reception_no_continue)
+
 
 
         }

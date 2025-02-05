@@ -2,16 +2,31 @@ package com.reisiegel.volleyballhelper.models
 
 class Match(var opponentName: String, var players: ArrayList<Player>, var startTime: String) {
     private var substitutions: ArrayList<Substitution>
-    private var startSquads: ArrayList<ArrayList<Int>>
+    private var squads: ArrayList<ArrayList<Int>> = ArrayList<ArrayList<Int>>() // list of players in each squad
     private var rotations: Int = 0
     private var score: MatchScore
     private var opponentsError: Int = 0
-    private var isClosed: Boolean = false
+    private var isFinished: Boolean = false
+    var haveService: Boolean = true
 
     init {
         score = MatchScore(0,0)
         substitutions = ArrayList<Substitution>()
-        startSquads = ArrayList<ArrayList<Int>>()
+        squads = ArrayList<ArrayList<Int>>()
+    }
+
+    fun getActiveSquad(): ArrayList<Int> {
+        if(squads == null){
+            return ArrayList<Int>()
+        }
+        return squads[squads.size - 1]
+    }
+
+    /**
+     * Function for add a substitution to match
+     */
+    fun finishMatch(){
+        isFinished = true
     }
 
     /**
@@ -26,15 +41,17 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
     /**
      *
      */
-    fun isClosed(): Boolean {
-        return isClosed
+    fun isFinished(): Boolean {
+        return isFinished
     }
 
-    /**
-     *
-     */
-    fun closeMatch(){
-        isClosed = true;
+    fun getPlayer(jerseyNumber: Int): Player? {
+        for(player: Player in players) {
+            if (player.jerseyNumber == jerseyNumber) {
+                return player
+            }
+        }
+        return null
     }
 
     /**
