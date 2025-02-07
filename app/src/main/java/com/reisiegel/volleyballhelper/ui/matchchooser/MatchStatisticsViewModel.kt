@@ -15,11 +15,13 @@ class MatchStatisticsViewModel() : ViewModel() {
     private val _playersSquad = MutableLiveData<MutableList<Player?>>()
     private val _playersBench = MutableLiveData<MutableList<Player>>()
     private val _serve = MutableLiveData<Boolean>()
+    private val _scoreboard = MutableLiveData<String>()
 
     val matchList: LiveData<MutableList<MatchItem>> = _matchList
     val playersSquad: LiveData<MutableList<Player?>> = _playersSquad
     val playersBench: LiveData<MutableList<Player>> = _playersBench
     val serve: LiveData<Boolean> = _serve
+    val scoreboard: LiveData<String> = _scoreboard
 
     init {
         _serve.value = true
@@ -162,5 +164,10 @@ class MatchStatisticsViewModel() : ViewModel() {
 
     fun changeServe(){
         _serve.value = !_serve.value!!
+    }
+
+    fun changeScoreboard(){
+        val teamScore = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getActualScore()
+        _scoreboard.value = teamScore ?: "Error"
     }
 }

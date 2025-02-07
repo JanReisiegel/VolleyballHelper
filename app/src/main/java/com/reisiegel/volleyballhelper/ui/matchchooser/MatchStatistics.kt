@@ -15,6 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.reisiegel.volleyballhelper.R
 import com.reisiegel.volleyballhelper.databinding.FragmentMatchStatisticsBinding
+import com.reisiegel.volleyballhelper.models.AttackEnum
+import com.reisiegel.volleyballhelper.models.BlockEnum
+import com.reisiegel.volleyballhelper.models.ReceiveServeEnum
 import com.reisiegel.volleyballhelper.ui.matchchooser.MatchAdapter
 import com.reisiegel.volleyballhelper.ui.matchchooser.MatchItem
 import com.reisiegel.volleyballhelper.models.SelectedTournament
@@ -109,8 +112,43 @@ class MatchStatistics : Fragment() {
                 }
             }
 
+            attackButtonIds.forEach { id ->
+                val button = zoneView.findViewById<Button>(id)
+                button.setOnClickListener {
+                    val newValue = when(id){
+                        R.id.attack_error -> "${button.text.split(" ")[0]} - ${viewModel.attackButtonAction(AttackEnum.ERROR, index)}"
+                        R.id.attack_hit -> "${button.text.split(" ")[0]} - ${viewModel.attackButtonAction(AttackEnum.HIT, index)}"
+                        R.id.attack_received -> "${button.text.split(" ")[0]} - ${viewModel.attackButtonAction(AttackEnum.RECEIVED, index)}"
+                        R.id.attack_block -> "${button.text.split(" ")[0]} - ${viewModel.attackButtonAction(AttackEnum.BLOCK, index)}"
+                        else -> return@setOnClickListener
+                    }
+                }
+            }
 
+            blockButtonIds.forEach { id ->
+                val button = zoneView.findViewById<Button>(id)
+                button.setOnClickListener {
+                    val newValue = when(id){
+                        R.id.block_point -> "${button.text.split(" ")[0]} - ${viewModel.blockButtonAction(BlockEnum.POINT, index)}"
+                        R.id.block_error -> "${button.text.split(" ")[0]} - ${viewModel.blockButtonAction(BlockEnum.ERROR, index)}"
+                        R.id.block_no_point -> "${button.text.split(" ")[0]} - ${viewModel.blockButtonAction(BlockEnum.NO_POINT, index)}"
+                        else -> return@setOnClickListener
+                    }
+                }
+            }
 
+            receptionButtonIds.forEach { id ->
+                val button = zoneView.findViewById<Button>(id)
+                button.setOnClickListener {
+                    val newValue = when(id){
+                        R.id.reception_ideal -> "${button.text.split(" ")[0]} - ${viewModel.receiveButtonAction(ReceiveServeEnum.IDEAL, index)}"
+                        R.id.reception_continue -> "${button.text.split(" ")[0]} - ${viewModel.receiveButtonAction(ReceiveServeEnum.CAN_CONTINUE, index)}"
+                        R.id.reception_error -> "${button.text.split(" ")[0]} - ${viewModel.receiveButtonAction(ReceiveServeEnum.ERROR, index)}"
+                        R.id.reception_no_continue -> "${button.text.split(" ")[0]} - ${viewModel.receiveButtonAction(ReceiveServeEnum.CANT_CONTINUE, index)}"
+                        else -> return@setOnClickListener
+                    }
+                }
+            }
 
             setPlayer.setOnClickListener {
                 val players = viewModel.getBanchedPlayers() ?: emptyList()
@@ -193,6 +231,10 @@ class MatchStatistics : Fragment() {
         viewModel.matchList.observe(viewLifecycleOwner){
             matches -> matchesAdapter?.updateItems(matches)
                 matchesAdapter?.notifyDataSetChanged()
+        }
+
+        viewModel.scoreboard.observe(viewLifecycleOwner){
+            scoreboard -> binding.matchScore.text = scoreboard
         }
     }
 

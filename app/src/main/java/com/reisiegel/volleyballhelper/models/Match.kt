@@ -131,6 +131,12 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
         }
     }
 
+    fun getActualScore(): String {
+        val teamScore = score.getTeamSetScore()
+        val opponentScore = score.getOpponentScore()
+        return "$teamScore:$opponentScore"
+    }
+
     /**
      * Function for remembering rotations. This will be use while the application drop down
      */
