@@ -23,4 +23,12 @@ class ReceiveServeStats {
         return ideals + goods + bads + errors
     }
 
+    fun getStatistics(receiveServeType: ReceiveServeEnum): Int{
+        return when(receiveServeType){
+            ReceiveServeEnum.ERROR -> errors
+            ReceiveServeEnum.IDEAL -> ideals
+            ReceiveServeEnum.CAN_CONTINUE -> goods
+            ReceiveServeEnum.CANT_CONTINUE -> bads
+        }
+    }
 }

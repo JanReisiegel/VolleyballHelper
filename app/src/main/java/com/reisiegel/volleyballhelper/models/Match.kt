@@ -7,6 +7,7 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
     private var score: MatchScore
     private var opponentsError: Int = 0
     private var isFinished: Boolean = false
+    private var timeouts = ArrayList<Int>()
     var haveService: Boolean = true
     var serveStart: Boolean = true
 
@@ -136,5 +137,12 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
     fun rotate(){
         var temp: Int = rotations
         rotations = (temp+1)%6
+    }
+
+    fun addSubstitution(playerInNumber: Int, playerOutNumber: Int){
+        val playerIn: Player = getPlayer(playerInNumber) ?: return
+        val playerOut: Player = getPlayer(playerOutNumber) ?: return
+        val substitution = Substitution(playerOut,playerIn,score.getNumberOfSet(),score.getTeamSetScore(),score.getOpponentScore())
+        substitutions.add(substitution)
     }
 }

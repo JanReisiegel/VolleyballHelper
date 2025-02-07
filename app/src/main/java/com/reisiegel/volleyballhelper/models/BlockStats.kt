@@ -19,4 +19,12 @@ class BlockStats {
     fun getAttempts(): Int{
         return noPoint + errors + points
     }
+
+    fun getStatistics(blockType: BlockEnum): Int{
+        return when(blockType){
+            BlockEnum.ERROR -> errors
+            BlockEnum.POINT -> points
+            BlockEnum.NO_POINT -> noPoint
+        }
+    }
 }

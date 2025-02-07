@@ -37,8 +37,16 @@ class MatchScore(private var teamSets: Int = 0, private var opponentSets: Int = 
         return finalScore
     }
 
-    fun getFinalScore(): String{
+    fun getFinalScore(): String {
         return "${teamSets}:${opponentSets} ${getSetsScores()}"
+    }
+
+    fun getTeamSetScore(setNumber: Int = getNumberOfSet()): Int {
+        return teamPoints[setNumber - 1]
+    }
+
+    fun getOpponentScore(setNumber: Int = getNumberOfSet()): Int {
+        return opponentPoints[setNumber - 1]
     }
 
 }

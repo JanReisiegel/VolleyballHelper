@@ -19,4 +19,12 @@ class ServiceStats {
     fun getAttempts(): Int{
         return received + errors + aces
     }
+
+    fun getStatistics(serveType: ServeEnum): Int{
+        return when(serveType){
+            ServeEnum.ACE -> aces
+            ServeEnum.ERROR -> errors
+            ServeEnum.RECEIVED -> received
+        }
+    }
 }

@@ -18,6 +18,7 @@ import com.reisiegel.volleyballhelper.databinding.FragmentMatchStatisticsBinding
 import com.reisiegel.volleyballhelper.ui.matchchooser.MatchAdapter
 import com.reisiegel.volleyballhelper.ui.matchchooser.MatchItem
 import com.reisiegel.volleyballhelper.models.SelectedTournament
+import com.reisiegel.volleyballhelper.models.ServeEnum
 import com.reisiegel.volleyballhelper.models.Tournament
 import java.io.File
 
@@ -52,17 +53,22 @@ class MatchStatistics : Fragment() {
         }
 
 
-        binding.toListButton.setOnClickListener {
-            viewModel.matchSelected(null)
-            matchListLayout.visibility = View.VISIBLE
-            statisticsLayout.visibility = View.INVISIBLE
-            root.requestLayout()
-        }
+//        binding.toListButton.setOnClickListener {
+//            viewModel.matchSelected(null)
+//            matchListLayout.visibility = View.VISIBLE
+//            statisticsLayout.visibility = View.INVISIBLE
+//            root.requestLayout()
+//        }
 
         val matchList = SelectedTournament.selectedTournament?.getmatchesArrayList()
 
         matchList?.forEach {
             match -> viewModel.addMatchItem(MatchItem(match.opponentName, match.startTime))
+        }
+
+        binding.serveButton.setOnClickListener {
+            viewModel.changeServe()
+            binding.serveButton.text = if (viewModel.serve.value == true) "Serve" else "Receive"
         }
 
         val zoneIds = listOf(
@@ -71,8 +77,41 @@ class MatchStatistics : Fragment() {
 
         zoneIds.forEachIndexed { index, zoneId ->
             val zoneView = root.findViewById<View>(zoneId)
-
+            val substituteButton = zoneView.findViewById<Button>(R.id.substitute)
             val setPlayer = zoneView.findViewById<Button>(R.id.set_to_zone)
+            val attackBlockLayout = zoneView.findViewById<LinearLayout>(R.id.attack_block_layout)
+            attackBlockLayout.visibility = View.GONE
+            val receptionLayout = zoneView.findViewById<LinearLayout>(R.id.reception_layout)
+            receptionLayout.visibility = View.GONE
+            val serviceLayout = zoneView.findViewById<LinearLayout>(R.id.service_layout)
+            serviceLayout.visibility = View.GONE
+            val selectLayout = zoneView.findViewById<LinearLayout>(R.id.select_layout)
+            selectLayout.visibility = View.VISIBLE
+            val playerName = zoneView.findViewById<TextView>(R.id.player_name)
+            playerName.text = "Zóna ${index + 1}"
+            val playerNumber = zoneView.findViewById<TextView>(R.id.player_number)
+            playerNumber.text = ""
+
+            val serveButtonIds = listOf(R.id.service_ace,R.id.service_error,R.id.service_received)
+            val attackButtonIds = listOf(R.id.attack_error,R.id.attack_hit,R.id.attack_received,R.id.attack_block)
+            val blockButtonIds = listOf(R.id.block_point,R.id.block_error,R.id.block_no_point)
+            val receptionButtonIds = listOf(R.id.reception_ideal,R.id.reception_continue,R.id.reception_error,R.id.reception_no_continue)
+
+            serveButtonIds.forEach { id ->
+                val button = zoneView.findViewById<Button>(id)
+                button.setOnClickListener {
+                    val newValue = when(id){
+                        R.id.service_ace -> "${button.text.split(" ")[0]} - ${viewModel.serveButtonsAction(ServeEnum.ACE, index)}"
+                        R.id.service_error -> "${button.text.split(" ")[0]} - ${viewModel.serveButtonsAction(ServeEnum.ERROR, index)}"
+                        R.id.service_received -> "${button.text.split(" ")[0]} - ${viewModel.serveButtonsAction(ServeEnum.RECEIVED, index)}"
+                        else -> return@setOnClickListener
+                    }
+                }
+            }
+
+
+
+
             setPlayer.setOnClickListener {
                 val players = viewModel.getBanchedPlayers() ?: emptyList()
                 val playerNames = players.map { "#${it.jerseyNumber} - ${it.name}" }.toTypedArray()
@@ -97,50 +136,40 @@ class MatchStatistics : Fragment() {
                                 viewModel.addPlayerToSquad(player.jerseyNumber, index)
                             }
                             root.requestLayout()
+                            substituteButton.visibility = View.VISIBLE
+                            attackBlockLayout.visibility = View.VISIBLE
+                            selectLayout.visibility = View.GONE
                         }
                     }
                     .setNegativeButton("Cancel", null)
                     .show()
             }
 
-            val attackBlockLayout = zoneView.findViewById<LinearLayout>(R.id.attack_block_layout)
+            substituteButton.setOnClickListener {
+                val players = viewModel.getBanchedPlayers() ?: emptyList()
+                val playerNames = players.map { "#${it.jerseyNumber} - ${it.name}" }.toTypedArray()
+                var selectedIndex = -1
 
-            val receptionLayout = zoneView.findViewById<LinearLayout>(R.id.reception_layout)
+                MaterialAlertDialogBuilder(context ?: return@setOnClickListener)
+                    .setTitle("Select Player")
+                    .setSingleChoiceItems(playerNames, selectedIndex) { _, which ->
+                        selectedIndex = which
+                    }
+                    .setPositiveButton("OK") { _, _ ->
+                        if (selectedIndex != -1) {
+                            val player = players[selectedIndex]
+                            val playerName = zoneView.findViewById<TextView>(R.id.player_name)
+                            val playerNumber = zoneView.findViewById<TextView>(R.id.player_number)
+                            playerName.text = player.name
+                            playerNumber.text = player.jerseyNumber.toString()
 
-            val serviceLayout = zoneView.findViewById<LinearLayout>(R.id.service_layout)
+                            root.requestLayout()
+                        }
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            }
 
-            val playerName = zoneView.findViewById<TextView>(R.id.player_name)
-            playerName.text = "Zóna ${index + 1}"
-
-            val playerNumber = zoneView.findViewById<TextView>(R.id.player_number)
-
-            val serviceAce = zoneView.findViewById<Button>(R.id.service_ace)
-
-            val serviceError = zoneView.findViewById<Button>(R.id.service_error)
-
-            val serviceReceived = zoneView.findViewById<Button>(R.id.service_received)
-
-            val attackError = zoneView.findViewById<Button>(R.id.attack_error)
-
-            val attackHit = zoneView.findViewById<Button>(R.id.attack_hit)
-
-            val attackReceived = zoneView.findViewById<Button>(R.id.attack_received)
-
-            val attackBlocked = zoneView.findViewById<Button>(R.id.attack_block)
-
-            val blockPoint = zoneView.findViewById<Button>(R.id.block_point)
-
-            val blockError = zoneView.findViewById<Button>(R.id.block_error)
-
-            val blockNoPoint = zoneView.findViewById<Button>(R.id.block_no_point)
-
-            val receptionIdeal = zoneView.findViewById<Button>(R.id.reception_ideal)
-
-            val receptionContinue = zoneView.findViewById<Button>(R.id.reception_continue)
-
-            val receptionError = zoneView.findViewById<Button>(R.id.reception_error)
-
-            val receptionNoContinue = zoneView.findViewById<Button>(R.id.reception_no_continue)
 
         }
 

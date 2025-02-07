@@ -53,6 +53,7 @@
 
 
                 <TextView
+                    android:id="@+id/match_score"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="30dp"
@@ -60,11 +61,51 @@
                     android:text="0:0" />
 
                 <Button
-                    android:id="@+id/to_list_button"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/opponent_error"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Na seznam" />
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="center"
+                    android:text="Chyba soupeře"/>
+
+                <Button
+                    android:id="@+id/timeout_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="center"
+                    android:text="Timeout" />
+
+                <Button
+                    android:id="@+id/serve_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="center"
+                    android:text="Servis"/>
+
+                <Button
+                    android:id="@+id/end_match"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="center"
+                    android:text="Ukončit zápas" />
+
+                <Button
+                    android:id="@+id/start_set"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="center"
+                    android:text="Zahájit set" />
+
+
             </LinearLayout>
 
             <!-- GridLayout pro rozložení zón -->
