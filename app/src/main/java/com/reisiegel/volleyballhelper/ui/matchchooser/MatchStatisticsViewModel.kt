@@ -166,6 +166,10 @@ class MatchStatisticsViewModel() : ViewModel() {
         _serve.value = !_serve.value!!
     }
 
+    fun canStartSet(): Boolean {
+        return _playersSquad.value?.contains(null) != true
+    }
+
     fun changeScoreboard(){
         val teamScore = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getActualScore()
         _scoreboard.value = teamScore ?: "Error"

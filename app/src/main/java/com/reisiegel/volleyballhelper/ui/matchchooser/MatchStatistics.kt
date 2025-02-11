@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -174,9 +175,6 @@ class MatchStatistics : Fragment() {
                                 viewModel.addPlayerToSquad(player.jerseyNumber, index)
                             }
                             root.requestLayout()
-                            substituteButton.visibility = View.VISIBLE
-                            attackBlockLayout.visibility = View.VISIBLE
-                            selectLayout.visibility = View.GONE
                         }
                     }
                     .setNegativeButton("Cancel", null)
@@ -201,6 +199,8 @@ class MatchStatistics : Fragment() {
                             playerName.text = player.name
                             playerNumber.text = player.jerseyNumber.toString()
 
+                            //TODO: Substitution in viewmodel
+
                             root.requestLayout()
                         }
                     }
@@ -208,6 +208,21 @@ class MatchStatistics : Fragment() {
                     .show()
             }
 
+            binding.startSet.setOnClickListener {
+                val canStart = viewModel.canStartSet()
+                var text = "Start Set"
+                if (!canStart) {
+                    text = "Can't start set"
+                }
+                val dialog = AlertDialog.Builder(context ?: return@setOnClickListener)
+                        .setTitle("Error")
+                        .setMessage(text)
+                        .setPositiveButton("OK") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .create()
+                    dialog.show()
+                }
 
         }
 
