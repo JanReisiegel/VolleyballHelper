@@ -95,11 +95,24 @@ class MatchStatistics : Fragment() {
             playerName.text = "Zóna ${index + 1}"
             val playerNumber = zoneView.findViewById<TextView>(R.id.player_number)
             playerNumber.text = ""
+            val attackLayout = zoneView.findViewById<LinearLayout>(R.id.attack_layout)
+            val blockLayout = zoneView.findViewById<LinearLayout>(R.id.block_layout)
+            val attackBlockSeparator = zoneView.findViewById<View>(R.id.attack_block_separator)
+            if(index == 0 || index == 5 || index == 4){
+                attackBlockSeparator.visibility = View.GONE
+                blockLayout.visibility = View.GONE
+            } else{
+                attackBlockSeparator.visibility = View.VISIBLE
+                blockLayout.visibility = View.VISIBLE
+            }
+            attackLayout.visibility = View.VISIBLE
+
 
             val serveButtonIds = listOf(R.id.service_ace,R.id.service_error,R.id.service_received)
             val attackButtonIds = listOf(R.id.attack_error,R.id.attack_hit,R.id.attack_received,R.id.attack_block)
             val blockButtonIds = listOf(R.id.block_point,R.id.block_error,R.id.block_no_point)
             val receptionButtonIds = listOf(R.id.reception_ideal,R.id.reception_continue,R.id.reception_error,R.id.reception_no_continue)
+
 
             serveButtonIds.forEach { id ->
                 val button = zoneView.findViewById<Button>(id)
@@ -110,6 +123,8 @@ class MatchStatistics : Fragment() {
                         R.id.service_received -> "${button.text.split(" ")[0]} - ${viewModel.serveButtonsAction(ServeEnum.RECEIVED, index)}"
                         else -> return@setOnClickListener
                     }
+                    button.text = newValue
+                    root.requestLayout()
                 }
             }
 
@@ -123,6 +138,9 @@ class MatchStatistics : Fragment() {
                         R.id.attack_block -> "${button.text.split(" ")[0]} - ${viewModel.attackButtonAction(AttackEnum.BLOCK, index)}"
                         else -> return@setOnClickListener
                     }
+                    //TODO: Nefunguje přičítání->podívat se na to
+                    button.text = newValue
+                    root.requestLayout()
                 }
             }
 
@@ -135,7 +153,11 @@ class MatchStatistics : Fragment() {
                         R.id.block_no_point -> "${button.text.split(" ")[0]} - ${viewModel.blockButtonAction(BlockEnum.NO_POINT, index)}"
                         else -> return@setOnClickListener
                     }
+                    //TODO: Nefunguje přičítání->podívat se na to
+                    button.text = newValue
+                    root.requestLayout()
                 }
+
             }
 
             receptionButtonIds.forEach { id ->
@@ -148,6 +170,9 @@ class MatchStatistics : Fragment() {
                         R.id.reception_no_continue -> "${button.text.split(" ")[0]} - ${viewModel.receiveButtonAction(ReceiveServeEnum.CANT_CONTINUE, index)}"
                         else -> return@setOnClickListener
                     }
+                    //TODO: Nefunguje přičítání->podívat se na to
+                    button.text = newValue
+                    root.requestLayout()
                 }
             }
 
@@ -194,38 +219,82 @@ class MatchStatistics : Fragment() {
                     .setPositiveButton("OK") { _, _ ->
                         if (selectedIndex != -1) {
                             val player = players[selectedIndex]
-                            val playerName = zoneView.findViewById<TextView>(R.id.player_name)
-                            val playerNumber = zoneView.findViewById<TextView>(R.id.player_number)
-                            playerName.text = player.name
-                            playerNumber.text = player.jerseyNumber.toString()
 
-                            //TODO: Substitution in viewmodel
 
+                            if (viewModel.canSubstitute()) {
+                                val dialog =
+                                    AlertDialog.Builder(context ?: return@setPositiveButton)
+                                        .setTitle("Chyba")
+                                        .setMessage("Nemůžete vyměnit hráče")
+                                        .setPositiveButton("OK") { dialog, _ ->
+                                            dialog.dismiss()
+                                            return@setPositiveButton
+                                        }
+                                        .create()
+                                dialog.show()
+                            } else {
+                                viewModel.addPlayerToSquad(player.jerseyNumber, index)
+                                val playerName = zoneView.findViewById<TextView>(R.id.player_name)
+                                val playerNumber =
+                                    zoneView.findViewById<TextView>(R.id.player_number)
+                                playerName.text = player.name
+                                playerNumber.text = player.jerseyNumber.toString()
+                            }
                             root.requestLayout()
                         }
                     }
                     .setNegativeButton("Cancel", null)
                     .show()
             }
-
-            binding.startSet.setOnClickListener {
-                val canStart = viewModel.canStartSet()
-                var text = "Start Set"
-                if (!canStart) {
-                    text = "Can't start set"
-                }
-                val dialog = AlertDialog.Builder(context ?: return@setOnClickListener)
-                        .setTitle("Error")
-                        .setMessage(text)
-                        .setPositiveButton("OK") { dialog, _ ->
-                            dialog.dismiss()
-                        }
-                        .create()
-                    dialog.show()
-                }
-
         }
 
+        binding.startSet.setOnClickListener {
+            val canStart = viewModel.canStartSet()
+            var text = "Set Začal"
+            if (!canStart) {
+                text = "Set nemohl začít"
+            }
+            else{
+                zoneIds.forEachIndexed { index, zoneId ->
+                    val zoneView = root.findViewById<View>(zoneId)
+                    val selectLayout = zoneView.findViewById<LinearLayout>(R.id.select_layout)
+                    val serviceLayout = zoneView.findViewById<LinearLayout>(R.id.service_layout)
+                    val attackBlockLayout = zoneView.findViewById<LinearLayout>(R.id.attack_block_layout)
+                    val receptionLayout = zoneView.findViewById<LinearLayout>(R.id.reception_layout)
+                    val substitutionButton = zoneView.findViewById<Button>(R.id.substitute)
+                    if (viewModel.serve.value == true && index == 0){
+                        serviceLayout.visibility = View.VISIBLE
+                        attackBlockLayout.visibility = View.GONE
+                        receptionLayout.visibility = View.GONE
+                    }
+                    else if (viewModel.serve.value == true){
+                        selectLayout.visibility = View.GONE
+                        serviceLayout.visibility = View.GONE
+                        attackBlockLayout.visibility = View.VISIBLE
+                        receptionLayout.visibility = View.GONE
+                    }
+                    else{
+                        selectLayout.visibility = View.GONE
+                        serviceLayout.visibility = View.GONE
+                        attackBlockLayout.visibility = View.GONE
+                        receptionLayout.visibility = View.VISIBLE
+                    }
+                    selectLayout.visibility = View.GONE
+                    substitutionButton.visibility = View.VISIBLE
+
+                }
+            }
+            val dialog = AlertDialog.Builder(context ?: return@setOnClickListener)
+                .setTitle("Chyba")
+                .setMessage("Set začal")
+                .setPositiveButton("OK") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .create()
+            dialog.show()
+            binding.opponentError.visibility = View.VISIBLE
+            binding.serveButton.isEnabled = false
+        }
 
         return root
     }

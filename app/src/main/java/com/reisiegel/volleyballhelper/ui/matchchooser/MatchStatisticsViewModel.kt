@@ -114,9 +114,14 @@ class MatchStatisticsViewModel() : ViewModel() {
     fun substitution(jerseyNumber: Int, position: Int){
         val player = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(jerseyNumber)
         if (player == null) return
-
         val updatedPlayersSquad = _playersSquad.value ?: mutableListOf()
         val playerToBench = updatedPlayersSquad[position]
+        if (playerToBench == null) return
+        SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)
+            ?.addSubstitution(player.jerseyNumber, playerToBench.jerseyNumber)
+
+
+
         updatedPlayersSquad[position] = player
         _playersSquad.value = updatedPlayersSquad
 
@@ -125,8 +130,7 @@ class MatchStatisticsViewModel() : ViewModel() {
         updatedPlayersBench.remove(player)
         _playersBench.value = updatedPlayersBench
 
-        SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)
-            ?.addSubstitution(player.jerseyNumber, playerToBench.jerseyNumber)
+
     }
 
     fun serveButtonsAction(serveType: ServeEnum, playerNumber: Int): Int {
@@ -168,6 +172,9 @@ class MatchStatisticsViewModel() : ViewModel() {
 
     fun canStartSet(): Boolean {
         return _playersSquad.value?.contains(null) != true
+    }
+    fun canSubstitute(): Boolean {
+        return _scoreboard.value == "0:0" || _scoreboard.value == null
     }
 
     fun changeScoreboard(){
