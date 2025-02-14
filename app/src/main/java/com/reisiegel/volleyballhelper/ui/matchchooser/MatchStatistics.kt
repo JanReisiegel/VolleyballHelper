@@ -123,6 +123,7 @@ class MatchStatistics : Fragment() {
                         R.id.service_received -> "${button.text.split(" ")[0]} - ${viewModel.serveButtonsAction(ServeEnum.RECEIVED, index)}"
                         else -> return@setOnClickListener
                     }
+                    //TODO: Nefunguje přičítání->podívat se na to
                     button.text = newValue
                     root.requestLayout()
                 }

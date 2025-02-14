@@ -101,6 +101,11 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
                 break
             }
         }
+        if (serveType == ServeEnum.ACE){
+            score.teamPoint()
+        }else if (serveType == ServeEnum.ERROR){
+            score.opponentPoint()
+        }
     }
     /**
      * Function for set statistic of player block
@@ -132,8 +137,8 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
     }
 
     fun getActualScore(): String {
-        val teamScore = score.getTeamSetScore()
-        val opponentScore = score.getOpponentScore()
+        val teamScore = score.getTeamSetScore(score.getNumberOfSet())
+        val opponentScore = score.getOpponentScore(score.getNumberOfSet())
         return "$teamScore:$opponentScore"
     }
 
@@ -148,7 +153,7 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
     fun addSubstitution(playerInNumber: Int, playerOutNumber: Int){
         val playerIn: Player = getPlayer(playerInNumber) ?: return
         val playerOut: Player = getPlayer(playerOutNumber) ?: return
-        val substitution = Substitution(playerOut,playerIn,score.getNumberOfSet(),score.getTeamSetScore(),score.getOpponentScore())
+        val substitution = Substitution(playerOut,playerIn,score.getNumberOfSet(),score.getTeamSetScore(score.getNumberOfSet()),score.getOpponentScore(score.getNumberOfSet()))
         substitutions.add(substitution)
     }
 }
