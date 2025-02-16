@@ -87,6 +87,11 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
                 break
             }
         }
+        if (attackType == AttackEnum.HIT){
+            score.teamPoint()
+        } else if (attackType == AttackEnum.ERROR || attackType == AttackEnum.BLOCK){
+            score.opponentPoint()
+        }
     }
     /**
      * Function for set statistic of player serve
@@ -120,6 +125,11 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
                 break
             }
         }
+        if (blockType == BlockEnum.POINT){
+            score.teamPoint()
+        }else if (blockType == BlockEnum.ERROR){
+            score.opponentPoint()
+        }
     }
     /**
      * Function for set statistic of player receiving opponents serve
@@ -133,6 +143,9 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
                 player.addReceiveStat(receiveServeType)
                 break
             }
+        }
+        if (receiveServeType == ReceiveServeEnum.ERROR || receiveServeType == ReceiveServeEnum.CANT_CONTINUE){
+            score.opponentPoint()
         }
     }
 

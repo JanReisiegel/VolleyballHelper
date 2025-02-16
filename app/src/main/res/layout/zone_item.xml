@@ -212,6 +212,12 @@
                 android:text="Can Continue" />
 
             <Button
+                android:id="@+id/to_opponent_side"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="To opponent Side" />
+
+            <Button
                 android:id="@+id/reception_no_continue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

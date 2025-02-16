@@ -149,31 +149,50 @@ class MatchStatisticsViewModel() : ViewModel() {
     }
 
     fun attackButtonAction(attackType: AttackEnum, playerZone: Int): Int {
-        if ((attackType == AttackEnum.ERROR || attackType == AttackEnum.BLOCK) && serve.value == true){
-            changeServe()
-        } else if(attackType == AttackEnum.HIT && serve.value == false){
-            changeServe()
-        }
         val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return 0
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.playerAttack(playerNumber, attackType)
-        return SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(playerNumber)?.getAttackStats(attackType) ?: 0
+        val result = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(playerNumber)?.getAttackStats(attackType) ?: 0
+        if (attackType == AttackEnum.ERROR || attackType == AttackEnum.BLOCK){
+            if (serve.value == true){
+                changeServe()
+            }
+            changeScoreboard()
+        } else if(attackType == AttackEnum.HIT){
+            if (serve.value == false){
+                changeServe()
+            }
+            changeScoreboard()
+        }
+        return result
     }
 
     fun blockButtonAction(blockType: BlockEnum, playerZone: Int): Int {
-        if (blockType == BlockEnum.ERROR && serve.value == true){
-            changeServe()
-        } else if(blockType == BlockEnum.POINT && serve.value == false){
-            changeServe()
-        }
+
         val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return 0
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.playerBlock(playerNumber, blockType)
-        return SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(playerNumber)?.getBlockStats(blockType) ?: 0
+        val result = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(playerNumber)?.getBlockStats(blockType) ?: 0
+        if (blockType == BlockEnum.ERROR){
+            if (serve.value == true){
+                changeServe()
+            }
+            changeScoreboard()
+        } else if(blockType == BlockEnum.POINT){
+            if (serve.value == false){
+                changeServe()
+            }
+            changeScoreboard()
+        }
+        return result
     }
 
     fun receiveButtonAction(receiveType: ReceiveServeEnum, playerZone: Int): Int {
         val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return 0
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.playerReceivedServe(playerNumber, receiveType)
-        return SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(playerNumber)?.getReceiveStats(receiveType) ?: 0
+        val result = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(playerNumber)?.getReceiveStats(receiveType) ?: 0
+        if (receiveType == ReceiveServeEnum.ERROR || receiveType == ReceiveServeEnum.CANT_CONTINUE){
+            changeScoreboard()
+        }
+        return result
     }
 
     fun changeServe(){
