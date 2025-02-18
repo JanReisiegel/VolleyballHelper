@@ -23,6 +23,7 @@ import com.reisiegel.volleyballhelper.ui.matchchooser.MatchAdapter
 import com.reisiegel.volleyballhelper.ui.matchchooser.MatchItem
 import com.reisiegel.volleyballhelper.models.SelectedTournament
 import com.reisiegel.volleyballhelper.models.ServeEnum
+import com.reisiegel.volleyballhelper.models.SetStates
 import com.reisiegel.volleyballhelper.models.Tournament
 import java.io.File
 
@@ -75,179 +76,9 @@ class MatchStatistics : Fragment() {
             binding.serveButton.text = if (viewModel.serve.value == true) "Serve" else "Receive"
         }
 
-        val zoneIds = listOf(
-            R.id.zone1, R.id.zone2, R.id.zone3, R.id.zone4, R.id.zone5, R.id.zone6,
-        )
-
-        zoneIds.forEachIndexed { index, zoneId ->
-            val zoneView = root.findViewById<View>(zoneId)
-            val substituteButton = zoneView.findViewById<Button>(R.id.substitute)
-            val setPlayer = zoneView.findViewById<Button>(R.id.set_to_zone)
-            val attackBlockLayout = zoneView.findViewById<LinearLayout>(R.id.attack_block_layout)
-            attackBlockLayout.visibility = View.GONE
-            val receptionLayout = zoneView.findViewById<LinearLayout>(R.id.reception_layout)
-            receptionLayout.visibility = View.GONE
-            val serviceLayout = zoneView.findViewById<LinearLayout>(R.id.service_layout)
-            serviceLayout.visibility = View.GONE
-            val selectLayout = zoneView.findViewById<LinearLayout>(R.id.select_layout)
-            selectLayout.visibility = View.VISIBLE
-            val playerName = zoneView.findViewById<TextView>(R.id.player_name)
-            playerName.text = "Zóna ${index + 1}"
-            val playerNumber = zoneView.findViewById<TextView>(R.id.player_number)
-            playerNumber.text = ""
-            val attackLayout = zoneView.findViewById<LinearLayout>(R.id.attack_layout)
-            val blockLayout = zoneView.findViewById<LinearLayout>(R.id.block_layout)
-            val attackBlockSeparator = zoneView.findViewById<View>(R.id.attack_block_separator)
-            if(index == 0 || index == 5 || index == 4){
-                attackBlockSeparator.visibility = View.GONE
-                blockLayout.visibility = View.GONE
-            } else{
-                attackBlockSeparator.visibility = View.VISIBLE
-                blockLayout.visibility = View.VISIBLE
-            }
-            attackLayout.visibility = View.VISIBLE
 
 
-            val serveButtonIds = listOf(R.id.service_ace,R.id.service_error,R.id.service_received)
-            val attackButtonIds = listOf(R.id.attack_error,R.id.attack_hit,R.id.attack_received,R.id.attack_block)
-            val blockButtonIds = listOf(R.id.block_point,R.id.block_error,R.id.block_no_point)
-            val receptionButtonIds = listOf(R.id.reception_ideal,R.id.reception_continue,R.id.reception_error,R.id.reception_no_continue)
-
-
-            serveButtonIds.forEach { id ->
-                val button = zoneView.findViewById<Button>(id)
-                button.setOnClickListener {
-                    val newValue = when(id){
-                        R.id.service_ace -> "${button.text.split(" ")[0]} - ${viewModel.serveButtonsAction(ServeEnum.ACE, index)}"
-                        R.id.service_error -> "${button.text.split(" ")[0]} - ${viewModel.serveButtonsAction(ServeEnum.ERROR, index)}"
-                        R.id.service_received -> "${button.text.split(" ")[0]} - ${viewModel.serveButtonsAction(ServeEnum.RECEIVED, index)}"
-                        else -> return@setOnClickListener
-                    }
-                    //TODO: Nefunguje přičítání->podívat se na to
-                    button.text = newValue
-                    root.requestLayout()
-                }
-            }
-
-            attackButtonIds.forEach { id ->
-                val button = zoneView.findViewById<Button>(id)
-                button.setOnClickListener {
-                    val newValue = when(id){
-                        R.id.attack_error -> "${button.text.split(" ")[0]} - ${viewModel.attackButtonAction(AttackEnum.ERROR, index)}"
-                        R.id.attack_hit -> "${button.text.split(" ")[0]} - ${viewModel.attackButtonAction(AttackEnum.HIT, index)}"
-                        R.id.attack_received -> "${button.text.split(" ")[0]} - ${viewModel.attackButtonAction(AttackEnum.RECEIVED, index)}"
-                        R.id.attack_block -> "${button.text.split(" ")[0]} - ${viewModel.attackButtonAction(AttackEnum.BLOCK, index)}"
-                        else -> return@setOnClickListener
-                    }
-                    //TODO: Nefunguje přičítání->podívat se na to
-                    button.text = newValue
-                    root.requestLayout()
-                }
-            }
-
-            blockButtonIds.forEach { id ->
-                val button = zoneView.findViewById<Button>(id)
-                button.setOnClickListener {
-                    val newValue = when(id){
-                        R.id.block_point -> "${button.text.split(" ")[0]} - ${viewModel.blockButtonAction(BlockEnum.POINT, index)}"
-                        R.id.block_error -> "${button.text.split(" ")[0]} - ${viewModel.blockButtonAction(BlockEnum.ERROR, index)}"
-                        R.id.block_no_point -> "${button.text.split(" ")[0]} - ${viewModel.blockButtonAction(BlockEnum.NO_POINT, index)}"
-                        else -> return@setOnClickListener
-                    }
-                    //TODO: Nefunguje přičítání->podívat se na to
-                    button.text = newValue
-                    root.requestLayout()
-                }
-
-            }
-
-            receptionButtonIds.forEach { id ->
-                val button = zoneView.findViewById<Button>(id)
-                button.setOnClickListener {
-                    val newValue = when(id){
-                        R.id.reception_ideal -> "${button.text.split(" ")[0]} - ${viewModel.receiveButtonAction(ReceiveServeEnum.IDEAL, index)}"
-                        R.id.reception_continue -> "${button.text.split(" ")[0]} - ${viewModel.receiveButtonAction(ReceiveServeEnum.CAN_CONTINUE, index)}"
-                        R.id.reception_error -> "${button.text.split(" ")[0]} - ${viewModel.receiveButtonAction(ReceiveServeEnum.ERROR, index)}"
-                        R.id.reception_no_continue -> "${button.text.split(" ")[0]} - ${viewModel.receiveButtonAction(ReceiveServeEnum.CANT_CONTINUE, index)}"
-                        else -> return@setOnClickListener
-                    }
-                    //TODO: Nefunguje přičítání->podívat se na to
-                    button.text = newValue
-                    root.requestLayout()
-                }
-            }
-
-            setPlayer.setOnClickListener {
-                val players = viewModel.getBanchedPlayers() ?: emptyList()
-                val playerNames = players.map { "#${it.jerseyNumber} - ${it.name}" }.toTypedArray()
-                var selectedIndex = -1
-
-                MaterialAlertDialogBuilder(context ?: return@setOnClickListener)
-                    .setTitle("Select Player")
-                    .setSingleChoiceItems(playerNames, selectedIndex) { _, which ->
-                        selectedIndex = which
-                    }
-                    .setPositiveButton("OK") { _, _ ->
-                        if (selectedIndex != -1) {
-                            val player = players[selectedIndex]
-                            val playerName = zoneView.findViewById<TextView>(R.id.player_name)
-                            val playerNumber = zoneView.findViewById<TextView>(R.id.player_number)
-                            playerName.text = player.name
-                            playerNumber.text = player.jerseyNumber.toString()
-                            if (viewModel.containsPlayer(index)){
-                                viewModel.addPlayerToSquad(player.jerseyNumber, index, true)
-                            }
-                            else{
-                                viewModel.addPlayerToSquad(player.jerseyNumber, index)
-                            }
-                            root.requestLayout()
-                        }
-                    }
-                    .setNegativeButton("Cancel", null)
-                    .show()
-            }
-
-            substituteButton.setOnClickListener {
-                val players = viewModel.getBanchedPlayers() ?: emptyList()
-                val playerNames = players.map { "#${it.jerseyNumber} - ${it.name}" }.toTypedArray()
-                var selectedIndex = -1
-
-                MaterialAlertDialogBuilder(context ?: return@setOnClickListener)
-                    .setTitle("Select Player")
-                    .setSingleChoiceItems(playerNames, selectedIndex) { _, which ->
-                        selectedIndex = which
-                    }
-                    .setPositiveButton("OK") { _, _ ->
-                        if (selectedIndex != -1) {
-                            val player = players[selectedIndex]
-
-
-                            if (viewModel.canSubstitute()) {
-                                val dialog =
-                                    AlertDialog.Builder(context ?: return@setPositiveButton)
-                                        .setTitle("Chyba")
-                                        .setMessage("Nemůžete vyměnit hráče")
-                                        .setPositiveButton("OK") { dialog, _ ->
-                                            dialog.dismiss()
-                                            return@setPositiveButton
-                                        }
-                                        .create()
-                                dialog.show()
-                            } else {
-                                viewModel.addPlayerToSquad(player.jerseyNumber, index)
-                                val playerName = zoneView.findViewById<TextView>(R.id.player_name)
-                                val playerNumber =
-                                    zoneView.findViewById<TextView>(R.id.player_number)
-                                playerName.text = player.name
-                                playerNumber.text = player.jerseyNumber.toString()
-                            }
-                            root.requestLayout()
-                        }
-                    }
-                    .setNegativeButton("Cancel", null)
-                    .show()
-            }
-        }
+        viewModel.zoneStartInit(root)
 
         binding.startSet.setOnClickListener {
             val canStart = viewModel.canStartSet()
@@ -256,7 +87,7 @@ class MatchStatistics : Fragment() {
                 text = "Set nemohl začít"
             }
             else{
-                zoneIds.forEachIndexed { index, zoneId ->
+                viewModel.zoneIds.forEachIndexed { index, zoneId ->
                     val zoneView = root.findViewById<View>(zoneId)
                     val selectLayout = zoneView.findViewById<LinearLayout>(R.id.select_layout)
                     val serviceLayout = zoneView.findViewById<LinearLayout>(R.id.service_layout)
@@ -321,7 +152,43 @@ class MatchStatistics : Fragment() {
         viewModel.scoreboard.observe(viewLifecycleOwner){
             scoreboard -> binding.matchScore.text = scoreboard
         }
+
+        viewModel.setState.observe(viewLifecycleOwner){
+            state -> when(state){
+                SetStates.NONE -> {
+                    binding.serveButton.isEnabled = true
+                    binding.startSet.visibility = View.VISIBLE
+                    binding.opponentError.visibility = View.GONE
+                    binding.endMatch.visibility = View.GONE
+                }
+                SetStates.SERVE -> {
+                    binding.startSet.visibility = View.GONE
+                    binding.opponentError.visibility = View.VISIBLE
+                    binding.serveButton.isEnabled = false
+                    binding.endMatch.visibility = View.GONE
+                }
+                SetStates.RECEIVE -> {
+                    binding.startSet.isEnabled = false
+                    binding.opponentError.isEnabled = false
+                    binding.endMatch.visibility = View.GONE
+                }
+                SetStates.ATTACK_BLOCK -> {
+                    binding.startSet.isEnabled = false
+                    binding.opponentError.isEnabled = false
+                    binding.endMatch.visibility = View.GONE
+                }
+                SetStates.END_SET -> {
+                    viewModel.clearSquad()
+                    binding.startSet.isEnabled = false
+                    binding.opponentError.isEnabled = false
+                    binding.endMatch.visibility = View.VISIBLE
+                }
+
+            }
+        }
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

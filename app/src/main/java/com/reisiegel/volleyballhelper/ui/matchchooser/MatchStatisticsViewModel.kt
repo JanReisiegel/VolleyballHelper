@@ -1,14 +1,22 @@
 package com.reisiegel.volleyballhelper.ui.matchchooser
 
+import android.view.View
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.reisiegel.volleyballhelper.R
 import com.reisiegel.volleyballhelper.models.AttackEnum
 import com.reisiegel.volleyballhelper.models.BlockEnum
 import com.reisiegel.volleyballhelper.models.Player
 import com.reisiegel.volleyballhelper.models.ReceiveServeEnum
 import com.reisiegel.volleyballhelper.models.SelectedTournament
 import com.reisiegel.volleyballhelper.models.ServeEnum
+import com.reisiegel.volleyballhelper.models.SetStates
 
 class MatchStatisticsViewModel() : ViewModel() {
     private val _matchList = MutableLiveData<MutableList<MatchItem>>()
@@ -16,12 +24,14 @@ class MatchStatisticsViewModel() : ViewModel() {
     private val _playersBench = MutableLiveData<MutableList<Player>>()
     private val _serve = MutableLiveData<Boolean>()
     private val _scoreboard = MutableLiveData<String>()
+    private val _setState = MutableLiveData<SetStates>()
 
     val matchList: LiveData<MutableList<MatchItem>> = _matchList
     val playersSquad: LiveData<MutableList<Player?>> = _playersSquad
     val playersBench: LiveData<MutableList<Player>> = _playersBench
     val serve: LiveData<Boolean> = _serve
     val scoreboard: LiveData<String> = _scoreboard
+    val setState: LiveData<SetStates> = _setState
 
     init {
         _serve.value = true
@@ -42,6 +52,224 @@ class MatchStatisticsViewModel() : ViewModel() {
             }
             _playersSquad.value = activeSquad
             _playersBench.value = bench
+        }
+    }
+
+    val zoneIds = listOf(
+        R.id.zone1, R.id.zone2, R.id.zone3, R.id.zone4, R.id.zone5, R.id.zone6,
+    )
+
+    fun zoneStartInit(root: View){
+        val context = root.context
+        zoneIds.forEachIndexed { index, zoneId ->
+            val zoneView = root.findViewById<View>(zoneId)
+            val substituteButton = zoneView.findViewById<Button>(R.id.substitute)
+            val setPlayer = zoneView.findViewById<Button>(R.id.set_to_zone)
+            val attackBlockLayout = zoneView.findViewById<LinearLayout>(R.id.attack_block_layout)
+            attackBlockLayout.visibility = View.GONE
+            val receptionLayout = zoneView.findViewById<LinearLayout>(R.id.reception_layout)
+            receptionLayout.visibility = View.GONE
+            val serviceLayout = zoneView.findViewById<LinearLayout>(R.id.service_layout)
+            serviceLayout.visibility = View.GONE
+            val selectLayout = zoneView.findViewById<LinearLayout>(R.id.select_layout)
+            selectLayout.visibility = View.VISIBLE
+            val playerName = zoneView.findViewById<TextView>(R.id.player_name)
+            playerName.text = "Zóna ${index + 1}"
+            val playerNumber = zoneView.findViewById<TextView>(R.id.player_number)
+            playerNumber.text = ""
+            val attackLayout = zoneView.findViewById<LinearLayout>(R.id.attack_layout)
+            val blockLayout = zoneView.findViewById<LinearLayout>(R.id.block_layout)
+            val attackBlockSeparator = zoneView.findViewById<View>(R.id.attack_block_separator)
+            if(index == 0 || index == 5 || index == 4){
+                attackBlockSeparator.visibility = View.GONE
+                blockLayout.visibility = View.GONE
+            } else{
+                attackBlockSeparator.visibility = View.VISIBLE
+                blockLayout.visibility = View.VISIBLE
+            }
+            attackLayout.visibility = View.VISIBLE
+
+
+            val serveButtonIds = listOf(R.id.service_ace,R.id.service_error,R.id.service_received)
+            val attackButtonIds = listOf(R.id.attack_error,R.id.attack_hit,R.id.attack_received,R.id.attack_block)
+            val blockButtonIds = listOf(R.id.block_point,R.id.block_error,R.id.block_no_point)
+            val receptionButtonIds = listOf(R.id.reception_ideal,R.id.reception_continue,R.id.reception_error,R.id.reception_no_continue)
+
+
+            serveButtonIds.forEach { id ->
+                val button = zoneView.findViewById<Button>(id)
+                button.setOnClickListener {
+                    val newValue = when(id){
+                        R.id.service_ace -> "${button.text.split(" ")[0]} - ${serveButtonsAction(ServeEnum.ACE, index)}"
+                        R.id.service_error -> "${button.text.split(" ")[0]} - ${serveButtonsAction(ServeEnum.ERROR, index)}"
+                        R.id.service_received -> "${button.text.split(" ")[0]} - ${serveButtonsAction(ServeEnum.RECEIVED, index)}"
+                        else -> return@setOnClickListener
+                    }
+                    //TODO: Nefunguje přičítání->podívat se na to
+                    button.text = newValue
+                    root.requestLayout()
+                }
+
+            }
+
+            attackButtonIds.forEach { id ->
+                val button = zoneView.findViewById<Button>(id)
+                button.setOnClickListener {
+                    val newValue = when(id){
+                        R.id.attack_error -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.ERROR, index)}"
+                        R.id.attack_hit -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.HIT, index)}"
+                        R.id.attack_received -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.RECEIVED, index)}"
+                        R.id.attack_block -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.BLOCK, index)}"
+                        else -> return@setOnClickListener
+                    }
+                    //TODO: Nefunguje přičítání->podívat se na to
+                    button.text = newValue
+                    root.requestLayout()
+                }
+            }
+
+            blockButtonIds.forEach { id ->
+                val button = zoneView.findViewById<Button>(id)
+                button.setOnClickListener {
+                    val newValue = when(id){
+                        R.id.block_point -> "${button.text.split(" ")[0]} - ${blockButtonAction(BlockEnum.POINT, index)}"
+                        R.id.block_error -> "${button.text.split(" ")[0]} - ${blockButtonAction(BlockEnum.ERROR, index)}"
+                        R.id.block_no_point -> "${button.text.split(" ")[0]} - ${blockButtonAction(BlockEnum.NO_POINT, index)}"
+                        else -> return@setOnClickListener
+                    }
+                    //TODO: Nefunguje přičítání->podívat se na to
+                    button.text = newValue
+                    root.requestLayout()
+                }
+
+            }
+
+            receptionButtonIds.forEach { id ->
+                val button = zoneView.findViewById<Button>(id)
+                button.setOnClickListener {
+                    val newValue = when(id){
+                        R.id.reception_ideal -> "${button.text.split(" ")[0]} - ${receiveButtonAction(ReceiveServeEnum.IDEAL, index)}"
+                        R.id.reception_continue -> "${button.text.split(" ")[0]} - ${receiveButtonAction(ReceiveServeEnum.CAN_CONTINUE, index)}"
+                        R.id.reception_error -> "${button.text.split(" ")[0]} - ${receiveButtonAction(ReceiveServeEnum.ERROR, index)}"
+                        R.id.reception_no_continue -> "${button.text.split(" ")[0]} - ${receiveButtonAction(ReceiveServeEnum.CANT_CONTINUE, index)}"
+                        else -> return@setOnClickListener
+                    }
+                    //TODO: Nefunguje přičítání->podívat se na to
+                    button.text = newValue
+                    root.requestLayout()
+                }
+            }
+
+            setPlayer.setOnClickListener {
+                val players = getBanchedPlayers() ?: emptyList()
+                val playerNames = players.map { "#${it.jerseyNumber} - ${it.name}" }.toTypedArray()
+                var selectedIndex = -1
+
+                MaterialAlertDialogBuilder(context ?: return@setOnClickListener)
+                    .setTitle("Select Player")
+                    .setSingleChoiceItems(playerNames, selectedIndex) { _, which ->
+                        selectedIndex = which
+                    }
+                    .setPositiveButton("OK") { _, _ ->
+                        if (selectedIndex != -1) {
+                            val player = players[selectedIndex]
+                            val playerName = zoneView.findViewById<TextView>(R.id.player_name)
+                            val playerNumber = zoneView.findViewById<TextView>(R.id.player_number)
+                            playerName.text = player.name
+                            playerNumber.text = player.jerseyNumber.toString()
+                            if (containsPlayer(index)){
+                                addPlayerToSquad(player.jerseyNumber, index, true)
+                            }
+                            else{
+                                addPlayerToSquad(player.jerseyNumber, index)
+                            }
+                            root.requestLayout()
+                        }
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            }
+
+            substituteButton.setOnClickListener {
+                val players = getBanchedPlayers() ?: emptyList()
+                val playerNames = players.map { "#${it.jerseyNumber} - ${it.name}" }.toTypedArray()
+                var selectedIndex = -1
+
+                MaterialAlertDialogBuilder(context ?: return@setOnClickListener)
+                    .setTitle("Select Player")
+                    .setSingleChoiceItems(playerNames, selectedIndex) { _, which ->
+                        selectedIndex = which
+                    }
+                    .setPositiveButton("OK") { _, _ ->
+                        if (selectedIndex != -1) {
+                            val player = players[selectedIndex]
+                            if (canSubstitute()) {
+                                val dialog =
+                                    AlertDialog.Builder(context ?: return@setPositiveButton)
+                                        .setTitle("Chyba")
+                                        .setMessage("Nemůžete vyměnit hráče")
+                                        .setPositiveButton("OK") { dialog, _ ->
+                                            dialog.dismiss()
+                                            return@setPositiveButton
+                                        }
+                                        .create()
+                                dialog.show()
+                            } else {
+                                substitution(player.jerseyNumber, index)
+                                val playerName = zoneView.findViewById<TextView>(R.id.player_name)
+                                val playerNumber =
+                                    zoneView.findViewById<TextView>(R.id.player_number)
+                                playerName.text = player.name
+                                playerNumber.text = player.jerseyNumber.toString()
+                            }
+                            serveButtonIds.forEach { id ->
+                                val button = zoneView.findViewById<Button>(id)
+                                val newValue = when(id){
+                                    R.id.service_ace -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getServeStats(ServeEnum.ACE) ?: 0}"
+                                    R.id.service_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getServeStats(ServeEnum.ERROR) ?: 0}"
+                                    R.id.service_received -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getServeStats(ServeEnum.RECEIVED) ?: 0}"
+                                    else -> return@forEach
+                                }
+                                button.text = newValue
+                            }
+                            attackButtonIds.forEach { id ->
+                                val button = zoneView.findViewById<Button>(id)
+                                val newValue = when(id){
+                                    R.id.attack_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getAttackStats(AttackEnum.ERROR) ?: 0}"
+                                    R.id.attack_hit -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getAttackStats(AttackEnum.HIT) ?: 0}"
+                                    R.id.attack_received -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getAttackStats(AttackEnum.RECEIVED) ?: 0}"
+                                    R.id.attack_block -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getAttackStats(AttackEnum.BLOCK) ?: 0}"
+                                    else -> return@forEach
+                                }
+                                button.text = newValue
+                            }
+                            blockButtonIds.forEach { id ->
+                                val button = zoneView.findViewById<Button>(id)
+                                val newValue = when(id){
+                                    R.id.block_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getBlockStats(BlockEnum.ERROR) ?: 0}"
+                                    R.id.block_point -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getBlockStats(BlockEnum.POINT) ?: 0}"
+                                    R.id.block_no_point -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getBlockStats(BlockEnum.NO_POINT) ?: 0}"
+                                    else -> return@forEach
+                                }
+                                button.text = newValue
+                            }
+                            receptionButtonIds.forEach { id ->
+                                val button = zoneView.findViewById<Button>(id)
+                                val newValue = when(id){
+                                    R.id.reception_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getReceiveStats(ReceiveServeEnum.ERROR) ?: 0}"
+                                    R.id.reception_ideal -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getReceiveStats(ReceiveServeEnum.IDEAL) ?: 0}"
+                                    R.id.reception_continue -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getReceiveStats(ReceiveServeEnum.CAN_CONTINUE) ?: 0}"
+                                    R.id.reception_no_continue -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getReceiveStats(ReceiveServeEnum.CANT_CONTINUE) ?: 0}"
+                                    else -> return@forEach
+                                }
+                                button.text = newValue
+                            }
+                            root.requestLayout()
+                        }
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            }
         }
     }
 
@@ -120,8 +348,6 @@ class MatchStatisticsViewModel() : ViewModel() {
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)
             ?.addSubstitution(player.jerseyNumber, playerToBench.jerseyNumber)
 
-
-
         updatedPlayersSquad[position] = player
         _playersSquad.value = updatedPlayersSquad
 
@@ -129,8 +355,6 @@ class MatchStatisticsViewModel() : ViewModel() {
         updatedPlayersBench.add(playerToBench!!)
         updatedPlayersBench.remove(player)
         _playersBench.value = updatedPlayersBench
-
-
     }
 
     fun serveButtonsAction(serveType: ServeEnum, playerZone: Int): Int {
@@ -206,8 +430,19 @@ class MatchStatisticsViewModel() : ViewModel() {
         return _scoreboard.value == "0:0" || _scoreboard.value == null
     }
 
+    fun clearSquad(){
+        _playersSquad.value = MutableList(6) { null }
+        _playersBench.value = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.players?.toMutableList()
+    }
+
     fun changeScoreboard(){
         val teamScore = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getActualScore()
         _scoreboard.value = teamScore ?: "Error"
+    }
+
+    fun matchStateChanged(pageView: View){
+        when(setState){
+
+        }
     }
 }
