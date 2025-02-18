@@ -73,7 +73,7 @@ class MatchStatistics : Fragment() {
 
         binding.serveButton.setOnClickListener {
             viewModel.changeServe()
-            binding.serveButton.text = if (viewModel.serve.value == true) "Serve" else "Receive"
+            binding.serveButton.text = if (viewModel.serve.value == true) "Podání" else "Příjem"
         }
 
 

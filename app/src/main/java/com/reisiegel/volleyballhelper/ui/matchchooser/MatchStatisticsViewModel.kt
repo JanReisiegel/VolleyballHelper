@@ -183,6 +183,48 @@ class MatchStatisticsViewModel() : ViewModel() {
                             else{
                                 addPlayerToSquad(player.jerseyNumber, index)
                             }
+                            serveButtonIds.forEach { id ->
+                                val button = zoneView.findViewById<Button>(id)
+                                val newValue = when(id){
+                                    R.id.service_ace -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getServeStats(ServeEnum.ACE) ?: 0}"
+                                    R.id.service_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getServeStats(ServeEnum.ERROR) ?: 0}"
+                                    R.id.service_received -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getServeStats(ServeEnum.RECEIVED) ?: 0}"
+                                    else -> return@forEach
+                                }
+                                button.text = newValue
+                            }
+                            attackButtonIds.forEach { id ->
+                                val button = zoneView.findViewById<Button>(id)
+                                val newValue = when(id){
+                                    R.id.attack_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getAttackStats(AttackEnum.ERROR) ?: 0}"
+                                    R.id.attack_hit -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getAttackStats(AttackEnum.HIT) ?: 0}"
+                                    R.id.attack_received -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getAttackStats(AttackEnum.RECEIVED) ?: 0}"
+                                    R.id.attack_block -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getAttackStats(AttackEnum.BLOCK) ?: 0}"
+                                    else -> return@forEach
+                                }
+                                button.text = newValue
+                            }
+                            blockButtonIds.forEach { id ->
+                                val button = zoneView.findViewById<Button>(id)
+                                val newValue = when(id){
+                                    R.id.block_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getBlockStats(BlockEnum.ERROR) ?: 0}"
+                                    R.id.block_point -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getBlockStats(BlockEnum.POINT) ?: 0}"
+                                    R.id.block_no_point -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getBlockStats(BlockEnum.NO_POINT) ?: 0}"
+                                    else -> return@forEach
+                                }
+                                button.text = newValue
+                            }
+                            receptionButtonIds.forEach { id ->
+                                val button = zoneView.findViewById<Button>(id)
+                                val newValue = when(id){
+                                    R.id.reception_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getReceiveStats(ReceiveServeEnum.ERROR) ?: 0}"
+                                    R.id.reception_ideal -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getReceiveStats(ReceiveServeEnum.IDEAL) ?: 0}"
+                                    R.id.reception_continue -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getReceiveStats(ReceiveServeEnum.CAN_CONTINUE) ?: 0}"
+                                    R.id.reception_no_continue -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(player.jerseyNumber)?.getReceiveStats(ReceiveServeEnum.CANT_CONTINUE) ?: 0}"
+                                    else -> return@forEach
+                                }
+                                button.text = newValue
+                            }
                             root.requestLayout()
                         }
                     }

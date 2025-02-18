@@ -79,7 +79,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_gravity="center"
                     android:visibility="visible"
-                    android:text="Servis"/>
+                    android:text="Podání"/>
 
                 <Button
                     android:id="@+id/end_match"
