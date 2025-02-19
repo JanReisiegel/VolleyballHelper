@@ -74,6 +74,10 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
         score.teamPoint()
     }
 
+    fun opponentPoint(){
+        score.opponentPoint()
+    }
+
     /**
      * Function for set statistic of player attack
      *

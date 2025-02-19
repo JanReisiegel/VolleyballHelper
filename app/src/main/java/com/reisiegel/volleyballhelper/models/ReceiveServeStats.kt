@@ -7,8 +7,6 @@ class ReceiveServeStats {
         get() = field
     private var bads: Int = 0
         get() = field
-    private var toOpponent: Int = 0
-        get() = field
     private var errors: Int = 0
         get() = field
 
@@ -18,7 +16,6 @@ class ReceiveServeStats {
             ReceiveServeEnum.IDEAL -> ideals++
             ReceiveServeEnum.CAN_CONTINUE -> goods++
             ReceiveServeEnum.CANT_CONTINUE -> bads++
-            ReceiveServeEnum.TO_OPPONENT_SIDE -> toOpponent++
         }
     }
 
@@ -32,7 +29,6 @@ class ReceiveServeStats {
             ReceiveServeEnum.IDEAL -> ideals
             ReceiveServeEnum.CAN_CONTINUE -> goods
             ReceiveServeEnum.CANT_CONTINUE -> bads
-            ReceiveServeEnum.TO_OPPONENT_SIDE -> toOpponent
         }
     }
 }

@@ -35,6 +35,7 @@ class MatchStatisticsViewModel() : ViewModel() {
 
     init {
         _serve.value = true
+        _setState.value = SetStates.NONE
         val allPlayers = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.players
         if (allPlayers != null){
             val activeSquad: MutableList<Player?> = MutableList(6) { null }
@@ -99,6 +100,12 @@ class MatchStatisticsViewModel() : ViewModel() {
             serveButtonIds.forEach { id ->
                 val button = zoneView.findViewById<Button>(id)
                 button.setOnClickListener {
+                    if (id == R.id.service_received){
+                        _setState.value = SetStates.ATTACK_BLOCK
+                    }
+                    if (id == R.id.service_error){
+                        _setState.value = SetStates.RECEIVE
+                    }
                     val newValue = when(id){
                         R.id.service_ace -> "${button.text.split(" ")[0]} - ${serveButtonsAction(ServeEnum.ACE, index)}"
                         R.id.service_error -> "${button.text.split(" ")[0]} - ${serveButtonsAction(ServeEnum.ERROR, index)}"
@@ -115,6 +122,12 @@ class MatchStatisticsViewModel() : ViewModel() {
             attackButtonIds.forEach { id ->
                 val button = zoneView.findViewById<Button>(id)
                 button.setOnClickListener {
+                    if(id == R.id.attack_hit){
+                        _setState.value = SetStates.SERVE
+                    }
+                    else if (id == R.id.attack_error){
+                        _setState.value = SetStates.RECEIVE
+                    }
                     val newValue = when(id){
                         R.id.attack_error -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.ERROR, index)}"
                         R.id.attack_hit -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.HIT, index)}"
@@ -131,6 +144,12 @@ class MatchStatisticsViewModel() : ViewModel() {
             blockButtonIds.forEach { id ->
                 val button = zoneView.findViewById<Button>(id)
                 button.setOnClickListener {
+                    if (id == R.id.block_point ){
+                        _setState.value = SetStates.SERVE
+                    }
+                    else if (id == R.id.block_error){
+                        _setState.value = SetStates.RECEIVE
+                    }
                     val newValue = when(id){
                         R.id.block_point -> "${button.text.split(" ")[0]} - ${blockButtonAction(BlockEnum.POINT, index)}"
                         R.id.block_error -> "${button.text.split(" ")[0]} - ${blockButtonAction(BlockEnum.ERROR, index)}"
@@ -147,6 +166,9 @@ class MatchStatisticsViewModel() : ViewModel() {
             receptionButtonIds.forEach { id ->
                 val button = zoneView.findViewById<Button>(id)
                 button.setOnClickListener {
+                    if (id == R.id.reception_ideal || id == R.id.reception_continue || id == R.id.reception_no_continue){
+                        _setState.value = SetStates.ATTACK_BLOCK
+                    }
                     val newValue = when(id){
                         R.id.reception_ideal -> "${button.text.split(" ")[0]} - ${receiveButtonAction(ReceiveServeEnum.IDEAL, index)}"
                         R.id.reception_continue -> "${button.text.split(" ")[0]} - ${receiveButtonAction(ReceiveServeEnum.CAN_CONTINUE, index)}"
@@ -349,6 +371,15 @@ class MatchStatisticsViewModel() : ViewModel() {
             _playersBench.value = updatedPlayersBench
         }
     }
+    fun opponentPoint(){
+        SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.opponentPoint()
+        changeScoreboard()
+    }
+
+    fun opponentError(){
+        SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.opponentError()
+        changeScoreboard()
+    }
 
     fun matchSelected(index: Int?){
         if(index == null){
@@ -480,6 +511,62 @@ class MatchStatisticsViewModel() : ViewModel() {
     fun changeScoreboard(){
         val teamScore = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getActualScore()
         _scoreboard.value = teamScore ?: "Error"
+    }
+
+    fun setSetState(state: SetStates){
+        _setState.value = state
+    }
+
+    fun changeZones(root: View, state: SetStates){
+        zoneIds.forEachIndexed { index, it ->
+            val zoneView = root.findViewById<View>(it)
+            val selectLayout = zoneView.findViewById<LinearLayout>(it).findViewById<LinearLayout>(R.id.select_layout)
+            val serviceLayout = zoneView.findViewById<LinearLayout>(it).findViewById<LinearLayout>(R.id.service_layout)
+            val attackBlockLayout = zoneView.findViewById<LinearLayout>(it).findViewById<LinearLayout>(R.id.attack_block_layout)
+            val receptionLayout = zoneView.findViewById<LinearLayout>(it).findViewById<LinearLayout>(R.id.reception_layout)
+            val substitutionButton = zoneView.findViewById<Button>(R.id.substitute)
+            when(state){
+                SetStates.NONE -> {
+                    substitutionButton.visibility = View.VISIBLE
+                    selectLayout.visibility = View.VISIBLE
+                    serviceLayout.visibility = View.GONE
+                    attackBlockLayout.visibility = View.GONE
+                    receptionLayout.visibility = View.GONE
+                }
+                SetStates.END_SET -> {
+                    substitutionButton.visibility = View.GONE
+                    selectLayout.visibility = View.VISIBLE
+                    serviceLayout.visibility = View.GONE
+                    attackBlockLayout.visibility = View.GONE
+                    receptionLayout.visibility = View.GONE
+                }
+                SetStates.SERVE -> {
+                    if (index == 0)
+                        serviceLayout.visibility = View.VISIBLE
+                    else
+                        serviceLayout.visibility = View.GONE
+                    substitutionButton.visibility = View.VISIBLE
+                    selectLayout.visibility = View.GONE
+                    attackBlockLayout.visibility = View.GONE
+                    receptionLayout.visibility = View.GONE
+                }
+                SetStates.ATTACK_BLOCK -> {
+                    substitutionButton.visibility = View.VISIBLE
+                    selectLayout.visibility = View.GONE
+                    serviceLayout.visibility = View.GONE
+                    attackBlockLayout.visibility = View.VISIBLE
+                    receptionLayout.visibility = View.GONE
+                }
+                SetStates.RECEIVE -> {
+                    substitutionButton.visibility = View.VISIBLE
+                    selectLayout.visibility = View.GONE
+                    serviceLayout.visibility = View.GONE
+                    attackBlockLayout.visibility = View.GONE
+                    receptionLayout.visibility = View.VISIBLE
+                }
+            }
+        }
+
     }
 
     fun matchStateChanged(pageView: View){

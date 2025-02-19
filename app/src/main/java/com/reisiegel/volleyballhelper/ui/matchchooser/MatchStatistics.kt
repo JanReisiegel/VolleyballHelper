@@ -87,45 +87,60 @@ class MatchStatistics : Fragment() {
                 text = "Set nemohl začít"
             }
             else{
-                viewModel.zoneIds.forEachIndexed { index, zoneId ->
-                    val zoneView = root.findViewById<View>(zoneId)
-                    val selectLayout = zoneView.findViewById<LinearLayout>(R.id.select_layout)
-                    val serviceLayout = zoneView.findViewById<LinearLayout>(R.id.service_layout)
-                    val attackBlockLayout = zoneView.findViewById<LinearLayout>(R.id.attack_block_layout)
-                    val receptionLayout = zoneView.findViewById<LinearLayout>(R.id.reception_layout)
-                    val substitutionButton = zoneView.findViewById<Button>(R.id.substitute)
-                    if (viewModel.serve.value == true && index == 0){
-                        serviceLayout.visibility = View.VISIBLE
-                        attackBlockLayout.visibility = View.GONE
-                        receptionLayout.visibility = View.GONE
-                    }
-                    else if (viewModel.serve.value == true){
-                        selectLayout.visibility = View.GONE
-                        serviceLayout.visibility = View.GONE
-                        attackBlockLayout.visibility = View.VISIBLE
-                        receptionLayout.visibility = View.GONE
-                    }
-                    else{
-                        selectLayout.visibility = View.GONE
-                        serviceLayout.visibility = View.GONE
-                        attackBlockLayout.visibility = View.GONE
-                        receptionLayout.visibility = View.VISIBLE
-                    }
-                    selectLayout.visibility = View.GONE
-                    substitutionButton.visibility = View.VISIBLE
-
+                if (viewModel.serve.value == true){
+                    viewModel.setSetState(SetStates.SERVE)
                 }
+                else{
+                    viewModel.setSetState(SetStates.RECEIVE)
+                }
+//                viewModel.zoneIds.forEachIndexed { index, zoneId ->
+//                    val zoneView = root.findViewById<View>(zoneId)
+//                    val selectLayout = zoneView.findViewById<LinearLayout>(R.id.select_layout)
+//                    val serviceLayout = zoneView.findViewById<LinearLayout>(R.id.service_layout)
+//                    val attackBlockLayout = zoneView.findViewById<LinearLayout>(R.id.attack_block_layout)
+//                    val receptionLayout = zoneView.findViewById<LinearLayout>(R.id.reception_layout)
+//                    val substitutionButton = zoneView.findViewById<Button>(R.id.substitute)
+//                    if (viewModel.serve.value == true && index == 0){
+//                        serviceLayout.visibility = View.VISIBLE
+//                        attackBlockLayout.visibility = View.GONE
+//                        receptionLayout.visibility = View.GONE
+//                    }
+//                    else if (viewModel.serve.value == true){
+//                        selectLayout.visibility = View.GONE
+//                        serviceLayout.visibility = View.GONE
+//                        attackBlockLayout.visibility = View.VISIBLE
+//                        receptionLayout.visibility = View.GONE
+//                    }
+//                    else{
+//                        selectLayout.visibility = View.GONE
+//                        serviceLayout.visibility = View.GONE
+//                        attackBlockLayout.visibility = View.GONE
+//                        receptionLayout.visibility = View.VISIBLE
+//                    }
+//                    selectLayout.visibility = View.GONE
+//                    substitutionButton.visibility = View.VISIBLE
+//
+//                }
             }
-            val dialog = AlertDialog.Builder(context ?: return@setOnClickListener)
-                .setTitle("Chyba")
-                .setMessage("Set začal")
-                .setPositiveButton("OK") { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .create()
-            dialog.show()
+//            val dialog = AlertDialog.Builder(context ?: return@setOnClickListener)
+//                .setTitle("Chyba")
+//                .setMessage("Set začal")
+//                .setPositiveButton("OK") { dialog, _ ->
+//                    dialog.dismiss()
+//                }
+//                .create()
+//            dialog.show()
             binding.opponentError.visibility = View.VISIBLE
             binding.serveButton.isEnabled = false
+
+            binding.opponentPoint.setOnClickListener {
+                viewModel.changeZones(root, SetStates.RECEIVE)
+                viewModel.opponentPoint()
+            }
+            binding.opponentError.setOnClickListener {
+                viewModel.changeZones(root, SetStates.SERVE)
+                viewModel.opponentError()
+            }
         }
 
         return root
@@ -156,35 +171,44 @@ class MatchStatistics : Fragment() {
         viewModel.setState.observe(viewLifecycleOwner){
             state -> when(state){
                 SetStates.NONE -> {
-                    binding.serveButton.isEnabled = true
                     binding.startSet.visibility = View.VISIBLE
                     binding.opponentError.visibility = View.GONE
                     binding.endMatch.visibility = View.GONE
+                    binding.serveButton.isEnabled = true
                 }
                 SetStates.SERVE -> {
                     binding.startSet.visibility = View.GONE
                     binding.opponentError.visibility = View.VISIBLE
                     binding.serveButton.isEnabled = false
                     binding.endMatch.visibility = View.GONE
+                    viewModel.changeZones(binding.root.rootView, state)
                 }
                 SetStates.RECEIVE -> {
+                    binding.opponentError.visibility = View.VISIBLE
                     binding.startSet.isEnabled = false
-                    binding.opponentError.isEnabled = false
                     binding.endMatch.visibility = View.GONE
+                    viewModel.changeZones(binding.root.rootView, state)
                 }
                 SetStates.ATTACK_BLOCK -> {
+                    binding.opponentError.visibility = View.VISIBLE
                     binding.startSet.isEnabled = false
-                    binding.opponentError.isEnabled = false
                     binding.endMatch.visibility = View.GONE
+                    viewModel.changeZones(binding.root.rootView, state)
                 }
                 SetStates.END_SET -> {
                     viewModel.clearSquad()
+                    binding.opponentError.visibility = View.VISIBLE
                     binding.startSet.isEnabled = false
-                    binding.opponentError.isEnabled = false
                     binding.endMatch.visibility = View.VISIBLE
+                    viewModel.changeZones(binding.root.rootView, state)
                 }
-
+                else -> {
+                    binding.startSet.isEnabled = true
+                    binding.opponentError.isEnabled = true
+                    binding.endMatch.visibility = View.GONE
+                }
             }
+            binding.root.requestLayout()
         }
     }
 

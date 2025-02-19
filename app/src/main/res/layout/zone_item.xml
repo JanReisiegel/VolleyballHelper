@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/set_to_zone"
@@ -191,7 +191,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -212,12 +212,6 @@
                 android:text="Can Continue" />
 
             <Button
-                android:id="@+id/to_opponent_side"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="To opponent Side" />
-
-            <Button
                 android:id="@+id/reception_no_continue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -228,6 +222,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="error" />
+
         </LinearLayout>
     </LinearLayout>
 
