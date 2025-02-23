@@ -124,9 +124,14 @@ class MatchStatisticsViewModel() : ViewModel() {
                 button.setOnClickListener {
                     if(id == R.id.attack_hit){
                         _setState.value = SetStates.SERVE
+                        if (serve.value?.not()!!){
+                            rotateFormation(root)
+                        }
+                        _serve.value = true
                     }
                     else if (id == R.id.attack_error){
                         _setState.value = SetStates.RECEIVE
+                        _serve.value = false
                     }
                     val newValue = when(id){
                         R.id.attack_error -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.ERROR, index)}"
@@ -146,9 +151,14 @@ class MatchStatisticsViewModel() : ViewModel() {
                 button.setOnClickListener {
                     if (id == R.id.block_point ){
                         _setState.value = SetStates.SERVE
+                        if (serve.value?.not()!!){
+                            rotateFormation(root)
+                        }
+                        _serve.value = true
                     }
                     else if (id == R.id.block_error){
                         _setState.value = SetStates.RECEIVE
+                        _serve.value = false
                     }
                     val newValue = when(id){
                         R.id.block_point -> "${button.text.split(" ")[0]} - ${blockButtonAction(BlockEnum.POINT, index)}"
@@ -573,5 +583,78 @@ class MatchStatisticsViewModel() : ViewModel() {
         when(setState){
 
         }
+    }
+
+    /**
+     * Rotate formation (1->6,2->1,3->2,4->3,5->4,6->5)
+     */
+    fun rotateFormation(root: View){
+        val updatedPlayersSquad = _playersSquad.value ?: mutableListOf()
+        val player = updatedPlayersSquad[0]
+        //TODO: Nefunguje rotace
+        for (i in 4 downTo 0){
+            updatedPlayersSquad[i] = updatedPlayersSquad[i+1]
+        }
+        updatedPlayersSquad[5] = player
+        _playersSquad.value = updatedPlayersSquad
+
+        zoneIds.forEachIndexed { index, i ->
+            val zoneView = root.findViewById<View>(i)
+            val playerName = zoneView.findViewById<TextView>(R.id.player_name)
+            val playerNumber = zoneView.findViewById<TextView>(R.id.player_number)
+            playerName.text = updatedPlayersSquad[index]?.name ?: "Zóna ${index + 1}"
+            playerNumber.text = updatedPlayersSquad[index]?.jerseyNumber?.toString() ?: ""
+            val serveButtonIds = listOf(R.id.service_ace,R.id.service_error,R.id.service_received)
+            val attackButtonIds = listOf(R.id.attack_error,R.id.attack_hit,R.id.attack_received,R.id.attack_block)
+            val blockButtonIds = listOf(R.id.block_point,R.id.block_error,R.id.block_no_point)
+            val receptionButtonIds = listOf(R.id.reception_ideal,R.id.reception_continue,R.id.reception_error,R.id.reception_no_continue)
+
+            serveButtonIds.forEach { id ->
+                val button = zoneView.findViewById<Button>(id)
+                val newValue = when(id){
+                    R.id.service_ace -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getServeStats(ServeEnum.ACE) ?: 0}"
+                    R.id.service_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getServeStats(ServeEnum.ERROR) ?: 0}"
+                    R.id.service_received -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getServeStats(ServeEnum.RECEIVED) ?: 0}"
+                    else -> return@forEach
+                }
+                button.text = newValue
+            }
+
+            attackButtonIds.forEach { id ->
+                val button = zoneView.findViewById<Button>(id)
+                val newValue = when(id){
+                    R.id.attack_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getAttackStats(AttackEnum.ERROR) ?: 0}"
+                    R.id.attack_hit -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getAttackStats(AttackEnum.HIT) ?: 0}"
+                    R.id.attack_received -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getAttackStats(AttackEnum.RECEIVED) ?: 0}"
+                    R.id.attack_block -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getAttackStats(AttackEnum.BLOCK) ?: 0}"
+                    else -> return@forEach
+                }
+                button.text = newValue
+            }
+
+            blockButtonIds.forEach { id ->
+                val button = zoneView.findViewById<Button>(id)
+                val newValue = when(id){
+                    R.id.block_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getBlockStats(BlockEnum.ERROR) ?: 0}"
+                    R.id.block_point -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getBlockStats(BlockEnum.POINT) ?: 0}"
+                    R.id.block_no_point -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getBlockStats(BlockEnum.NO_POINT) ?: 0}"
+                    else -> return@forEach
+                }
+                button.text = newValue
+            }
+
+            receptionButtonIds.forEach { id ->
+                val button = zoneView.findViewById<Button>(id)
+                val newValue = when(id){
+                    R.id.reception_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getReceiveStats(ReceiveServeEnum.ERROR) ?: 0}"
+                    R.id.reception_ideal -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getReceiveStats(ReceiveServeEnum.IDEAL) ?: 0}"
+                    R.id.reception_continue -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getReceiveStats(ReceiveServeEnum.CAN_CONTINUE) ?: 0}"
+                    R.id.reception_no_continue -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getReceiveStats(ReceiveServeEnum.CANT_CONTINUE) ?: 0}"
+                    else -> return@forEach
+                }
+                button.text = newValue
+            }
+        }
+        root.requestLayout()
     }
 }
