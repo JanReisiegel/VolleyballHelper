@@ -589,10 +589,9 @@ class MatchStatisticsViewModel() : ViewModel() {
      * Rotate formation (1->6,2->1,3->2,4->3,5->4,6->5)
      */
     fun rotateFormation(root: View){
-        val updatedPlayersSquad = _playersSquad.value ?: mutableListOf()
+        val updatedPlayersSquad = _playersSquad.value ?: mutableListOf<Player?>(null, null, null, null, null, null)
         val player = updatedPlayersSquad[0]
-        //TODO: Nefunguje rotace
-        for (i in 4 downTo 0){
+        for (i in 0..4){
             updatedPlayersSquad[i] = updatedPlayersSquad[i+1]
         }
         updatedPlayersSquad[5] = player
