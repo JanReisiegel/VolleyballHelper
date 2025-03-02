@@ -120,6 +120,13 @@ class MatchStatistics : Fragment() {
             }
         }
 
+        binding.backToList.setOnClickListener {
+            viewModel.matchSelected(null)
+            matchListLayout.visibility = View.VISIBLE
+            statisticsLayout.visibility = View.INVISIBLE
+            root.requestLayout()
+        }
+
 
         (requireActivity() as AppCompatActivity).supportActionBar?.title = SelectedTournament.selectedTournament?.name
 

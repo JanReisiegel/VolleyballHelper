@@ -402,8 +402,8 @@ class MatchStatisticsViewModel() : ViewModel() {
 
     fun matchSelected(index: Int?){
         if(index == null){
-
             SelectedTournament.selectedMatchIndex = null
+            _pageTitle.value = SelectedTournament.selectedTournament?.name
             return
         }
         SelectedTournament.selectedMatchIndex = index
@@ -427,7 +427,7 @@ class MatchStatisticsViewModel() : ViewModel() {
         }
         _setScore.value = SelectedTournament.selectedTournament?.getMatch(index)?.getActualSetScore() ?: "0:0"
         _scoreboard.value = SelectedTournament.selectedTournament?.getMatch(index)?.getActualScore() ?: "0:0"
-        _pageTitle.value = SelectedTournament.selectedTournament?.getMatch(index)?.opponentName
+        _pageTitle.value = SelectedTournament.selectedTournament?.name + " × " + SelectedTournament.selectedTournament?.getMatch(index)?.opponentName
     }
 
     private fun containsPlayer(index: Int): Boolean {

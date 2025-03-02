@@ -123,6 +123,7 @@
                     android:layout_weight="1" />
 
                 <Button
+                    android:id="@+id/back_to_list"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_width="match_parent"
