@@ -63,4 +63,12 @@ class MatchScore(private var teamSets: Int = 0, private var opponentSets: Int = 
         return opponentPoints[setNumber - 1]
     }
 
+    fun getOpponentSetScore(): Int {
+        return opponentSets
+    }
+
+    fun getTeamSetScore(): Int {
+        return teamSets
+    }
+
 }

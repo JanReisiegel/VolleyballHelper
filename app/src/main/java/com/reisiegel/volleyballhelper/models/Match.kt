@@ -40,6 +40,13 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
         players.add(player)
     }
 
+    fun changeStartServe(value: Boolean){
+        val setNumber = score.getNumberOfSet()
+        if (setNumber != 3 && setNumber != 5){
+            serveStart = value
+        }
+    }
+
     /**
      *
      */
@@ -159,6 +166,12 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
         return "$teamScore:$opponentScore"
     }
 
+    fun getActualSetScore(): String {
+        val teamSetScore = score.getTeamSetScore()
+        val opponentSetScore = score.getOpponentSetScore()
+        return "$teamSetScore:$opponentSetScore"
+    }
+
     /**
      * Function for remembering rotations. This will be use while the application drop down
      */
@@ -172,5 +185,12 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
         val playerOut: Player = getPlayer(playerOutNumber) ?: return
         val substitution = Substitution(playerOut,playerIn,score.getNumberOfSet(),score.getTeamSetScore(score.getNumberOfSet()),score.getOpponentScore(score.getNumberOfSet()))
         substitutions.add(substitution)
+    }
+
+    fun getSetStartService(): Boolean {
+        if (score.getNumberOfSet() % 2 != 0) {
+            return !serveStart
+        }
+        return serveStart
     }
 }

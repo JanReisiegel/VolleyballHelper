@@ -13,13 +13,14 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.reisiegel.volleyballhelper.R
 import com.reisiegel.volleyballhelper.models.SelectedTournament
 import java.io.File
 import java.util.Calendar
 
-class MatchItem(private var opponent: String = "", private var startTime: String = "") {
+class MatchItem(private var opponent: String = "", private var startTime: String = "", private var finished: Boolean) {
     fun getOpponent(): String {
         return opponent
     }
@@ -39,6 +40,14 @@ class MatchItem(private var opponent: String = "", private var startTime: String
 
     fun setStartTime(startTime: String) {
         this.startTime = startTime
+    }
+
+    fun isFinished(): Boolean {
+        return finished
+    }
+
+    fun setFinished(finished: Boolean) {
+        this.finished = finished
     }
 }
 
@@ -62,6 +71,21 @@ class MatchAdapter(
         val item = items[position]
         holder.opponent.text = item.getOpponent()
         holder.startTime.text = item.getStartTime()
+        if (item.isFinished()) {
+            val redColor = ContextCompat.getColor(context!!, R.color.red)
+            holder.opponent.setTextColor(redColor)
+            holder.startTime.setTextColor(redColor)
+            val dialog = AlertDialog.Builder(context ?: return)
+                .setTitle("Zápas je ukončen")
+                .setMessage("Zápas proti ${item.getOpponent()} již byl ukončen. Není možné ho opět spustit.")
+                .setNeutralButton("OK") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .create()
+            return holder.matchLine.setOnClickListener {
+                dialog.show()
+            }
+        }
         if (context != null) {
             holder.matchLine.setOnLongClickListener {
                 val dialogView =

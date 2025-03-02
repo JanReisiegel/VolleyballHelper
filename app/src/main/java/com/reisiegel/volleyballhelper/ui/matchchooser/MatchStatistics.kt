@@ -1,6 +1,7 @@
 package com.reisiegel.volleyballhelper.ui.matchchooser
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,7 +10,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toolbar
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -68,11 +72,12 @@ class MatchStatistics : Fragment() {
         val matchList = SelectedTournament.selectedTournament?.getmatchesArrayList()
 
         matchList?.forEach {
-            match -> viewModel.addMatchItem(MatchItem(match.opponentName, match.startTime))
+            match -> viewModel.addMatchItem(MatchItem(match.opponentName, match.startTime, match.isFinished()))
         }
 
         binding.serveButton.setOnClickListener {
             viewModel.changeServe()
+            SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex ?: return@setOnClickListener)?.changeStartServe(viewModel.serve.value ?: return@setOnClickListener)
             binding.serveButton.text = if (viewModel.serve.value == true) "Podání" else "Příjem"
         }
 
@@ -82,9 +87,17 @@ class MatchStatistics : Fragment() {
 
         binding.startSet.setOnClickListener {
             val canStart = viewModel.canStartSet()
-            var text = "Set Začal"
             if (!canStart) {
-                text = "Set nemohl začít"
+                val text = "Set nemohl začít"
+                val dialog = AlertDialog.Builder(context ?: return@setOnClickListener)
+                    .setTitle("Chyba")
+                    .setMessage(text)
+                    .setPositiveButton("OK") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .create()
+                dialog.show()
+                return@setOnClickListener
             }
             else{
                 if (viewModel.serve.value == true){
@@ -93,43 +106,7 @@ class MatchStatistics : Fragment() {
                 else{
                     viewModel.setSetState(SetStates.RECEIVE)
                 }
-//                viewModel.zoneIds.forEachIndexed { index, zoneId ->
-//                    val zoneView = root.findViewById<View>(zoneId)
-//                    val selectLayout = zoneView.findViewById<LinearLayout>(R.id.select_layout)
-//                    val serviceLayout = zoneView.findViewById<LinearLayout>(R.id.service_layout)
-//                    val attackBlockLayout = zoneView.findViewById<LinearLayout>(R.id.attack_block_layout)
-//                    val receptionLayout = zoneView.findViewById<LinearLayout>(R.id.reception_layout)
-//                    val substitutionButton = zoneView.findViewById<Button>(R.id.substitute)
-//                    if (viewModel.serve.value == true && index == 0){
-//                        serviceLayout.visibility = View.VISIBLE
-//                        attackBlockLayout.visibility = View.GONE
-//                        receptionLayout.visibility = View.GONE
-//                    }
-//                    else if (viewModel.serve.value == true){
-//                        selectLayout.visibility = View.GONE
-//                        serviceLayout.visibility = View.GONE
-//                        attackBlockLayout.visibility = View.VISIBLE
-//                        receptionLayout.visibility = View.GONE
-//                    }
-//                    else{
-//                        selectLayout.visibility = View.GONE
-//                        serviceLayout.visibility = View.GONE
-//                        attackBlockLayout.visibility = View.GONE
-//                        receptionLayout.visibility = View.VISIBLE
-//                    }
-//                    selectLayout.visibility = View.GONE
-//                    substitutionButton.visibility = View.VISIBLE
-//
-//                }
             }
-//            val dialog = AlertDialog.Builder(context ?: return@setOnClickListener)
-//                .setTitle("Chyba")
-//                .setMessage("Set začal")
-//                .setPositiveButton("OK") { dialog, _ ->
-//                    dialog.dismiss()
-//                }
-//                .create()
-//            dialog.show()
             binding.opponentError.visibility = View.VISIBLE
             binding.serveButton.isEnabled = false
 
@@ -142,6 +119,9 @@ class MatchStatistics : Fragment() {
                 viewModel.opponentError()
             }
         }
+
+
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = SelectedTournament.selectedTournament?.name
 
         return root
     }
@@ -160,12 +140,28 @@ class MatchStatistics : Fragment() {
         recycleMatchesView.adapter = matchesAdapter
 
         viewModel.matchList.observe(viewLifecycleOwner){
-            matches -> matchesAdapter?.updateItems(matches)
-                matchesAdapter?.notifyDataSetChanged()
+            matches -> matchesAdapter.updateItems(matches)
+            matchesAdapter.notifyDataSetChanged()
+        }
+        binding.endMatch.setOnClickListener {
+            viewModel.endMatch(binding)
+            val newMatchesAdapter = MatchAdapter(viewModel.matchList.value?.toMutableList() ?: mutableListOf(), requireContext(), view) {
+                viewModel.matchSelected(it)
+            }
+            recycleMatchesView.adapter = newMatchesAdapter
+
+            viewModel.matchList.observe(viewLifecycleOwner){
+                matches -> newMatchesAdapter.updateItems(matches)
+                newMatchesAdapter.notifyDataSetChanged()
+            }
         }
 
         viewModel.scoreboard.observe(viewLifecycleOwner){
-            scoreboard -> binding.matchScore.text = scoreboard
+            scoreboard -> binding.setScore.text = scoreboard
+        }
+
+        viewModel.setScore.observe(viewLifecycleOwner){
+            setScore -> binding.matchScore.text = setScore
         }
 
         viewModel.setState.observe(viewLifecycleOwner){
@@ -175,6 +171,7 @@ class MatchStatistics : Fragment() {
                     binding.opponentError.visibility = View.GONE
                     binding.endMatch.visibility = View.GONE
                     binding.serveButton.isEnabled = true
+                    binding.opponentPoint.visibility = View.GONE
                 }
                 SetStates.SERVE -> {
                     binding.startSet.visibility = View.GONE
@@ -182,33 +179,49 @@ class MatchStatistics : Fragment() {
                     binding.serveButton.isEnabled = false
                     binding.endMatch.visibility = View.GONE
                     viewModel.changeZones(binding.root.rootView, state)
+                    binding.opponentPoint.visibility = View.VISIBLE
                 }
                 SetStates.RECEIVE -> {
                     binding.opponentError.visibility = View.VISIBLE
-                    binding.startSet.isEnabled = false
                     binding.endMatch.visibility = View.GONE
+                    binding.startSet.visibility = View.GONE
+                    binding.serveButton.isEnabled = false
                     viewModel.changeZones(binding.root.rootView, state)
+                    binding.opponentPoint.visibility = View.VISIBLE
                 }
                 SetStates.ATTACK_BLOCK -> {
                     binding.opponentError.visibility = View.VISIBLE
-                    binding.startSet.isEnabled = false
                     binding.endMatch.visibility = View.GONE
+                    binding.serveButton.isEnabled = false
                     viewModel.changeZones(binding.root.rootView, state)
+                    binding.opponentPoint.visibility = View.VISIBLE
                 }
                 SetStates.END_SET -> {
                     viewModel.clearSquad()
-                    binding.opponentError.visibility = View.VISIBLE
-                    binding.startSet.isEnabled = false
+                    binding.opponentError.visibility = View.GONE
+                    binding.startSet.visibility = View.VISIBLE
+                    binding.serveButton.isEnabled = false
                     binding.endMatch.visibility = View.VISIBLE
                     viewModel.changeZones(binding.root.rootView, state)
+                    binding.opponentPoint.visibility = View.GONE
+                    viewModel.changeServeStartSet()
                 }
                 else -> {
                     binding.startSet.isEnabled = true
                     binding.opponentError.isEnabled = true
                     binding.endMatch.visibility = View.GONE
+                    binding.opponentPoint.visibility = View.GONE
                 }
             }
             binding.root.requestLayout()
+        }
+
+        viewModel.serve.observe(viewLifecycleOwner){
+            serve -> binding.serveButton.text = if (serve) "Podání" else "Příjem"
+        }
+
+        viewModel.pageTitle.observe(viewLifecycleOwner){
+            title -> (requireActivity() as AppCompatActivity).supportActionBar?.title = title
         }
     }
 

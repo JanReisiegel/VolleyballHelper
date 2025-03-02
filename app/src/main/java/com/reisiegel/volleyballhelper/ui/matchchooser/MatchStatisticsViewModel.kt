@@ -5,11 +5,13 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.reisiegel.volleyballhelper.R
+import com.reisiegel.volleyballhelper.databinding.FragmentMatchStatisticsBinding
 import com.reisiegel.volleyballhelper.models.AttackEnum
 import com.reisiegel.volleyballhelper.models.BlockEnum
 import com.reisiegel.volleyballhelper.models.Player
@@ -25,17 +27,22 @@ class MatchStatisticsViewModel() : ViewModel() {
     private val _serve = MutableLiveData<Boolean>()
     private val _scoreboard = MutableLiveData<String>()
     private val _setState = MutableLiveData<SetStates>()
+    private val _setScore = MutableLiveData<String>()
+    private val _pageTitle = MutableLiveData<String>()
 
     val matchList: LiveData<MutableList<MatchItem>> = _matchList
-    val playersSquad: LiveData<MutableList<Player?>> = _playersSquad
+    private val playersSquad: LiveData<MutableList<Player?>> = _playersSquad
     val playersBench: LiveData<MutableList<Player>> = _playersBench
     val serve: LiveData<Boolean> = _serve
     val scoreboard: LiveData<String> = _scoreboard
     val setState: LiveData<SetStates> = _setState
+    val setScore: LiveData<String> = _setScore
+    val pageTitle: LiveData<String> = _pageTitle
 
     init {
         _serve.value = true
         _setState.value = SetStates.NONE
+        _setScore.value = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getActualSetScore() ?: "0:0"
         val allPlayers = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.players
         if (allPlayers != null){
             val activeSquad: MutableList<Player?> = MutableList(6) { null }
@@ -193,7 +200,7 @@ class MatchStatisticsViewModel() : ViewModel() {
             }
 
             setPlayer.setOnClickListener {
-                val players = getBanchedPlayers() ?: emptyList()
+                val players = getBenchedPlayers() ?: emptyList()
                 val playerNames = players.map { "#${it.jerseyNumber} - ${it.name}" }.toTypedArray()
                 var selectedIndex = -1
 
@@ -265,7 +272,7 @@ class MatchStatisticsViewModel() : ViewModel() {
             }
 
             substituteButton.setOnClickListener {
-                val players = getBanchedPlayers() ?: emptyList()
+                val players = getBenchedPlayers() ?: emptyList()
                 val playerNames = players.map { "#${it.jerseyNumber} - ${it.name}" }.toTypedArray()
                 var selectedIndex = -1
 
@@ -347,17 +354,18 @@ class MatchStatisticsViewModel() : ViewModel() {
         }
     }
 
-    fun getBanchedPlayers(): MutableList<Player>? {
+    private fun getBenchedPlayers(): MutableList<Player>? {
         return _playersBench.value
     }
 
     fun addMatchItem(match: MatchItem){
         val updatedMatchList = _matchList.value ?: mutableListOf()
+        if (updatedMatchList.contains(match)) return
         updatedMatchList.add(match)
         _matchList.value = updatedMatchList
     }
 
-    fun addPlayerToSquad(jerseyNumber: Int, position: Int, change: Boolean = false){
+    private fun addPlayerToSquad(jerseyNumber: Int, position: Int, change: Boolean = false){
         val player = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(jerseyNumber)
         if (player == null) return
         if (!change) {
@@ -381,6 +389,7 @@ class MatchStatisticsViewModel() : ViewModel() {
             _playersBench.value = updatedPlayersBench
         }
     }
+
     fun opponentPoint(){
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.opponentPoint()
         changeScoreboard()
@@ -416,13 +425,16 @@ class MatchStatisticsViewModel() : ViewModel() {
             _playersSquad.value = activeSquad
             _playersBench.value = bench
         }
+        _setScore.value = SelectedTournament.selectedTournament?.getMatch(index)?.getActualSetScore() ?: "0:0"
+        _scoreboard.value = SelectedTournament.selectedTournament?.getMatch(index)?.getActualScore() ?: "0:0"
+        _pageTitle.value = SelectedTournament.selectedTournament?.getMatch(index)?.opponentName
     }
 
-    fun containsPlayer(index: Int): Boolean {
+    private fun containsPlayer(index: Int): Boolean {
         return _playersSquad.value?.get(index) != null
     }
 
-    fun substitution(jerseyNumber: Int, position: Int){
+    private fun substitution(jerseyNumber: Int, position: Int){
         val player = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(jerseyNumber)
         if (player == null) return
         val updatedPlayersSquad = _playersSquad.value ?: mutableListOf()
@@ -440,7 +452,7 @@ class MatchStatisticsViewModel() : ViewModel() {
         _playersBench.value = updatedPlayersBench
     }
 
-    fun serveButtonsAction(serveType: ServeEnum, playerZone: Int): Int {
+    private fun serveButtonsAction(serveType: ServeEnum, playerZone: Int): Int {
 
         val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return 0
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.playerServe(playerNumber, serveType)
@@ -455,7 +467,7 @@ class MatchStatisticsViewModel() : ViewModel() {
         return result
     }
 
-    fun attackButtonAction(attackType: AttackEnum, playerZone: Int): Int {
+    private fun attackButtonAction(attackType: AttackEnum, playerZone: Int): Int {
         val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return 0
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.playerAttack(playerNumber, attackType)
         val result = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(playerNumber)?.getAttackStats(attackType) ?: 0
@@ -464,16 +476,18 @@ class MatchStatisticsViewModel() : ViewModel() {
                 changeServe()
             }
             changeScoreboard()
+            _setState.value = SetStates.RECEIVE
         } else if(attackType == AttackEnum.HIT){
             if (serve.value == false){
                 changeServe()
             }
             changeScoreboard()
+            _setState.value = SetStates.SERVE
         }
         return result
     }
 
-    fun blockButtonAction(blockType: BlockEnum, playerZone: Int): Int {
+    private fun blockButtonAction(blockType: BlockEnum, playerZone: Int): Int {
 
         val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return 0
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.playerBlock(playerNumber, blockType)
@@ -492,7 +506,7 @@ class MatchStatisticsViewModel() : ViewModel() {
         return result
     }
 
-    fun receiveButtonAction(receiveType: ReceiveServeEnum, playerZone: Int): Int {
+    private fun receiveButtonAction(receiveType: ReceiveServeEnum, playerZone: Int): Int {
         val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return 0
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.playerReceivedServe(playerNumber, receiveType)
         val result = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(playerNumber)?.getReceiveStats(receiveType) ?: 0
@@ -509,7 +523,8 @@ class MatchStatisticsViewModel() : ViewModel() {
     fun canStartSet(): Boolean {
         return _playersSquad.value?.contains(null) != true
     }
-    fun canSubstitute(): Boolean {
+
+    private fun canSubstitute(): Boolean {
         return _scoreboard.value == "0:0" || _scoreboard.value == null
     }
 
@@ -518,8 +533,19 @@ class MatchStatisticsViewModel() : ViewModel() {
         _playersBench.value = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.players?.toMutableList()
     }
 
-    fun changeScoreboard(){
+    fun changeServeStartSet(){
+        val serve = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getSetStartService()
+        _serve.value = serve ?: true
+    }
+
+    private fun changeScoreboard(){
         val teamScore = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getActualScore()
+        val newSetScore: String? = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getActualSetScore()
+        if (newSetScore != setScore.value){
+            _setState.value = SetStates.END_SET
+            _setScore.value = newSetScore ?: "Error"
+            clearSquad()
+        }
         _scoreboard.value = teamScore ?: "Error"
     }
 
@@ -535,6 +561,8 @@ class MatchStatisticsViewModel() : ViewModel() {
             val attackBlockLayout = zoneView.findViewById<LinearLayout>(it).findViewById<LinearLayout>(R.id.attack_block_layout)
             val receptionLayout = zoneView.findViewById<LinearLayout>(it).findViewById<LinearLayout>(R.id.reception_layout)
             val substitutionButton = zoneView.findViewById<Button>(R.id.substitute)
+            val playerName = zoneView.findViewById<TextView>(R.id.player_name)
+            val playerNumber = zoneView.findViewById<TextView>(R.id.player_number)
             when(state){
                 SetStates.NONE -> {
                     substitutionButton.visibility = View.VISIBLE
@@ -542,6 +570,8 @@ class MatchStatisticsViewModel() : ViewModel() {
                     serviceLayout.visibility = View.GONE
                     attackBlockLayout.visibility = View.GONE
                     receptionLayout.visibility = View.GONE
+                    playerName.text = "Zóna ${index + 1}"
+                    playerNumber.text = ""
                 }
                 SetStates.END_SET -> {
                     substitutionButton.visibility = View.GONE
@@ -549,6 +579,9 @@ class MatchStatisticsViewModel() : ViewModel() {
                     serviceLayout.visibility = View.GONE
                     attackBlockLayout.visibility = View.GONE
                     receptionLayout.visibility = View.GONE
+                    playerName.text = "Zóna ${index + 1}"
+                    playerNumber.text = ""
+                    //_serve.value = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getSetStartService()
                 }
                 SetStates.SERVE -> {
                     if (index == 0)
@@ -566,6 +599,7 @@ class MatchStatisticsViewModel() : ViewModel() {
                     serviceLayout.visibility = View.GONE
                     attackBlockLayout.visibility = View.VISIBLE
                     receptionLayout.visibility = View.GONE
+
                 }
                 SetStates.RECEIVE -> {
                     substitutionButton.visibility = View.VISIBLE
@@ -577,12 +611,6 @@ class MatchStatisticsViewModel() : ViewModel() {
             }
         }
 
-    }
-
-    fun matchStateChanged(pageView: View){
-        when(setState){
-
-        }
     }
 
     /**
@@ -655,5 +683,20 @@ class MatchStatisticsViewModel() : ViewModel() {
             }
         }
         root.requestLayout()
+    }
+
+    fun endMatch(binding: FragmentMatchStatisticsBinding ){
+        _matchList.value?.get(SelectedTournament.selectedMatchIndex!!)?.setFinished(true)
+
+        SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.finishMatch()
+        SelectedTournament.selectedMatchIndex = null
+
+        _pageTitle.value = SelectedTournament.selectedTournament?.name
+
+        binding.matchStatistics.visibility = View.GONE
+        binding.matchList.visibility = View.VISIBLE
+        binding.root.requestLayout()
+
+        //TODO: Uložení do souboru
     }
 }
