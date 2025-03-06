@@ -18,5 +18,10 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="Match Statistics"
             tools:ignore="HardcodedText" />
+        <item
+            android:id="@+id/nav_export"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Export Statistics"
+            tools:ignore="HardcodedText" />
     </group>
 </menu>

@@ -37,6 +37,13 @@
             android:id="@+id/to_home"
             app:destination="@+id/nav_home" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_export"
+        android:name="com.reisiegel.volleyballhelper.ui.export.ExportStatistics"
+        android:label="Export"
+        tools:layout="@layout/fragment_export_statistics">
+
+    </fragment>
 
 
 </navigation>
