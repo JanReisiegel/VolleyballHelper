@@ -1,5 +1,7 @@
 package com.reisiegel.volleyballhelper.models
 
+import android.util.Log
+
 class Match(var opponentName: String, var players: ArrayList<Player>, var startTime: String) {
     private var substitutions: ArrayList<Substitution>
     private var squads: ArrayList<ArrayList<Int>> = ArrayList<ArrayList<Int>>() // list of players in each squad
@@ -18,8 +20,9 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
     }
 
     fun getActiveSquad(): ArrayList<Int> {
-        if(squads == null){
-            return ArrayList<Int>()
+        Log.d("Match", "getActiveSquad: ${squads.size}")
+        if(squads.size == 0){
+            squads.add(ArrayList<Int>())
         }
         return squads[squads.size - 1]
     }

@@ -1,6 +1,7 @@
 package com.reisiegel.volleyballhelper.models
 
 import android.content.Context
+import android.util.Log
 import com.google.gson.Gson
 import java.io.File
 
@@ -99,7 +100,16 @@ class Tournament private constructor(var name: String, private var matches: Arra
      * @param matchIndex is index of selected match
      */
     fun getMatch(matchIndex: Int): Match{
-        return matches[matchIndex]
+        //Log.d("Tournament", "Počet Zápasu (Tournament class): ${matches.size}")
+        lateinit var result: Match
+        try {
+            result = matches[matchIndex]
+        } catch (e: Exception){
+            //Log.e("Tournament", "Chyba při načítání zápasu")
+            e.printStackTrace()
+        }
+        //Log.d("Tournament", "Počet hráčů (Tournament class): ${result.players.size}")
+        return result
     }
 
     /**

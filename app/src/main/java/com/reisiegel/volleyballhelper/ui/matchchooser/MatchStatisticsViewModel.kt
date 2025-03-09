@@ -1,5 +1,6 @@
 package com.reisiegel.volleyballhelper.ui.matchchooser
 
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -411,17 +412,24 @@ class MatchStatisticsViewModel() : ViewModel() {
         if (allPlayers != null){
             val activeSquad: MutableList<Player?> = MutableList(6) { null }
             val bench: MutableList<Player> = mutableListOf()
+            var exceptionErrors: Int = 0
             allPlayers.forEach(){
-                if (SelectedTournament.selectedTournament?.getMatch(index)?.getActiveSquad()
-                        ?.contains(it.jerseyNumber) == true){
-                    val position = SelectedTournament.selectedTournament?.getMatch(index)?.getActiveSquad()
-                        ?.indexOf(it.jerseyNumber)
-                    activeSquad[position!!] = it
-                }
-                else{
-                    bench.add(it)
+                try{
+                    //Log.d("DEBUG", "Počet zápasů:" + SelectedTournament.selectedTournament?.getmatchesArrayList()?.size)
+                    if (SelectedTournament.selectedTournament?.getMatch(index)?.getActiveSquad()
+                            ?.contains(it.jerseyNumber) == true){
+                        val position = SelectedTournament.selectedTournament?.getMatch(index)?.getActiveSquad()
+                            ?.indexOf(it.jerseyNumber)
+                        activeSquad[position!!] = it
+                    }
+                    else{
+                        bench.add(it)
+                    }
+                } catch (e: Exception){
+                   exceptionErrors++
                 }
             }
+            Log.e("ExceptionErrors", exceptionErrors.toString())
             _playersSquad.value = activeSquad
             _playersBench.value = bench
         }
