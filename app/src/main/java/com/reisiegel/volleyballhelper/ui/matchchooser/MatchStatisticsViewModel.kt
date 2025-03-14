@@ -427,7 +427,7 @@ class MatchStatisticsViewModel() : ViewModel() {
                    exceptionErrors++
                 }
             }
-            if (exceptionErrors == 0) {
+            if (activeSquad.size != 0) {
                 zoneIds.forEachIndexed { index, zoneId ->
                     val player = activeSquad[index]
                     val zoneView = root.findViewById<View>(zoneId)

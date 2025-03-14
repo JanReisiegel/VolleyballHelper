@@ -134,7 +134,7 @@ class MatchStatistics : Fragment() {
         binding.endMatch.setOnClickListener {
             viewModel.endMatch(binding)
             val newMatchesAdapter = MatchAdapter(viewModel.matchList.value?.toMutableList() ?: mutableListOf(), requireContext(), view) {
-                viewModel.matchSelected(it)
+                viewModel.matchSelected(it, binding.root.rootView)
             }
             recycleMatchesView.adapter = newMatchesAdapter
 
@@ -159,7 +159,7 @@ class MatchStatistics : Fragment() {
 //                        viewModel.setSetState(SetStates.NONE)
                         viewModel.endMatch(binding)
                         val newMatchesAdapter = MatchAdapter(viewModel.matchList.value?.toMutableList() ?: mutableListOf(), requireContext(), view) {
-                            viewModel.matchSelected(it)
+                            viewModel.matchSelected(it, binding.root.rootView)
                         }
                         recycleMatchesView.adapter = newMatchesAdapter
 
@@ -179,7 +179,7 @@ class MatchStatistics : Fragment() {
         }
 
         val matchesAdapter = MatchAdapter(viewModel.matchList.value?.toMutableList() ?: mutableListOf(), requireContext(), view) {
-            viewModel.matchSelected(it)
+            viewModel.matchSelected(it, binding.root.rootView)
         }
         recycleMatchesView.adapter = matchesAdapter
 
