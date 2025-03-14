@@ -45,7 +45,7 @@ class MatchStatistics : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(this).get(MatchStatisticsViewModel::class.java)
+        viewModel = ViewModelProvider(this)[MatchStatisticsViewModel::class.java]
         _binding = FragmentMatchStatisticsBinding.inflate(inflater, container, false)
         val root: View = binding.root
         SelectedTournament.selectedTournament = Tournament.loadFromJson(File(context?.filesDir, "Statistics/${SelectedTournament.filePath}"))
@@ -100,12 +100,7 @@ class MatchStatistics : Fragment() {
                 return@setOnClickListener
             }
             else{
-                if (viewModel.serve.value == true){
-                    viewModel.setSetState(SetStates.SERVE)
-                }
-                else{
-                    viewModel.setSetState(SetStates.RECEIVE)
-                }
+                viewModel.startSet()
             }
             binding.opponentError.visibility = View.VISIBLE
             binding.serveButton.isEnabled = false
@@ -120,12 +115,7 @@ class MatchStatistics : Fragment() {
             }
         }
 
-        binding.backToList.setOnClickListener {
-            viewModel.matchSelected(null)
-            matchListLayout.visibility = View.VISIBLE
-            statisticsLayout.visibility = View.INVISIBLE
-            root.requestLayout()
-        }
+
 
 
         (requireActivity() as AppCompatActivity).supportActionBar?.title = SelectedTournament.selectedTournament?.name
@@ -141,15 +131,6 @@ class MatchStatistics : Fragment() {
 
         recycleMatchesView.layoutManager = LinearLayoutManager(requireContext())
 
-        val matchesAdapter = MatchAdapter(viewModel.matchList.value?.toMutableList() ?: mutableListOf(), requireContext(), view) {
-            viewModel.matchSelected(it)
-        }
-        recycleMatchesView.adapter = matchesAdapter
-
-        viewModel.matchList.observe(viewLifecycleOwner){
-            matches -> matchesAdapter.updateItems(matches)
-            matchesAdapter.notifyDataSetChanged()
-        }
         binding.endMatch.setOnClickListener {
             viewModel.endMatch(binding)
             val newMatchesAdapter = MatchAdapter(viewModel.matchList.value?.toMutableList() ?: mutableListOf(), requireContext(), view) {
@@ -161,6 +142,50 @@ class MatchStatistics : Fragment() {
                 matches -> newMatchesAdapter.updateItems(matches)
                 newMatchesAdapter.notifyDataSetChanged()
             }
+        }
+
+        binding.backToList.setOnClickListener {
+            val dialog =
+                AlertDialog.Builder(context ?: return@setOnClickListener)
+                    .setTitle("Ukončit zápas")
+                    .setMessage("Chcete zápas zároveň ukončit?")
+                    .setPositiveButton("Ano") { dialog, _ ->
+//                        SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.finishMatch()
+//                        SelectedTournament.selectedMatchIndex = null
+//                        viewModel.matchSelected(null)
+//                        matchListLayout.visibility = View.VISIBLE
+//                        statisticsLayout.visibility = View.INVISIBLE
+//
+//                        viewModel.setSetState(SetStates.NONE)
+                        viewModel.endMatch(binding)
+                        val newMatchesAdapter = MatchAdapter(viewModel.matchList.value?.toMutableList() ?: mutableListOf(), requireContext(), view) {
+                            viewModel.matchSelected(it)
+                        }
+                        recycleMatchesView.adapter = newMatchesAdapter
+
+                        viewModel.matchList.observe(viewLifecycleOwner){
+                                matches -> newMatchesAdapter.updateItems(matches)
+                            newMatchesAdapter.notifyDataSetChanged()
+                        }
+                        requireView().requestLayout()
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton("Ne") { dialog, _ ->
+                        viewModel.closeMatch(binding)
+                        dialog.dismiss()
+                    }
+                    .create()
+            dialog.show()
+        }
+
+        val matchesAdapter = MatchAdapter(viewModel.matchList.value?.toMutableList() ?: mutableListOf(), requireContext(), view) {
+            viewModel.matchSelected(it)
+        }
+        recycleMatchesView.adapter = matchesAdapter
+
+        viewModel.matchList.observe(viewLifecycleOwner){
+                matches -> matchesAdapter.updateItems(matches)
+            matchesAdapter.notifyDataSetChanged()
         }
 
         viewModel.scoreboard.observe(viewLifecycleOwner){
@@ -179,6 +204,7 @@ class MatchStatistics : Fragment() {
                     binding.endMatch.visibility = View.GONE
                     binding.serveButton.isEnabled = true
                     binding.opponentPoint.visibility = View.GONE
+                    viewModel.changeZones(binding.root.rootView, state)
                 }
                 SetStates.SERVE -> {
                     binding.startSet.visibility = View.GONE

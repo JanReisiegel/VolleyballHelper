@@ -20,11 +20,23 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
     }
 
     fun getActiveSquad(): ArrayList<Int> {
-        Log.d("Match", "getActiveSquad: ${squads.size}")
-        if(squads.size == 0){
+        //Log.d("Match", "getActiveSquad: ${squads.size}")
+        //val matchSquads = squads ?: listOf<ArrayList<Int>>()
+        if(squads.size == 0) {
             squads.add(ArrayList<Int>())
         }
         return squads[squads.size - 1]
+    }
+
+    fun setSquad(players: List<Player?>){
+        if (squads.size == 0){
+            squads.add(ArrayList<Int>())
+        }
+        for (player in players){
+            if (player != null){
+                squads[squads.size - 1].add(player.jerseyNumber)
+            }
+        }
     }
 
     /**
