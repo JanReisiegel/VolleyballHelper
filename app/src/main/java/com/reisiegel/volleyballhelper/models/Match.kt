@@ -97,7 +97,7 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
     }
 
     fun opponentPoint(){
-        score.opponentPoint()
+        score.opponentPoint() //TODO: změna při přidání dalších setů -> přidat další sestavu (to samé i u dalších)
     }
 
     /**

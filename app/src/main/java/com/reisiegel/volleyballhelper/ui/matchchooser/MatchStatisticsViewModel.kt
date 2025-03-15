@@ -418,7 +418,7 @@ class MatchStatisticsViewModel() : ViewModel() {
                             ?.contains(it.jerseyNumber) == true){
                         val position = SelectedTournament.selectedTournament?.getMatch(index)?.getActiveSquad()
                             ?.indexOf(it.jerseyNumber)
-                        activeSquad[position!!] = it
+                        activeSquad[position!!] = it // Todo: skontrolovat, zda je mezi sety + ošetřit začátek setu
                     }
                     else{
                         bench.add(it)
@@ -544,7 +544,7 @@ class MatchStatisticsViewModel() : ViewModel() {
 
                     }
                 }
-            }
+            } //Todo: dodělat, a dovymyslet, jak to udělat, aby šlo ještě jednou vybrat kdo má servis, nebo aby se to udělalo samo :-)
             Log.e("ExceptionErrors", exceptionErrors.toString())
             _playersSquad.value = activeSquad
             _playersBench.value = bench
@@ -822,6 +822,7 @@ class MatchStatisticsViewModel() : ViewModel() {
     }
 
     fun closeMatch(binding: FragmentMatchStatisticsBinding){
+        //Todo: zjistit, zda se zápas již začal, pokud ne (bylo jen vybrána sestava + servis, ale body nejsou rozdány), tak se zápas neuloží/zruší, ale bude stále editovatelný
         SelectedTournament.selectedMatchIndex = null
         _pageTitle.value = SelectedTournament.selectedTournament?.name
         _setState.value = SetStates.NONE
