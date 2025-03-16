@@ -39,6 +39,18 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
         }
     }
 
+    fun changeSquad(players: List<Player?>){
+        if (squads.size == 0){
+            setSquad(players)
+        }
+        squads[squads.size - 1].clear()
+        players.forEachIndexed { index, player ->
+            if (player != null) {
+                squads[squads.size - 1].add(player.jerseyNumber)
+            }
+        }
+    }
+
     /**
      * Function for add a substitution to match
      */
@@ -93,11 +105,17 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
      */
     fun opponentError(){
         opponentsError++
-        score.teamPoint()
+        val newSet = score.teamPoint()
+        if (newSet){
+            newSet()
+        }
     }
 
     fun opponentPoint(){
-        score.opponentPoint() //TODO: změna při přidání dalších setů -> přidat další sestavu (to samé i u dalších)
+        val newSet = score.opponentPoint()
+        if (newSet){
+            newSet()
+        }
     }
 
     /**
@@ -113,10 +131,14 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
                 break
             }
         }
+        var newSet: Boolean = false
         if (attackType == AttackEnum.HIT){
-            score.teamPoint()
+            newSet = score.teamPoint()
         } else if (attackType == AttackEnum.ERROR || attackType == AttackEnum.BLOCK){
-            score.opponentPoint()
+            newSet = score.opponentPoint()
+        }
+        if (newSet){
+            newSet()
         }
     }
     /**
@@ -132,10 +154,14 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
                 break
             }
         }
+        var newSet: Boolean = false
         if (serveType == ServeEnum.ACE){
-            score.teamPoint()
+            newSet = score.teamPoint()
         }else if (serveType == ServeEnum.ERROR){
-            score.opponentPoint()
+            newSet = score.opponentPoint()
+        }
+        if (newSet){
+            newSet()
         }
     }
     /**
@@ -151,10 +177,14 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
                 break
             }
         }
+        var newSet: Boolean = false
         if (blockType == BlockEnum.POINT){
-            score.teamPoint()
+            newSet = score.teamPoint()
         }else if (blockType == BlockEnum.ERROR){
-            score.opponentPoint()
+            newSet = score.opponentPoint()
+        }
+        if (newSet){
+            newSet()
         }
     }
     /**
@@ -170,8 +200,12 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
                 break
             }
         }
+        var newSet: Boolean = false
         if (receiveServeType == ReceiveServeEnum.ERROR || receiveServeType == ReceiveServeEnum.CANT_CONTINUE){
-            score.opponentPoint()
+            newSet = score.opponentPoint()
+        }
+        if (newSet){
+            newSet()
         }
     }
 
@@ -207,5 +241,9 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
             return !serveStart
         }
         return serveStart
+    }
+
+    private fun newSet(){
+        squads.add(ArrayList<Int>())
     }
 }

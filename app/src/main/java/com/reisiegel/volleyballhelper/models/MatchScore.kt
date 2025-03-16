@@ -1,7 +1,7 @@
 package com.reisiegel.volleyballhelper.models
 
 class MatchScore(private var teamSets: Int = 0, private var opponentSets: Int = 0, private var teamPoints: ArrayList<Int> = ArrayList<Int>(), private var opponentPoints: ArrayList<Int> = ArrayList<Int>()) {
-    private fun setControl(){
+    private fun setControl(): Boolean{
         val setNumber = getNumberOfSet()
         if (opponentPoints.isEmpty())
             opponentPoints.add(0)
@@ -15,23 +15,24 @@ class MatchScore(private var teamSets: Int = 0, private var opponentSets: Int = 
         else if (opponentPoint >= 25 && (opponentPoint-teamPoint)>=2)
             opponentSets++
         else
-            return
+            return false
         teamPoints.add(0)
         opponentPoints.add(0)
+        return true
     }
-    fun opponentPoint(){
+    fun opponentPoint(): Boolean{
         if(opponentPoints.isEmpty())
             opponentPoints.add(0)
         val lastIndex = opponentPoints.lastIndex
         opponentPoints[lastIndex]++
-        setControl()
+        return setControl()
     }
-    fun teamPoint(){
+    fun teamPoint(): Boolean{
         if(teamPoints.isEmpty())
             teamPoints.add(0)
         val lastIndex = teamPoints.lastIndex
         teamPoints[lastIndex]++
-        setControl()
+        return setControl()
     }
     fun getNumberOfSet(): Int{
         return teamSets + opponentSets + 1

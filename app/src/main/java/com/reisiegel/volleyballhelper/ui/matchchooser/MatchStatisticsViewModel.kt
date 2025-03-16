@@ -406,6 +406,7 @@ class MatchStatisticsViewModel() : ViewModel() {
             _pageTitle.value = SelectedTournament.selectedTournament?.name
             return
         }
+        //TODO: Kontrola hráčů v zónách
         SelectedTournament.selectedMatchIndex = index
         val allPlayers = SelectedTournament.selectedTournament?.getMatch(index)?.players
         if (allPlayers != null){
@@ -544,7 +545,7 @@ class MatchStatisticsViewModel() : ViewModel() {
 
                     }
                 }
-            } //Todo: dodělat, a dovymyslet, jak to udělat, aby šlo ještě jednou vybrat kdo má servis, nebo aby se to udělalo samo :-)
+            }
             Log.e("ExceptionErrors", exceptionErrors.toString())
             _playersSquad.value = activeSquad
             _playersBench.value = bench
@@ -822,7 +823,9 @@ class MatchStatisticsViewModel() : ViewModel() {
     }
 
     fun closeMatch(binding: FragmentMatchStatisticsBinding){
-        //Todo: zjistit, zda se zápas již začal, pokud ne (bylo jen vybrána sestava + servis, ale body nejsou rozdány), tak se zápas neuloží/zruší, ale bude stále editovatelný
+        if (playersSquad.value != null || SelectedTournament.selectedMatchIndex != null || playersSquad.value?.contains(null) != true)
+            SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.changeSquad(playersSquad.value!!.toList())
+
         SelectedTournament.selectedMatchIndex = null
         _pageTitle.value = SelectedTournament.selectedTournament?.name
         _setState.value = SetStates.NONE
