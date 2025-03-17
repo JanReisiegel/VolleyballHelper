@@ -106,12 +106,6 @@ class MatchStatisticsViewModel() : ViewModel() {
             serveButtonIds.forEach { id ->
                 val button = zoneView.findViewById<Button>(id)
                 button.setOnClickListener {
-                    if (id == R.id.service_received){
-                        _setState.value = SetStates.ATTACK_BLOCK
-                    }
-                    if (id == R.id.service_error){
-                        _setState.value = SetStates.RECEIVE
-                    }
                     val newValue = when(id){
                         R.id.service_ace -> "${button.text.split(" ")[0]} - ${serveButtonsAction(ServeEnum.ACE, index)}"
                         R.id.service_error -> "${button.text.split(" ")[0]} - ${serveButtonsAction(ServeEnum.ERROR, index)}"
@@ -128,22 +122,11 @@ class MatchStatisticsViewModel() : ViewModel() {
             attackButtonIds.forEach { id ->
                 val button = zoneView.findViewById<Button>(id)
                 button.setOnClickListener {
-                    if(id == R.id.attack_hit){
-                        _setState.value = SetStates.SERVE
-                        if (serve.value?.not()!!){
-                            rotateFormation(root)
-                        }
-                        _serve.value = true
-                    }
-                    else if (id == R.id.attack_error){
-                        _setState.value = SetStates.RECEIVE
-                        _serve.value = false
-                    }
                     val newValue = when(id){
-                        R.id.attack_error -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.ERROR, index)}"
-                        R.id.attack_hit -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.HIT, index)}"
-                        R.id.attack_received -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.RECEIVED, index)}"
-                        R.id.attack_block -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.BLOCK, index)}"
+                        R.id.attack_error -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.ERROR, index, root)}"
+                        R.id.attack_hit -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.HIT, index, root)}"
+                        R.id.attack_received -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.RECEIVED, index, root)}"
+                        R.id.attack_block -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.BLOCK, index, root)}"
                         else -> return@setOnClickListener
                     }
                     //TODO: Nefunguje přičítání->podívat se na to
@@ -155,23 +138,13 @@ class MatchStatisticsViewModel() : ViewModel() {
             blockButtonIds.forEach { id ->
                 val button = zoneView.findViewById<Button>(id)
                 button.setOnClickListener {
-                    if (id == R.id.block_point ){
-                        _setState.value = SetStates.SERVE
-                        if (serve.value?.not()!!){
-                            rotateFormation(root)
-                        }
-                        _serve.value = true
-                    }
-                    else if (id == R.id.block_error){
-                        _setState.value = SetStates.RECEIVE
-                        _serve.value = false
-                    }
                     val newValue = when(id){
-                        R.id.block_point -> "${button.text.split(" ")[0]} - ${blockButtonAction(BlockEnum.POINT, index)}"
-                        R.id.block_error -> "${button.text.split(" ")[0]} - ${blockButtonAction(BlockEnum.ERROR, index)}"
-                        R.id.block_no_point -> "${button.text.split(" ")[0]} - ${blockButtonAction(BlockEnum.NO_POINT, index)}"
+                        R.id.block_point -> "${button.text.split(" ")[0]} - ${blockButtonAction(BlockEnum.POINT, index, root)}"
+                        R.id.block_error -> "${button.text.split(" ")[0]} - ${blockButtonAction(BlockEnum.ERROR, index, root)}"
+                        R.id.block_no_point -> "${button.text.split(" ")[0]} - ${blockButtonAction(BlockEnum.NO_POINT, index, root)}"
                         else -> return@setOnClickListener
                     }
+
                     //TODO: Nefunguje přičítání->podívat se na to
                     button.text = newValue
                     root.requestLayout()
@@ -182,9 +155,6 @@ class MatchStatisticsViewModel() : ViewModel() {
             receptionButtonIds.forEach { id ->
                 val button = zoneView.findViewById<Button>(id)
                 button.setOnClickListener {
-                    if (id == R.id.reception_ideal || id == R.id.reception_continue || id == R.id.reception_no_continue){
-                        _setState.value = SetStates.ATTACK_BLOCK
-                    }
                     val newValue = when(id){
                         R.id.reception_ideal -> "${button.text.split(" ")[0]} - ${receiveButtonAction(ReceiveServeEnum.IDEAL, index)}"
                         R.id.reception_continue -> "${button.text.split(" ")[0]} - ${receiveButtonAction(ReceiveServeEnum.CAN_CONTINUE, index)}"
@@ -584,15 +554,17 @@ class MatchStatisticsViewModel() : ViewModel() {
         val result = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(playerNumber)?.getServeStats(serveType) ?: 0
         if(serveType == ServeEnum.ACE){
             changeScoreboard()
-        }
-        if (serveType == ServeEnum.ERROR){
+        } else if (serveType == ServeEnum.RECEIVED){
+            _setState.value = SetStates.ATTACK_BLOCK
+        } else if (serveType == ServeEnum.ERROR){
             changeScoreboard()
             changeServe()
+            _setState.value = SetStates.RECEIVE
         }
         return result
     }
 
-    private fun attackButtonAction(attackType: AttackEnum, playerZone: Int): Int {
+    private fun attackButtonAction(attackType: AttackEnum, playerZone: Int, root: View): Int {
         val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return 0
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.playerAttack(playerNumber, attackType)
         val result = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(playerNumber)?.getAttackStats(attackType) ?: 0
@@ -604,6 +576,7 @@ class MatchStatisticsViewModel() : ViewModel() {
             _setState.value = SetStates.RECEIVE
         } else if(attackType == AttackEnum.HIT){
             if (serve.value == false){
+                rotateFormation(root)
                 changeServe()
             }
             changeScoreboard()
@@ -612,7 +585,7 @@ class MatchStatisticsViewModel() : ViewModel() {
         return result
     }
 
-    private fun blockButtonAction(blockType: BlockEnum, playerZone: Int): Int {
+    private fun blockButtonAction(blockType: BlockEnum, playerZone: Int, root: View): Int {
 
         val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return 0
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.playerBlock(playerNumber, blockType)
@@ -622,11 +595,14 @@ class MatchStatisticsViewModel() : ViewModel() {
                 changeServe()
             }
             changeScoreboard()
+            _setState.value = SetStates.RECEIVE
         } else if(blockType == BlockEnum.POINT){
             if (serve.value == false){
+                rotateFormation(root)
                 changeServe()
             }
             changeScoreboard()
+            _setState.value = SetStates.SERVE
         }
         return result
     }
@@ -637,6 +613,9 @@ class MatchStatisticsViewModel() : ViewModel() {
         val result = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(playerNumber)?.getReceiveStats(receiveType) ?: 0
         if (receiveType == ReceiveServeEnum.ERROR || receiveType == ReceiveServeEnum.CANT_CONTINUE){
             changeScoreboard()
+        }
+        if (receiveType == ReceiveServeEnum.IDEAL || receiveType == ReceiveServeEnum.CAN_CONTINUE || receiveType == ReceiveServeEnum.CANT_CONTINUE){
+            _setState.value = SetStates.ATTACK_BLOCK
         }
         return result
     }

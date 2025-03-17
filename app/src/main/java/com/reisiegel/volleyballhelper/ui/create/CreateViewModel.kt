@@ -10,7 +10,6 @@ import java.io.File
 import java.text.Normalizer
 
 class CreateViewModel() : ViewModel() {
-    // TODO: Implement the ViewModel
     private val _tournamentName = MutableLiveData<String>()
     private val _startMatchTime = MutableLiveData<String>()
     private val _players = MutableLiveData<MutableList<PlayerItem>>(mutableListOf())

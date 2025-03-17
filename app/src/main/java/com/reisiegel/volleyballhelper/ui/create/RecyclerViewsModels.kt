@@ -32,7 +32,7 @@ class PlayerItem(private var jersey: String = "", private var name: String = "")
 
 class PlayerAdapter(private var items: MutableList<PlayerItem>): RecyclerView.Adapter<PlayerAdapter.PlayerViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.player_item_layout, parent, false) //TODO: Create layout
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.player_item_layout, parent, false)
         return PlayerViewHolder(view)
     }
 
