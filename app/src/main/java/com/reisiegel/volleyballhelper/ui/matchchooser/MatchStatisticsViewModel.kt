@@ -611,7 +611,7 @@ class MatchStatisticsViewModel() : ViewModel() {
         val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return 0
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.playerReceivedServe(playerNumber, receiveType)
         val result = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(playerNumber)?.getReceiveStats(receiveType) ?: 0
-        if (receiveType == ReceiveServeEnum.ERROR || receiveType == ReceiveServeEnum.CANT_CONTINUE){
+        if (receiveType == ReceiveServeEnum.ERROR){
             changeScoreboard()
         }
         if (receiveType == ReceiveServeEnum.IDEAL || receiveType == ReceiveServeEnum.CAN_CONTINUE || receiveType == ReceiveServeEnum.CANT_CONTINUE){
@@ -721,6 +721,7 @@ class MatchStatisticsViewModel() : ViewModel() {
      * Rotate formation (1->6,2->1,3->2,4->3,5->4,6->5)
      */
     fun rotateFormation(root: View){
+        //TODO: Tady je někde problém s vykreslováním čísel. v paměti je vše správně, ale na obrazovce se to špatně vykreslí
         val updatedPlayersSquad = _playersSquad.value ?: mutableListOf<Player?>(null, null, null, null, null, null)
         val player = updatedPlayersSquad[0]
         for (i in 0..4){
@@ -781,8 +782,9 @@ class MatchStatisticsViewModel() : ViewModel() {
                 }
                 button.text = newValue
             }
+            root.requestLayout()
         }
-        root.requestLayout()
+
     }
 
     fun endMatch(binding: FragmentMatchStatisticsBinding ){
