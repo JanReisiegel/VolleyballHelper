@@ -106,15 +106,13 @@ class MatchStatisticsViewModel() : ViewModel() {
             serveButtonIds.forEach { id ->
                 val button = zoneView.findViewById<Button>(id)
                 button.setOnClickListener {
-                    val newValue = when(id){
-                        R.id.service_ace -> "${button.text.split(" ")[0]} - ${serveButtonsAction(ServeEnum.ACE, index)}"
-                        R.id.service_error -> "${button.text.split(" ")[0]} - ${serveButtonsAction(ServeEnum.ERROR, index)}"
-                        R.id.service_received -> "${button.text.split(" ")[0]} - ${serveButtonsAction(ServeEnum.RECEIVED, index)}"
+                    when(id){
+                        R.id.service_ace -> serveButtonsAction(ServeEnum.ACE, index, root)
+                        R.id.service_error -> serveButtonsAction(ServeEnum.ERROR, index, root)
+                        R.id.service_received -> serveButtonsAction(ServeEnum.RECEIVED, index, root)
                         else -> return@setOnClickListener
                     }
                     //TODO: Nefunguje přičítání->podívat se na to
-                    button.text = newValue
-                    root.requestLayout()
                 }
 
             }
@@ -122,32 +120,28 @@ class MatchStatisticsViewModel() : ViewModel() {
             attackButtonIds.forEach { id ->
                 val button = zoneView.findViewById<Button>(id)
                 button.setOnClickListener {
-                    val newValue = when(id){
-                        R.id.attack_error -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.ERROR, index, root)}"
-                        R.id.attack_hit -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.HIT, index, root)}"
-                        R.id.attack_received -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.RECEIVED, index, root)}"
-                        R.id.attack_block -> "${button.text.split(" ")[0]} - ${attackButtonAction(AttackEnum.BLOCK, index, root)}"
+                    when(id){
+                        R.id.attack_error -> attackButtonAction(AttackEnum.ERROR, index, root)
+                        R.id.attack_hit -> attackButtonAction(AttackEnum.HIT, index, root)
+                        R.id.attack_received -> attackButtonAction(AttackEnum.RECEIVED, index, root)
+                        R.id.attack_block -> attackButtonAction(AttackEnum.BLOCK, index, root)
                         else -> return@setOnClickListener
                     }
                     //TODO: Nefunguje přičítání->podívat se na to
-                    button.text = newValue
-                    root.requestLayout()
                 }
             }
 
             blockButtonIds.forEach { id ->
                 val button = zoneView.findViewById<Button>(id)
                 button.setOnClickListener {
-                    val newValue = when(id){
-                        R.id.block_point -> "${button.text.split(" ")[0]} - ${blockButtonAction(BlockEnum.POINT, index, root)}"
-                        R.id.block_error -> "${button.text.split(" ")[0]} - ${blockButtonAction(BlockEnum.ERROR, index, root)}"
-                        R.id.block_no_point -> "${button.text.split(" ")[0]} - ${blockButtonAction(BlockEnum.NO_POINT, index, root)}"
+                    when(id){
+                        R.id.block_point -> blockButtonAction(BlockEnum.POINT, index, root)
+                        R.id.block_error -> blockButtonAction(BlockEnum.ERROR, index, root)
+                        R.id.block_no_point -> blockButtonAction(BlockEnum.NO_POINT, index, root)
                         else -> return@setOnClickListener
                     }
 
                     //TODO: Nefunguje přičítání->podívat se na to
-                    button.text = newValue
-                    root.requestLayout()
                 }
 
             }
@@ -155,16 +149,14 @@ class MatchStatisticsViewModel() : ViewModel() {
             receptionButtonIds.forEach { id ->
                 val button = zoneView.findViewById<Button>(id)
                 button.setOnClickListener {
-                    val newValue = when(id){
-                        R.id.reception_ideal -> "${button.text.split(" ")[0]} - ${receiveButtonAction(ReceiveServeEnum.IDEAL, index)}"
-                        R.id.reception_continue -> "${button.text.split(" ")[0]} - ${receiveButtonAction(ReceiveServeEnum.CAN_CONTINUE, index)}"
-                        R.id.reception_error -> "${button.text.split(" ")[0]} - ${receiveButtonAction(ReceiveServeEnum.ERROR, index)}"
-                        R.id.reception_no_continue -> "${button.text.split(" ")[0]} - ${receiveButtonAction(ReceiveServeEnum.CANT_CONTINUE, index)}"
+                    when(id){
+                        R.id.reception_ideal -> receiveButtonAction(ReceiveServeEnum.IDEAL, index, root)
+                        R.id.reception_continue -> receiveButtonAction(ReceiveServeEnum.CAN_CONTINUE, index, root)
+                        R.id.reception_error -> receiveButtonAction(ReceiveServeEnum.ERROR, index, root)
+                        R.id.reception_no_continue -> receiveButtonAction(ReceiveServeEnum.CANT_CONTINUE, index, root)
                         else -> return@setOnClickListener
                     }
                     //TODO: Nefunguje přičítání->podívat se na to
-                    button.text = newValue
-                    root.requestLayout()
                 }
             }
 
@@ -547,9 +539,9 @@ class MatchStatisticsViewModel() : ViewModel() {
         _playersBench.value = updatedPlayersBench
     }
 
-    private fun serveButtonsAction(serveType: ServeEnum, playerZone: Int): Int {
+    private fun serveButtonsAction(serveType: ServeEnum, playerZone: Int, root: View) {
 
-        val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return 0
+        val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.playerServe(playerNumber, serveType)
         val result = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(playerNumber)?.getServeStats(serveType) ?: 0
         if(serveType == ServeEnum.ACE){
@@ -561,11 +553,11 @@ class MatchStatisticsViewModel() : ViewModel() {
             changeServe()
             _setState.value = SetStates.RECEIVE
         }
-        return result
+        rerenderLayout(root)
     }
 
-    private fun attackButtonAction(attackType: AttackEnum, playerZone: Int, root: View): Int {
-        val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return 0
+    private fun attackButtonAction(attackType: AttackEnum, playerZone: Int, root: View) {
+        val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.playerAttack(playerNumber, attackType)
         val result = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(playerNumber)?.getAttackStats(attackType) ?: 0
         if (attackType == AttackEnum.ERROR || attackType == AttackEnum.BLOCK){
@@ -574,6 +566,7 @@ class MatchStatisticsViewModel() : ViewModel() {
             }
             changeScoreboard()
             _setState.value = SetStates.RECEIVE
+            rerenderLayout(root)
         } else if(attackType == AttackEnum.HIT){
             if (serve.value == false){
                 rotateFormation(root)
@@ -582,12 +575,11 @@ class MatchStatisticsViewModel() : ViewModel() {
             changeScoreboard()
             _setState.value = SetStates.SERVE
         }
-        return result
     }
 
-    private fun blockButtonAction(blockType: BlockEnum, playerZone: Int, root: View): Int {
+    private fun blockButtonAction(blockType: BlockEnum, playerZone: Int, root: View) {
 
-        val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return 0
+        val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.playerBlock(playerNumber, blockType)
         val result = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(playerNumber)?.getBlockStats(blockType) ?: 0
         if (blockType == BlockEnum.ERROR){
@@ -596,6 +588,7 @@ class MatchStatisticsViewModel() : ViewModel() {
             }
             changeScoreboard()
             _setState.value = SetStates.RECEIVE
+            rerenderLayout(root)
         } else if(blockType == BlockEnum.POINT){
             if (serve.value == false){
                 rotateFormation(root)
@@ -604,11 +597,10 @@ class MatchStatisticsViewModel() : ViewModel() {
             changeScoreboard()
             _setState.value = SetStates.SERVE
         }
-        return result
     }
 
-    private fun receiveButtonAction(receiveType: ReceiveServeEnum, playerZone: Int): Int {
-        val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return 0
+    private fun receiveButtonAction(receiveType: ReceiveServeEnum, playerZone: Int, root: View) {
+        val playerNumber = playersSquad.value?.get(playerZone)?.jerseyNumber ?: return
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.playerReceivedServe(playerNumber, receiveType)
         val result = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(playerNumber)?.getReceiveStats(receiveType) ?: 0
         if (receiveType == ReceiveServeEnum.ERROR){
@@ -617,7 +609,7 @@ class MatchStatisticsViewModel() : ViewModel() {
         if (receiveType == ReceiveServeEnum.IDEAL || receiveType == ReceiveServeEnum.CAN_CONTINUE || receiveType == ReceiveServeEnum.CANT_CONTINUE){
             _setState.value = SetStates.ATTACK_BLOCK
         }
-        return result
+        rerenderLayout(root)
     }
 
     fun changeServe(){
@@ -729,20 +721,23 @@ class MatchStatisticsViewModel() : ViewModel() {
         }
         updatedPlayersSquad[5] = player
         _playersSquad.value = updatedPlayersSquad
+        rerenderLayout(root)
+    }
 
+    fun rerenderLayout(root: View){
         zoneIds.forEachIndexed { index, i ->
             val zoneView = root.findViewById<View>(i)
             val playerName = zoneView.findViewById<TextView>(R.id.player_name)
             val playerNumber = zoneView.findViewById<TextView>(R.id.player_number)
-            playerName.text = updatedPlayersSquad[index]?.name ?: "Zóna ${index + 1}"
-            playerNumber.text = updatedPlayersSquad[index]?.jerseyNumber?.toString() ?: ""
+            playerName.text = _playersSquad.value?.get(index)?.name ?: "Zóna ${index + 1}"
+            playerNumber.text = _playersSquad.value?.get(index)?.jerseyNumber?.toString() ?: ""
 
             serveButtonIds.forEach { id ->
                 val button = zoneView.findViewById<Button>(id)
                 val newValue = when(id){
-                    R.id.service_ace -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getServeStats(ServeEnum.ACE) ?: 0}"
-                    R.id.service_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getServeStats(ServeEnum.ERROR) ?: 0}"
-                    R.id.service_received -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getServeStats(ServeEnum.RECEIVED) ?: 0}"
+                    R.id.service_ace -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(_playersSquad.value?.get(index)?.jerseyNumber ?: 0)?.getServeStats(ServeEnum.ACE) ?: 0}"
+                    R.id.service_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(_playersSquad.value?.get(index)?.jerseyNumber ?: 0)?.getServeStats(ServeEnum.ERROR) ?: 0}"
+                    R.id.service_received -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(_playersSquad.value?.get(index)?.jerseyNumber ?: 0)?.getServeStats(ServeEnum.RECEIVED) ?: 0}"
                     else -> return@forEach
                 }
                 button.text = newValue
@@ -751,10 +746,10 @@ class MatchStatisticsViewModel() : ViewModel() {
             attackButtonIds.forEach { id ->
                 val button = zoneView.findViewById<Button>(id)
                 val newValue = when(id){
-                    R.id.attack_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getAttackStats(AttackEnum.ERROR) ?: 0}"
-                    R.id.attack_hit -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getAttackStats(AttackEnum.HIT) ?: 0}"
-                    R.id.attack_received -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getAttackStats(AttackEnum.RECEIVED) ?: 0}"
-                    R.id.attack_block -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getAttackStats(AttackEnum.BLOCK) ?: 0}"
+                    R.id.attack_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(_playersSquad.value?.get(index)?.jerseyNumber ?: 0)?.getAttackStats(AttackEnum.ERROR) ?: 0}"
+                    R.id.attack_hit -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(_playersSquad.value?.get(index)?.jerseyNumber ?: 0)?.getAttackStats(AttackEnum.HIT) ?: 0}"
+                    R.id.attack_received -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(_playersSquad.value?.get(index)?.jerseyNumber ?: 0)?.getAttackStats(AttackEnum.RECEIVED) ?: 0}"
+                    R.id.attack_block -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(_playersSquad.value?.get(index)?.jerseyNumber ?: 0)?.getAttackStats(AttackEnum.BLOCK) ?: 0}"
                     else -> return@forEach
                 }
                 button.text = newValue
@@ -763,9 +758,9 @@ class MatchStatisticsViewModel() : ViewModel() {
             blockButtonIds.forEach { id ->
                 val button = zoneView.findViewById<Button>(id)
                 val newValue = when(id){
-                    R.id.block_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getBlockStats(BlockEnum.ERROR) ?: 0}"
-                    R.id.block_point -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getBlockStats(BlockEnum.POINT) ?: 0}"
-                    R.id.block_no_point -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getBlockStats(BlockEnum.NO_POINT) ?: 0}"
+                    R.id.block_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(_playersSquad.value?.get(index)?.jerseyNumber ?: 0)?.getBlockStats(BlockEnum.ERROR) ?: 0}"
+                    R.id.block_point -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(_playersSquad.value?.get(index)?.jerseyNumber ?: 0)?.getBlockStats(BlockEnum.POINT) ?: 0}"
+                    R.id.block_no_point -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(_playersSquad.value?.get(index)?.jerseyNumber ?: 0)?.getBlockStats(BlockEnum.NO_POINT) ?: 0}"
                     else -> return@forEach
                 }
                 button.text = newValue
@@ -774,17 +769,16 @@ class MatchStatisticsViewModel() : ViewModel() {
             receptionButtonIds.forEach { id ->
                 val button = zoneView.findViewById<Button>(id)
                 val newValue = when(id){
-                    R.id.reception_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getReceiveStats(ReceiveServeEnum.ERROR) ?: 0}"
-                    R.id.reception_ideal -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getReceiveStats(ReceiveServeEnum.IDEAL) ?: 0}"
-                    R.id.reception_continue -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getReceiveStats(ReceiveServeEnum.CAN_CONTINUE) ?: 0}"
-                    R.id.reception_no_continue -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(updatedPlayersSquad[index]?.jerseyNumber ?: 0)?.getReceiveStats(ReceiveServeEnum.CANT_CONTINUE) ?: 0}"
+                    R.id.reception_error -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(_playersSquad.value?.get(index)?.jerseyNumber ?: 0)?.getReceiveStats(ReceiveServeEnum.ERROR) ?: 0}"
+                    R.id.reception_ideal -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(_playersSquad.value?.get(index)?.jerseyNumber ?: 0)?.getReceiveStats(ReceiveServeEnum.IDEAL) ?: 0}"
+                    R.id.reception_continue -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(_playersSquad.value?.get(index)?.jerseyNumber ?: 0)?.getReceiveStats(ReceiveServeEnum.CAN_CONTINUE) ?: 0}"
+                    R.id.reception_no_continue -> "${button.text.split(" ")[0]} - ${SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getPlayer(_playersSquad.value?.get(index)?.jerseyNumber ?: 0)?.getReceiveStats(ReceiveServeEnum.CANT_CONTINUE) ?: 0}"
                     else -> return@forEach
                 }
                 button.text = newValue
             }
             root.requestLayout()
         }
-
     }
 
     fun endMatch(binding: FragmentMatchStatisticsBinding ){
