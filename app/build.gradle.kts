@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
     implementation(platform(libs.firebase.bom))
+    implementation(libs.gms.play.services.auth)
     implementation(libs.google.api.services.sheets)
     implementation(libs.google.api.services.drive)
     implementation(libs.google.api.client.android)

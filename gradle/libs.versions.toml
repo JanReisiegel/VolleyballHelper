@@ -49,6 +49,7 @@ androidx-credentials-play-services-auth-v115 = { module = "androidx.credentials:
 androidx-credentials-v115 = { module = "androidx.credentials:credentials", version.ref = "credentialsVersion" }
 firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+gms-play-services-auth = { module = "com.google.android.gms:play-services-auth" }
 google-api-client = { module = "com.google.api-client:google-api-client", version.ref = "googleApiClient" }
 google-api-client-android = { module = "com.google.api-client:google-api-client-android", version.ref = "googleApiClientAndroid" }
 google-api-client-android-v1330 = { module = "com.google.api-client:google-api-client-android", version.ref = "googleApiClientAndroidVersion" }

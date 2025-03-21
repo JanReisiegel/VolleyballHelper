@@ -8,12 +8,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.ClearCredentialException
+import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -83,12 +85,23 @@ class ExportStatistics : Fragment() {
                     request = request
                 )
 
-                Log.d("GoogleActivity", "Credential: ${result.credential}")
-                // Extract credential from the result returned by Credential Manager
-                handleSignIn(result.credential)
-                Log.d("GoogleActivity", "Credential: ${result.credential}")
-            } catch (e: GetCredentialException) {
+                Log.d(TAG, "Credential Manager Result: $result") // Loguj celý výsledek
+                if (result.credential != null) {
+                    handleSignIn(result.credential)
+                    Log.d(TAG, "Credential: ${result.credential}")
+                } else {
+                    Log.e(TAG, "Credential is null")
+                }
+            } catch (e: GetCredentialCancellationException) {
+                Log.w(TAG, "Přihlášení zrušeno uživatelem.")
+                // Zobraz uživateli zprávu, že přihlášení bylo zrušeno
+                Toast.makeText(binding.root.context, "Přihlášení zrušeno.", Toast.LENGTH_SHORT).show()
+            }catch (e: GetCredentialException) {
                 Log.e(TAG, "Couldn't retrieve user's credentials: ${e.localizedMessage}")
+                Log.e(TAG, "GetCredentialException: $e") // Loguj celou výjimku
+            } catch (e: Exception) {
+                Log.e(TAG, "General Exception: ${e.localizedMessage}")
+                Log.e(TAG, "Exception: $e")
             }
         }
     }
