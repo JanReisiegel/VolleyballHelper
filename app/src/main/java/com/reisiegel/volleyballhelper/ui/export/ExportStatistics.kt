@@ -1,6 +1,8 @@
 package com.reisiegel.volleyballhelper.ui.export
 
 import android.accounts.Account
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
@@ -39,6 +43,7 @@ import kotlinx.coroutines.launch
 
 class ExportStatistics : Fragment() {
 
+    private lateinit var authorizationLauncher: ActivityResultLauncher<Intent>
     private lateinit var viewModel: ExportStatisticsViewModel
     private var _binding: FragmentExportStatisticsBinding? = null
     private val binding get() = _binding!!
@@ -49,6 +54,18 @@ class ExportStatistics : Fragment() {
     private val TAG = "GoogleActivity"
     //private val TYPE_GOOGLE_ID_TOKEN_CREDENTIAL = "com.google.android.libraries.identity.googleid.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL"
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        authorizationLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // Authorization was successful, retry the operation
+                createAndSaveSheet()
+            } else {
+                // Authorization was denied or canceled
+                Toast.makeText(requireContext(), "Authorization failed.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,8 +81,7 @@ class ExportStatistics : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         auth = Firebase.auth
-
-
+        googleDriveService = GoogleDriveService(requireContext(), requireActivity())
         binding.exportButton.setOnClickListener {
             var user = auth.currentUser
             if (user?.displayName != null) {
@@ -73,8 +89,8 @@ class ExportStatistics : Fragment() {
             } else {
                 signInRequest()
                 Log.d(TAG, "User is signed in: ${auth.currentUser?.email}")
-            }
 
+            }
 
         }
 
@@ -138,6 +154,9 @@ class ExportStatistics : Fragment() {
                     Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
                     binding.exportButton.text = user?.email
+                    lifecycleScope.launch {
+                        googleDriveService.createGoogleSheet(auth, authorizationLauncher)
+                    }
                 } else {
                     // If sign in fails, display a message to the user
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
@@ -145,6 +164,12 @@ class ExportStatistics : Fragment() {
                     binding.root.requestLayout()
                 }
             }
+    }
+
+    private fun createAndSaveSheet() {
+        lifecycleScope.launch {
+            googleDriveService.createGoogleSheet(auth, authorizationLauncher)
+        }
     }
 
     private fun signOut() {
