@@ -32,7 +32,12 @@ import kotlinx.coroutines.withContext
 class GoogleDriveService(private val context: Context, private val activity: Activity) {
     private val TAG = "GoogleDriveService"
     private lateinit var sheetService: Sheets
-    suspend fun createGoogleSheet(auth: FirebaseAuth, authorizationLauncher: ActivityResultLauncher<Intent>, tournament: Tournament) {
+    suspend fun createGoogleSheet(auth: FirebaseAuth, authorizationLauncher: ActivityResultLauncher<Intent>, tournament: Tournament?) {
+        if (tournament == null){
+            Log.e(TAG, "Tournament is null")
+            Toast.makeText(context, "Tournament is null", Toast.LENGTH_SHORT).show()
+            return
+        }
         withContext(Dispatchers.IO) {
             try {
 
@@ -73,22 +78,22 @@ class GoogleDriveService(private val context: Context, private val activity: Act
                 }
 
                 tournament.getMatchesArrayList().forEachIndexed { index, match ->
-
+                    createMatchSheet(spreadsheetID, match, index)
                 }
 
 
                 //TODO: Add data to the summary sheet
 
-                val values = listOf(
-                    listOf("Header1", "Header2", "Header3"),
-                    listOf("Data1", "Data2", "Data3"),
-                    listOf("MoreData1", "MoreData2", "MoreData3")
-                )
-                val body = ValueRange().setValues(values)
-                sheetService.spreadsheets().values()
-                    .update(createdSpreadsheet.spreadsheetId, "A1", body)
-                    .setValueInputOption("RAW")
-                    .execute()
+//                val values = listOf(
+//                    listOf("Header1", "Header2", "Header3"),
+//                    listOf("Data1", "Data2", "Data3"),
+//                    listOf("MoreData1", "MoreData2", "MoreData3")
+//                )
+//                val body = ValueRange().setValues(values)
+//                sheetService.spreadsheets().values()
+//                    .update(createdSpreadsheet.spreadsheetId, "A1", body)
+//                    .setValueInputOption("RAW")
+//                    .execute()
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Sheet created and saved!", Toast.LENGTH_SHORT).show()
                 }
@@ -123,8 +128,16 @@ class GoogleDriveService(private val context: Context, private val activity: Act
         sheetService.spreadsheets().batchUpdate(spreadsheetID, batchUpdateRequest).execute()
 
         val matchData = mutableListOf<List<Any>>().apply{
-            //TODO: Add match data
+            match.getTableData().forEach{
+                item -> add(item)
+            }
+
         }
 
+        val valueRange = ValueRange().setValues(matchData)
+        val updateRequest = sheetService.spreadsheets().values()
+            .update(spreadsheetID, match.opponentName, valueRange)
+            .setValueInputOption("RAW")
+            .execute()
     }
 }

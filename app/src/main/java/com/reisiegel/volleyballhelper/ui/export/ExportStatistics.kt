@@ -38,6 +38,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.reisiegel.volleyballhelper.R
 import com.reisiegel.volleyballhelper.databinding.FragmentExportStatisticsBinding
+import com.reisiegel.volleyballhelper.models.SelectedTournament
 import com.reisiegel.volleyballhelper.services.GoogleDriveService
 import kotlinx.coroutines.launch
 
@@ -83,6 +84,7 @@ class ExportStatistics : Fragment() {
         auth = Firebase.auth
         googleDriveService = GoogleDriveService(requireContext(), requireActivity())
         binding.exportButton.setOnClickListener {
+            viewModel.setTournament(SelectedTournament.selectedTournament ?: return@setOnClickListener)
             var user = auth.currentUser
             if (user?.displayName != null) {
                 signOut()
@@ -155,7 +157,7 @@ class ExportStatistics : Fragment() {
                     val user = auth.currentUser
                     binding.exportButton.text = user?.email
                     lifecycleScope.launch {
-                        googleDriveService.createGoogleSheet(auth, authorizationLauncher)
+                        googleDriveService.createGoogleSheet(auth, authorizationLauncher, viewModel.tournament.value)
                     }
                 } else {
                     // If sign in fails, display a message to the user
@@ -168,7 +170,7 @@ class ExportStatistics : Fragment() {
 
     private fun createAndSaveSheet() {
         lifecycleScope.launch {
-            googleDriveService.createGoogleSheet(auth, authorizationLauncher)
+            googleDriveService.createGoogleSheet(auth, authorizationLauncher, viewModel.tournament.value)
         }
     }
 

@@ -8,9 +8,13 @@ plugins {
 android {
     namespace = "com.reisiegel.volleyballhelper"
     compileSdk = 35
-
-    packagingOptions{
-        exclude("META-INF/DEPENDENCIES".toString())
+    packagingOptions {
+        jniLibs {
+            excludes += setOf("META-INF/DEPENDENCIES".toString())
+        }
+        resources {
+            excludes += setOf("META-INF/DEPENDENCIES".toString())
+        }
     }
 
     defaultConfig {

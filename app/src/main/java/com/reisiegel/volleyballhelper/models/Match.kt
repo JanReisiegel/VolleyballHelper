@@ -246,4 +246,35 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
     private fun newSet(){
         squads.add(ArrayList<Int>())
     }
+
+    fun getTableData(): List<List<String>> {
+        val tableData = ArrayList<List<String>>()
+        val header = listOf(
+            listOf("Hráč", "",
+                "Podání", "", "", "", "",
+                "Útok", "", "", "", "", "", "",
+                "Blok", "", "", "", "",
+                "Příjem", "", "", "", "",
+                "Chyby celkem", "Body celkem", "+-"),
+            listOf("Jméno", "Číslo",
+                "Pokusy", "Zkažené", "%", "Esa", "% bodů",
+                "Pokusy", "Zkažené", "%", "Bodové", "%", "Zablokované", "%",
+                "Pokusy", "Úspěšné", "Neúspěšné", "Chyby", "%",
+                "Pokusy", "Chyby", "Ideální", "Příjmuté", "%",
+                "", "", "" )
+        )
+        header.forEach { item -> tableData.add(item) }
+        var summary = Array<Int>(25) {0}
+        for (player in players) {
+            val playerData = player.getPlayerData()
+            tableData.add(playerData)
+            summary = player.updateSummary(summary)
+        }
+        val footer = mutableListOf<String>("Celkem/Průměr", "")
+        summary.forEach { item -> footer.add(item.toString()) }
+
+        tableData.add(footer.toList())
+
+        return tableData.toList()
+    }
 }
