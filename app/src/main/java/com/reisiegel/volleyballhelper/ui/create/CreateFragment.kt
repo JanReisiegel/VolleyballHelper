@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,6 +45,7 @@ class CreateFragment : Fragment() {
             ViewModelProvider(this)[CreateViewModel::class.java]
         _binding = FragmentCreateBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = "Vytvořit turnaj"
         return root
     }
 

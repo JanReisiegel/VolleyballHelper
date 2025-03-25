@@ -41,7 +41,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_gravity="center"
-        android:text="Substitute"
+        android:text="Střídání"
         android:visibility="gone"/>
 
     <LinearLayout
@@ -76,26 +76,26 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Service"
+                android:text="Podání"
                 android:textSize="20dp" />
 
             <Button
                 android:id="@+id/service_ace"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ace" />
+                android:text="Eso" />
 
             <Button
                 android:id="@+id/service_received"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Received" />
+                android:text="Příjmutý" />
 
             <Button
                 android:id="@+id/service_error"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Error" />
+                android:text="Zkažený" />
         </LinearLayout>
 
         <LinearLayout
@@ -116,32 +116,32 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Attack"
+                    android:text="Útok"
                     android:textSize="20dp" />
 
                 <Button
                     android:id="@+id/attack_hit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Hit" />
+                    android:text="Bod" />
 
                 <Button
                     android:id="@+id/attack_received"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Received" />
+                    android:text="Příjmutý" />
 
                 <Button
                     android:id="@+id/attack_error"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="error" />
+                    android:text="Chyba" />
 
                 <Button
                     android:id="@+id/attack_block"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Block" />
+                    android:text="Zablokovaný" />
             </LinearLayout>
 
             <View
@@ -162,26 +162,26 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Block"
+                    android:text="Blok"
                     android:textSize="20dp" />
 
                 <Button
                     android:id="@+id/block_point"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Point" />
+                    android:text="Bod" />
 
                 <Button
                     android:id="@+id/block_no_point"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="No Point" />
+                    android:text="Úspěšný" />
 
                 <Button
                     android:id="@+id/block_error"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Error" />
+                    android:text="Chyba" />
             </LinearLayout>
         </LinearLayout>
 
@@ -196,32 +196,32 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Receive serve"
+                android:text="Příjem podání"
                 android:textSize="20dp" />
 
             <Button
                 android:id="@+id/reception_ideal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ideal" />
+                android:text="Ideální" />
 
             <Button
                 android:id="@+id/reception_continue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Can Continue" />
+                android:text="Pokračujeme" />
 
             <Button
                 android:id="@+id/reception_no_continue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Can't continue" />
+                android:text="Nepokračujeme" />
 
             <Button
                 android:id="@+id/reception_error"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="error" />
+                android:text="Chyba" />
 
         </LinearLayout>
     </LinearLayout>

@@ -15,16 +15,24 @@ import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.SheetsScopes
+import com.google.api.services.sheets.v4.model.AddSheetRequest
+import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetRequest
+import com.google.api.services.sheets.v4.model.Request
+import com.google.api.services.sheets.v4.model.Sheet
+import com.google.api.services.sheets.v4.model.SheetProperties
 import com.google.api.services.sheets.v4.model.Spreadsheet
 import com.google.api.services.sheets.v4.model.SpreadsheetProperties
 import com.google.api.services.sheets.v4.model.ValueRange
 import com.google.firebase.auth.FirebaseAuth
+import com.reisiegel.volleyballhelper.models.Match
+import com.reisiegel.volleyballhelper.models.Tournament
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class GoogleDriveService(private val context: Context, private val activity: Activity) {
     private val TAG = "GoogleDriveService"
-    suspend fun createGoogleSheet(auth: FirebaseAuth, authorizationLauncher: ActivityResultLauncher<Intent>) {
+    private lateinit var sheetService: Sheets
+    suspend fun createGoogleSheet(auth: FirebaseAuth, authorizationLauncher: ActivityResultLauncher<Intent>, tournament: Tournament) {
         withContext(Dispatchers.IO) {
             try {
 
@@ -43,34 +51,33 @@ class GoogleDriveService(private val context: Context, private val activity: Act
                 )
                     .setSelectedAccountName(account)
 
-                val driveService =
-                    Drive.Builder(NetHttpTransport(), JacksonFactory(), credential)
-                        .setApplicationName("VolleyballHelper")
-                        .build()
-                val sheetService =
+                sheetService =
                     Sheets.Builder(NetHttpTransport(), JacksonFactory(), credential)
                         .setApplicationName("VolleyballHelper")
                         .build()
 
                 val spreadsheet =
-                    Spreadsheet().setProperties(SpreadsheetProperties().setTitle("VolleybalData"))
+                    Spreadsheet().setProperties(SpreadsheetProperties().setTitle(tournament.name))
 
                 val createdSpreadsheet =
                     sheetService.spreadsheets().create(spreadsheet).execute()
-                if (createdSpreadsheet == null) {
-                    Log.e(TAG, "createdSpreadsheet is null")
+
+                val spreadsheetID = createdSpreadsheet.spreadsheetId ?: null
+
+                if (spreadsheetID == null) {
+                    Log.e(TAG, "Spreadsheet ID is null")
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(
-                            context,
-                            "Spreadsheet creation failed",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
+                        Toast.makeText(context, "Error creating sheet", Toast.LENGTH_SHORT).show()
                     }
                     return@withContext
                 }
 
-                //TODO: Add data to the sheet
+                tournament.getMatchesArrayList().forEachIndexed { index, match ->
+
+                }
+
+
+                //TODO: Add data to the summary sheet
 
                 val values = listOf(
                     listOf("Header1", "Header2", "Header3"),
@@ -105,5 +112,19 @@ class GoogleDriveService(private val context: Context, private val activity: Act
                 }
             }
         }
+    }
+
+    private fun createMatchSheet(spreadsheetID: String, match: Match, index: Int){
+        val addSheetRequest = Request()
+            .setAddSheet(AddSheetRequest().setProperties(SheetProperties().setTitle(match.opponentName).setIndex(index)))
+        val batchUpdateRequest = BatchUpdateSpreadsheetRequest()
+            .setRequests(listOf(addSheetRequest))
+
+        sheetService.spreadsheets().batchUpdate(spreadsheetID, batchUpdateRequest).execute()
+
+        val matchData = mutableListOf<List<Any>>().apply{
+            //TODO: Add match data
+        }
+
     }
 }

@@ -1,7 +1,6 @@
 package com.reisiegel.volleyballhelper.models
 
 import android.content.Context
-import android.util.Log
 import com.google.gson.Gson
 import java.io.File
 
@@ -115,7 +114,7 @@ class Tournament private constructor(var name: String, private var matches: Arra
     /**
      * This function is for get all matches in this tournament
      */
-    fun getmatchesArrayList() : ArrayList<Match>{
+    fun getMatchesArrayList() : ArrayList<Match>{
         return matches
     }
 
@@ -126,9 +125,5 @@ class Tournament private constructor(var name: String, private var matches: Arra
         val gson = Gson()
         val jsonString = gson.toJson(this)
         file.writeText(jsonString)
-    }
-
-    fun shareGoogleSheetToGoogleDrive(){
-        TODO()
     }
 }

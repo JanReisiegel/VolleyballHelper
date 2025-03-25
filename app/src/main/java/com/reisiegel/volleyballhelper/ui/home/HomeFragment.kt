@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -90,6 +91,8 @@ class HomeFragment : Fragment() {
                 findNavController().navigate(R.id.nav_match_statistics)
         }
 
+
+
         return root
     }
 
@@ -99,6 +102,11 @@ class HomeFragment : Fragment() {
         button.setOnClickListener {
             findNavController().navigate(destination)
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = "Vybrat Turnaj"
     }
 
     override fun onDestroyView() {

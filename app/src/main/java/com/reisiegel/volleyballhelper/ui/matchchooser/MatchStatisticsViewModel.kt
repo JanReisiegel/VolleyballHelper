@@ -166,7 +166,7 @@ class MatchStatisticsViewModel() : ViewModel() {
                 var selectedIndex = -1
 
                 MaterialAlertDialogBuilder(context ?: return@setOnClickListener)
-                    .setTitle("Select Player")
+                    .setTitle("Vybrat hráče")
                     .setSingleChoiceItems(playerNames, selectedIndex) { _, which ->
                         selectedIndex = which
                     }

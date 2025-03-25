@@ -1,32 +1,18 @@
 package com.reisiegel.volleyballhelper.ui.matchchooser
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toolbar
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.reisiegel.volleyballhelper.R
 import com.reisiegel.volleyballhelper.databinding.FragmentMatchStatisticsBinding
-import com.reisiegel.volleyballhelper.models.AttackEnum
-import com.reisiegel.volleyballhelper.models.BlockEnum
-import com.reisiegel.volleyballhelper.models.ReceiveServeEnum
-import com.reisiegel.volleyballhelper.ui.matchchooser.MatchAdapter
-import com.reisiegel.volleyballhelper.ui.matchchooser.MatchItem
 import com.reisiegel.volleyballhelper.models.SelectedTournament
-import com.reisiegel.volleyballhelper.models.ServeEnum
 import com.reisiegel.volleyballhelper.models.SetStates
 import com.reisiegel.volleyballhelper.models.Tournament
 import java.io.File
@@ -69,7 +55,7 @@ class MatchStatistics : Fragment() {
 //            root.requestLayout()
 //        }
 
-        val matchList = SelectedTournament.selectedTournament?.getmatchesArrayList()
+        val matchList = SelectedTournament.selectedTournament?.getMatchesArrayList()
 
         matchList?.forEach {
             match -> viewModel.addMatchItem(MatchItem(match.opponentName, match.startTime, match.isFinished()))
