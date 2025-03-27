@@ -277,4 +277,5 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
 
         return tableData.toList()
     }
+
 }
