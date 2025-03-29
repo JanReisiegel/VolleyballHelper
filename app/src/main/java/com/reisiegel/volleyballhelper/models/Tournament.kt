@@ -66,6 +66,9 @@ class Tournament private constructor(var name: String, private var matches: Arra
         }
     }
 
+    fun getNumberOfPlayers(): Int{
+        return players.size
+    }
     /**
      * Function to add player in nomination and add the player to all match statistics
      *
@@ -125,5 +128,46 @@ class Tournament private constructor(var name: String, private var matches: Arra
         val gson = Gson()
         val jsonString = gson.toJson(this)
         file.writeText(jsonString)
+    }
+
+    fun getSummaryTable(): List<List<String>>{
+        val summaryTable = mutableListOf<List<String>>()
+        val header = listOf(
+            listOf("Hráč", "",
+                "Podání", "", "", "", "",
+                "Útok", "", "", "", "", "", "",
+                "Blok", "", "", "", "",
+                "Příjem", "", "", "", "",
+                "Chyby celkem", "Body celkem", "+-"),
+            listOf("Číslo","Jméno",
+                "Pokusy", "Zkažené", "%", "Esa", "% bodů",
+                "Pokusy", "Zkažené", "%", "Bodové", "%", "Zablokované", "%",
+                "Pokusy", "Úspěšné", "Neúspěšné", "Chyby", "%",
+                "Pokusy", "Chyby", "Ideální", "Příjmuté", "%",
+                "", "", "" )
+        )
+        header.forEach { item -> summaryTable.add(item) }
+        val playerNumbers = players.keys.sorted()
+        var playersSummaryStats = MutableList<Int>(25) {0}
+        playerNumbers.forEach { number ->
+            var stats = MutableList<Int>(25) { 0 }
+            matches.forEach { match ->
+                val player = match.getPlayer(number)
+                stats = player!!.updateSummary(stats)
+            }
+            playersSummaryStats.forEachIndexed { index, stat ->
+                val temp = stat + stats[index]
+                playersSummaryStats[index] = if (temp == stats[index]) temp else temp / 2
+            }
+
+            val playerName = players[number]
+            val playerLine = mutableListOf<String>(number.toString(), playerName.toString())
+            stats.forEach { it -> playerLine.add(it.toString()) }
+            summaryTable.add(playerLine.toList())
+        }
+        val footer = mutableListOf<String>("", "Celkem/Průměr")
+        playersSummaryStats.forEach { it -> footer.add(it.toString()) }
+        summaryTable.add(footer.toList())
+        return summaryTable
     }
 }

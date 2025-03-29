@@ -25,6 +25,7 @@ import com.google.api.services.sheets.v4.model.CellFormat
 import com.google.api.services.sheets.v4.model.Color
 import com.google.api.services.sheets.v4.model.DimensionProperties
 import com.google.api.services.sheets.v4.model.DimensionRange
+import com.google.api.services.sheets.v4.model.ExtendedValue
 import com.google.api.services.sheets.v4.model.GridRange
 import com.google.api.services.sheets.v4.model.MergeCellsRequest
 import com.google.api.services.sheets.v4.model.RepeatCellRequest
@@ -94,44 +95,29 @@ class GoogleDriveService(private val context: Context, private val activity: Act
                 tournament.getMatchesArrayList().forEachIndexed { index, match ->
                     createMatchSheet(spreadsheetID, match, index+1)
                     val sheetId = getSheetId(spreadsheetID, match.opponentName)
-                    requests.add(addBottomBorder(spreadsheetID, sheetId, match.players.size + 1,match.players.size + 3,0,27)!!)
-                    requests.add(addRightBorder(spreadsheetID, sheetId, 0, match.players.size + 3, 1, 2)!!)
-                    requests.add(addRightBorder(spreadsheetID, sheetId, 0, match.players.size + 3, 1, 2)!!)
-                    requests.add(addRightBorder(spreadsheetID, sheetId, 0, match.players.size + 3, 6, 7)!!)
-                    requests.add(addRightBorder(spreadsheetID, sheetId, 0, match.players.size + 3, 13, 14)!!)
-                    requests.add(addRightBorder(spreadsheetID, sheetId, 0, match.players.size + 3, 18, 19)!!)
-                    requests.add(addRightBorder(spreadsheetID, sheetId, 0, match.players.size + 3, 6, 7)!!)
-                    requests.add(addRightBorder(spreadsheetID, sheetId, 0, match.players.size + 3, 23, 27)!!)
-                    requests.add(mergeCells(spreadsheetID, sheetId, 0, 1, 0, 2)!!)
-                    requests.add(mergeCells(spreadsheetID, sheetId, 0, 1, 2, 7)!!)
-                    requests.add(mergeCells(spreadsheetID, sheetId, 0, 1, 7, 14)!!)
-                    requests.add(mergeCells(spreadsheetID, sheetId, 0, 1, 14, 19)!!)
-                    requests.add(mergeCells(spreadsheetID, sheetId, 0, 1, 19, 24)!!)
-                    requests.add(mergeCells(spreadsheetID, sheetId, match.players.size + 2, match.players.size + 3, 0, 2)!!)
-                    requests.add(mergeCells(spreadsheetID, sheetId, 0, 2, 24, 25)!!)
-                    requests.add(mergeCells(spreadsheetID, sheetId, 0, 2, 25, 26)!!)
-                    requests.add(mergeCells(spreadsheetID, sheetId, 0, 2, 26, 27)!!)
-                    requests.add(alignColumns(spreadsheetID, sheetId, 0, match.players.size + 3, 0, 27)!!)
-                    requests.add(resizeColumns(spreadsheetID, sheetId)!!)
-
+                    formateTable(spreadsheetID, sheetId, match.players.size).forEach {
+                        requests.add(it)
+                    }
                 }
+                //TODO: Add data to the summary sheet
+                val summarySheetId = createdSpreadsheet.sheets[0].properties.sheetId
+
+                val values = tournament.getSummaryTable()
+                val body = ValueRange().setValues(values)
+                sheetService.spreadsheets().values()
+                    .update(createdSpreadsheet.spreadsheetId, "A1", body)
+                    .setValueInputOption("RAW")
+                    .execute()
+
+                val playersNumber = tournament.getNumberOfPlayers()
+                formateTable(spreadsheetID, summarySheetId, playersNumber).forEach {
+                    requests.add(it)
+                }
+
+
                 Log.d(TAG, "Number of requests: ${requests.size}")
                 updateGoogleSheet(spreadsheetID, requests)
 
-
-
-                //TODO: Add data to the summary sheet
-
-//                val values = listOf(
-//                    listOf("Header1", "Header2", "Header3"),
-//                    listOf("Data1", "Data2", "Data3"),
-//                    listOf("MoreData1", "MoreData2", "MoreData3")
-//                )
-//                val body = ValueRange().setValues(values)
-//                sheetService.spreadsheets().values()
-//                    .update(createdSpreadsheet.spreadsheetId, "A1", body)
-//                    .setValueInputOption("RAW")
-//                    .execute()
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Sheet created and saved!", Toast.LENGTH_SHORT).show()
                 }
@@ -181,7 +167,7 @@ class GoogleDriveService(private val context: Context, private val activity: Act
 
     private fun mergeCells(spreadsheetId: String, sheetId: Int, startRow: Int, endRow: Int, startCol: Int, endCol: Int, mergeType: String = "MERGE_ALL") : Request?{
 
-        val mergeRequest =
+        var mergeRequest =
             Request().setMergeCells(
                 MergeCellsRequest()
                     .setRange(
@@ -196,11 +182,155 @@ class GoogleDriveService(private val context: Context, private val activity: Act
             )
 
 
-        return mergeRequest
 
-//        val batchUpdateRequest = BatchUpdateSpreadsheetRequest().setRequests(mergeRequests)
-//        sheetService.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequest).execute()
+        return mergeRequest
     }
+
+    private fun mergeCellsAndKeepContent(
+        spreadsheetId: String,
+        sheetId: Int,
+        startRow: Int,
+        endRow: Int,
+        startCol: Int,
+        endCol: Int,
+        mergeType: String = "MERGE_ALL"
+    ): List<Request> {
+        val requests = mutableListOf<Request>()
+
+        try {
+            // 1. Get the sheet properties to check grid limits
+            val spreadsheet = sheetService.spreadsheets().get(spreadsheetId)
+                .setFields("sheets(properties(sheetId,title,gridProperties))")
+                .execute()
+
+            val sheet = spreadsheet.sheets.find { it.properties.sheetId == sheetId }
+            if (sheet == null) {
+                Log.e("MergeCells", "Sheet with ID $sheetId not found")
+                requests.add(mergeCells(spreadsheetId,sheetId,startRow,endRow,startCol,endCol,"MERGE_ALL")!!)
+                return requests
+
+            }
+
+            val maxColumns = sheet.properties.gridProperties.columnCount
+            val maxRows = sheet.properties.gridProperties.rowCount
+
+            // Check if the range exceeds grid limits
+            if (startCol < 0 || endCol > maxColumns || startRow < 0 || endRow > maxRows) {
+                Log.e(
+                    "MergeCells",
+                    "Range exceeds grid limits: maxRows=$maxRows, maxColumns=$maxColumns"
+                )
+                requests.add(mergeCells(spreadsheetId,sheetId,startRow,endRow,startCol,endCol,"MERGE_ALL")!!)
+                return requests
+            }
+
+            // 2. Get values within the merge range
+            val sheetName = sheet.properties.title
+            val range =
+                "$sheetName!${columnToLetter(startCol)}${startRow + 1}:${columnToLetter(endCol - 1)}${endRow}"
+
+            // Handle potential errors when getting values
+            val response = try {
+                sheetService.spreadsheets().values().get(spreadsheetId, range).execute()
+            } catch (e: Exception) {
+                Log.e("MergeCells", "Failed to get values: ${e.message}")
+                null
+            }
+
+            val secondCellValue = if (response?.getValues() != null &&
+                response.getValues().isNotEmpty() &&
+                response.getValues()[0].size > 1 &&
+                response.getValues()[0][1] != null
+            ) {
+                response.getValues()[0][1].toString()
+            } else {
+                "" // Use empty string if second cell value can't be retrieved
+            }
+
+            // If there's content in the second cell
+            if (secondCellValue.isNotEmpty()) {
+                // 3. Update the first cell with the value from the second cell
+                val updateRequest = Request().setUpdateCells(
+                    UpdateCellsRequest()
+                        .setRange(
+                            GridRange()
+                                .setSheetId(sheetId)
+                                .setStartRowIndex(startRow)
+                                .setEndRowIndex(startRow + 1)
+                                .setStartColumnIndex(startCol)
+                                .setEndColumnIndex(startCol + 1)
+                        )
+                        .setFields("userEnteredValue")
+                        .setRows(
+                            listOf(
+                                RowData().setValues(
+                                    listOf(
+                                        CellData().setUserEnteredValue(
+                                            ExtendedValue().setStringValue(secondCellValue)
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                )
+                requests.add(updateRequest)
+
+                // 4. Clear the second cell to avoid duplicate text after merge
+                val clearRequest = Request().setUpdateCells(
+                    UpdateCellsRequest()
+                        .setRange(
+                            GridRange()
+                                .setSheetId(sheetId)
+                                .setStartRowIndex(startRow)
+                                .setEndRowIndex(startRow + 1)
+                                .setStartColumnIndex(startCol + 1)
+                                .setEndColumnIndex(startCol + 2)
+                        )
+                        .setFields("userEnteredValue")
+                        .setRows(
+                            listOf(
+                                RowData().setValues(
+                                    listOf(
+                                        CellData().setUserEnteredValue(
+                                            ExtendedValue().setStringValue("")
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                )
+                requests.add(clearRequest)
+            }
+
+            // 5. Merge the cells
+            val mergeRequest =
+                mergeCells(spreadsheetId, sheetId, startRow, endRow, startCol, endCol, "MERGE_ALL")
+            requests.add(mergeRequest!!)
+
+        } catch (e: Exception) {
+            Log.e("MergeCells", "Error in mergeCellsKeepSecondValue: ${e.message}")
+            // Fallback to basic merge
+            val fallbackMergeRequest =
+                mergeCells(spreadsheetId, sheetId, startRow, endRow, startCol, endCol, "MERGE_ALL")
+            requests.add(fallbackMergeRequest!!)
+        }
+
+        return requests
+    }
+
+    private fun columnToLetter(column: Int): String {
+        var temp = column
+        var result = ""
+
+        do {
+            val remainder = temp % 26
+            result = (remainder + 'A'.code).toChar() + result
+            temp = temp / 26 - (if (remainder == 0) 1 else 0)
+        } while (temp >= 0)
+
+        return result
+    }
+
     private fun addBottomBorder(
         spreadsheetId: String,
         sheetId: Int,
@@ -435,11 +565,43 @@ class GoogleDriveService(private val context: Context, private val activity: Act
             ?: throw IllegalArgumentException("Sheet $sheetName not found in spreadsheet")
         return resultId
     }
+    fun formateTable(spreadsheetId: String, sheetId: Int, numberOfRows: Int): List<Request> {
+        val requests = mutableListOf<Request>()
+        requests.add(addBottomBorder(spreadsheetId, sheetId, numberOfRows + 1,numberOfRows + 3,0,27)!!)
+        requests.add(addBottomBorder(spreadsheetId,sheetId, 1, 2, 0, 27)!!)
+        requests.add(addRightBorder(spreadsheetId, sheetId, 0, numberOfRows + 3, 1, 2)!!)
+        requests.add(addRightBorder(spreadsheetId, sheetId, 0, numberOfRows + 3, 1, 2)!!)
+        requests.add(addRightBorder(spreadsheetId, sheetId, 0, numberOfRows + 3, 6, 7)!!)
+        requests.add(addRightBorder(spreadsheetId, sheetId, 0, numberOfRows + 3, 13, 14)!!)
+        requests.add(addRightBorder(spreadsheetId, sheetId, 0, numberOfRows + 3, 18, 19)!!)
+        requests.add(addRightBorder(spreadsheetId, sheetId, 0, numberOfRows + 3, 6, 7)!!)
+        requests.add(addRightBorder(spreadsheetId, sheetId, 0, numberOfRows + 3, 23, 27)!!)
+        requests.add(resizeColumns(spreadsheetId, sheetId)!!)
+        requests.add(mergeCells(spreadsheetId, sheetId, 0, 1, 0, 2)!!)
+        requests.add(mergeCells(spreadsheetId, sheetId, 0, 1, 2, 7)!!)
+        requests.add(mergeCells(spreadsheetId, sheetId, 0, 1, 7, 14)!!)
+        requests.add(mergeCells(spreadsheetId, sheetId, 0, 1, 14, 19)!!)
+        requests.add(mergeCells(spreadsheetId, sheetId, 0, 1, 19, 24)!!)
+        //requests.add(mergeCells(spreadsheetId, sheetId, numberOfRows + 2, numberOfRows + 3, 0, 2)!!)
+        mergeCellsAndKeepContent(spreadsheetId, sheetId, numberOfRows + 2, numberOfRows + 3, 0, 2).forEach {
+            requests.add(it)
+        }
+        requests.add(mergeCells(spreadsheetId, sheetId, 0, 2, 24, 25)!!)
+        requests.add(mergeCells(spreadsheetId, sheetId, 0, 2, 25, 26)!!)
+        requests.add(mergeCells(spreadsheetId, sheetId, 0, 2, 26, 27)!!)
+        requests.add(alignColumns(spreadsheetId, sheetId, 0, numberOfRows + 3, 0, 27)!!)
 
-//    fun formatSheet(spreadsheetId: String, endCol: Int, endRow: Int){
-//        val sheet = sheetService.spreadsheets().get(spreadsheetId).execute()
-//
-//        // If you want to format a specific range
-//        var range =
-//    }
+
+        return requests
+    }
+
+    private fun getColumnLetter(columnIndex: Int): String {
+        var temp = columnIndex
+        var result = ""
+        while (temp >= 0) {
+            result = ('A' + temp % 26) + result
+            temp = temp / 26 - 1
+        }
+        return result
+    }
 }

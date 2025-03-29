@@ -1,8 +1,6 @@
 package com.reisiegel.volleyballhelper.models
 
-import android.util.Log
-
-class Match(var opponentName: String, var players: ArrayList<Player>, var startTime: String) {
+class Match(var opponentName: String, var players: MutableList<Player>, var startTime: String) {
     private var substitutions: ArrayList<Substitution>
     private var squads: ArrayList<ArrayList<Int>> = ArrayList<ArrayList<Int>>() // list of players in each squad
     private var rotations: Int = 0
@@ -256,7 +254,7 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
                 "Blok", "", "", "", "",
                 "Příjem", "", "", "", "",
                 "Chyby celkem", "Body celkem", "+-"),
-            listOf("Jméno", "Číslo",
+            listOf("Číslo","Jméno",
                 "Pokusy", "Zkažené", "%", "Esa", "% bodů",
                 "Pokusy", "Zkažené", "%", "Bodové", "%", "Zablokované", "%",
                 "Pokusy", "Úspěšné", "Neúspěšné", "Chyby", "%",
@@ -264,13 +262,14 @@ class Match(var opponentName: String, var players: ArrayList<Player>, var startT
                 "", "", "" )
         )
         header.forEach { item -> tableData.add(item) }
-        var summary = Array<Int>(25) {0}
+        var summary = MutableList<Int>(25) {0}
+        players.sortBy { it.jerseyNumber }
         for (player in players) {
             val playerData = player.getPlayerData()
             tableData.add(playerData)
             summary = player.updateSummary(summary)
         }
-        val footer = mutableListOf<String>("Celkem/Průměr", "")
+        val footer = mutableListOf<String>("", "Celkem/Průměr")
         summary.forEach { item -> footer.add(item.toString()) }
 
         tableData.add(footer.toList())

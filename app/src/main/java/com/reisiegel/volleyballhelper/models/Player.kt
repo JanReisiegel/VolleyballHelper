@@ -63,7 +63,7 @@ class Player(var name: String, var jerseyNumber: Int) {
         val totalPoints = serveAces + attackHits + blockPoints
         val totalDifference = totalPoints - totalErrors
 
-        return listOf<String>(name, jerseyNumber.toString(),
+        return listOf<String>(jerseyNumber.toString(), name,
             serveAttempts.toString(), serveErrors.toString(), serveErrorPercentage, serveAces.toString(), servePointPercentage,
             attackAttempts.toString(), attackErrors.toString(), attackErrorPercentage, attackHits.toString(), attackPointPercentage, attackBlocks.toString(), attackBlockedPercentage,
             blockAttempts.toString(), blockPoints.toString(), blockNoPoints.toString(), blockErrors.toString(), blockPointPercentage,
@@ -71,7 +71,7 @@ class Player(var name: String, var jerseyNumber: Int) {
             totalErrors.toString(), totalPoints.toString(), totalDifference.toString())
     }
 
-    fun updateSummary(summary: Array<Int>): Array<Int>{
+    fun updateSummary(summary: MutableList<Int>): MutableList<Int>{
         val serveAttempts = serveStats.getAttempts()
         val serveErrors = serveStats.getStatistics(ServeEnum.ERROR)
         val serveAces = serveStats.getStatistics(ServeEnum.ACE)
