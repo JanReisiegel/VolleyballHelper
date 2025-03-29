@@ -11,7 +11,7 @@
         android:id="@+id/match_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible">
+        android:visibility="gone">
 
 
         <LinearLayout
@@ -38,7 +38,8 @@
     <FrameLayout
         android:id="@+id/match_statistics"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,59 +64,59 @@
                     android:id="@+id/set_score"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="30dp"
                     android:layout_gravity="center"
-                    android:text="0:0" />
+                    android:text="0:0"
+                    android:textSize="30dp" />
 
                 <Button
                     android:id="@+id/opponent_error"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_gravity="center"
-                    android:visibility="gone"
-                    android:text="Chyba soupeře"/>
+                    android:text="Chyba soupeře"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/opponent_point"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_gravity="center"
-                    android:visibility="gone"
-                    android:text="Bod pro soupeře"/>
+                    android:text="Bod pro soupeře"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/serve_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_gravity="center"
-                    android:visibility="visible"
-                    android:text="Podání"/>
+                    android:text="Podání"
+                    android:visibility="visible" />
 
                 <Button
                     android:id="@+id/end_match"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_gravity="center"
-                    android:visibility="gone"
-                    android:text="Ukončit zápas" />
+                    android:text="Ukončit zápas"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/start_set"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_gravity="center"
-                    android:visibility="visible"
-                    android:text="Zahájit set" />
+                    android:text="Zahájit set"
+                    android:visibility="visible" />
 
                 <View
                     android:layout_width="match_parent"
@@ -124,10 +125,10 @@
 
                 <Button
                     android:id="@+id/back_to_list"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:text="Vybrat jiný zápas" />
 
             </LinearLayout>
@@ -150,60 +151,60 @@
                     layout="@layout/zone_item"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:layout_row="0"
                     android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
                     android:layout_column="0"
-                    android:layout_row="0"/>
+                    android:layout_columnWeight="1" />
 
                 <include
                     android:id="@+id/zone6"
                     layout="@layout/zone_item"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:layout_row="0"
                     android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
                     android:layout_column="1"
-                    android:layout_row="0" />
+                    android:layout_columnWeight="1" />
 
                 <include
                     android:id="@+id/zone5"
                     layout="@layout/zone_item"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:layout_row="0"
                     android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
                     android:layout_column="2"
-                    android:layout_row="0" />
+                    android:layout_columnWeight="1" />
 
                 <include
                     android:id="@+id/zone2"
                     layout="@layout/zone_item"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:layout_row="1"
                     android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
                     android:layout_column="0"
-                    android:layout_row="1" />
+                    android:layout_columnWeight="1" />
 
                 <include
                     android:id="@+id/zone3"
                     layout="@layout/zone_item"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:layout_row="1"
                     android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
                     android:layout_column="1"
-                    android:layout_row="1" />
+                    android:layout_columnWeight="1" />
 
                 <include
                     android:id="@+id/zone4"
                     layout="@layout/zone_item"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:layout_row="1"
                     android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
                     android:layout_column="2"
-                    android:layout_row="1" />
+                    android:layout_columnWeight="1" />
 
             </GridLayout>
 

@@ -1,6 +1,5 @@
 package com.reisiegel.volleyballhelper.ui.export
 
-import android.accounts.Account
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
@@ -18,27 +17,22 @@ import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
-import androidx.credentials.GetCredentialResponse
-import androidx.credentials.exceptions.ClearCredentialException
-import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
-import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.auth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.reisiegel.volleyballhelper.R
 import com.reisiegel.volleyballhelper.databinding.FragmentExportStatisticsBinding
-import com.reisiegel.volleyballhelper.models.SelectedTournament
 import com.reisiegel.volleyballhelper.services.GoogleDriveService
 import kotlinx.coroutines.launch
 
@@ -51,9 +45,8 @@ class ExportStatistics : Fragment() {
     private lateinit var googleDriveService: GoogleDriveService
 
     private lateinit var auth: FirebaseAuth
-    private lateinit var credentialManager: CredentialManager
     private val TAG = "GoogleActivity"
-    //private val TYPE_GOOGLE_ID_TOKEN_CREDENTIAL = "com.google.android.libraries.identity.googleid.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL"
+    private lateinit var recycleTournamentsView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,19 +75,33 @@ class ExportStatistics : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         auth = Firebase.auth
-        googleDriveService = GoogleDriveService(requireContext(), requireActivity())
-        binding.exportButton.setOnClickListener {
-            viewModel.setTournament(SelectedTournament.selectedTournament ?: return@setOnClickListener)
-            var user = auth.currentUser
-            if (user?.displayName != null) {
-                signOut()
-            } else {
-                signInRequest()
-                Log.d(TAG, "User is signed in: ${auth.currentUser?.email}")
-
-            }
-
+        if (auth.currentUser != null) {
+            signOut()
         }
+
+        googleDriveService = GoogleDriveService(requireContext(), requireActivity())
+
+        viewModel.loadTournaments(requireContext())
+
+        recycleTournamentsView = binding.tournamentList
+        recycleTournamentsView.layoutManager = LinearLayoutManager(requireContext())
+
+        val tournamentsAdapter = TournamentAdapter(viewModel.tournamentsItem.value?.toMutableList(), requireContext(), view, {viewModel.deleteTournament(it)}, {viewModel.exportTournament(it)})
+        recycleTournamentsView.adapter = tournamentsAdapter
+
+        binding.root.requestLayout()
+
+//        binding.exportButton.setOnClickListener {
+//            viewModel.setTournament(SelectedTournament.selectedTournament ?: return@setOnClickListener)
+//            var user = auth.currentUser
+//            if (user?.displayName != null) {
+//                signOut()
+//            } else {
+//                signInRequest()
+//                Log.d(TAG, "User is signed in: ${auth.currentUser?.email}")
+//
+//            }
+//        }
 
     }
 
@@ -155,9 +162,9 @@ class ExportStatistics : Fragment() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
-                    binding.exportButton.text = user?.email
+                    //binding.exportButton.text = user?.email
                     lifecycleScope.launch {
-                        googleDriveService.createGoogleSheet(auth, authorizationLauncher, viewModel.tournament.value)
+                        googleDriveService.createGoogleSheet(auth, authorizationLauncher, viewModel.exportTournament.value)
                     }
                 } else {
                     // If sign in fails, display a message to the user
@@ -170,7 +177,7 @@ class ExportStatistics : Fragment() {
 
     private fun createAndSaveSheet() {
         lifecycleScope.launch {
-            googleDriveService.createGoogleSheet(auth, authorizationLauncher, viewModel.tournament.value)
+            googleDriveService.createGoogleSheet(auth, authorizationLauncher, viewModel.exportTournament.value)
         }
     }
 
@@ -178,7 +185,7 @@ class ExportStatistics : Fragment() {
         // Firebase sign out
         auth.signOut()
 
-        binding.exportButton.text = "Export"
+        //binding.exportButton.text = "Export"
         // Update UI
         updateUI(null)
 

@@ -6,8 +6,8 @@
     tools:context=".ui.export.ExportStatistics">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <TextView
@@ -15,11 +15,10 @@
             android:layout_height="match_parent"
             android:text="Hello" />
 
-        <Button
-            android:id="@+id/exportButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Export" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/tournament_list" />
     </LinearLayout>
 
 </FrameLayout>
