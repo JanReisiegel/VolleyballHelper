@@ -96,8 +96,8 @@ class MatchStatistics : Fragment() {
                 viewModel.opponentPoint()
             }
             binding.opponentError.setOnClickListener {
+                viewModel.opponentError(root)
                 viewModel.changeZones(root, SetStates.SERVE)
-                viewModel.opponentError()
             }
         }
 

@@ -354,11 +354,18 @@ class MatchStatisticsViewModel() : ViewModel() {
 
     fun opponentPoint(){
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.opponentPoint()
+        if (serve.value == true){
+            changeServe()
+        }
         changeScoreboard()
     }
 
-    fun opponentError(){
+    fun opponentError(view: View){
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.opponentError()
+        if (serve.value == false){
+            changeServe()
+            rotateFormation(view)
+        }
         changeScoreboard()
     }
 
