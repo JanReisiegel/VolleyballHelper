@@ -19,23 +19,28 @@ import com.reisiegel.volleyballhelper.services.AuthService
 import java.io.File
 
 class ExportStatisticsViewModel() : ViewModel() {
-
+    private val  TAG = "GoogleActivity"
     private val _tournaments = MutableLiveData<MutableList<Tournament>>()
     private val _tournamentsItem = MutableLiveData<MutableList<TournamentItem>>()
-    private val _exportTournament = MutableLiveData<Tournament>()
+    private val _exportTournament = MutableLiveData<Tournament?>()
 
 
     val tournaments: LiveData<MutableList<Tournament>> = _tournaments
     val tournamentsItem: LiveData<MutableList<TournamentItem>> = _tournamentsItem
-    val exportTournament: LiveData<Tournament> = _exportTournament
+    val exportTournament: LiveData<Tournament?> = _exportTournament
 
     init{
         //TODO: load tournaments storage
     }
 
-    fun exportTournament(index: Int){
-        val tournament = _tournaments.value?.get(index)
-        _exportTournament.value = tournament ?: return
+    fun exportTournament(path: String){
+        val tournamentFile = File(path)
+        val tournament = Tournament.loadFromJson(tournamentFile)
+        if (tournament == null) {
+            Log.e(TAG, "Tournament from $path not found")
+            return
+        }
+        _exportTournament.value = tournament
     }
 
     fun deleteTournament(index: Int){
@@ -55,5 +60,9 @@ class ExportStatisticsViewModel() : ViewModel() {
             tournamentsTemp.add(tournamentItem)
         }
         _tournamentsItem.value = tournamentsTemp
+    }
+
+    fun setTournament(tournament: Tournament?){
+        _exportTournament.value = tournament
     }
 }

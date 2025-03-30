@@ -33,6 +33,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.reisiegel.volleyballhelper.R
 import com.reisiegel.volleyballhelper.databinding.FragmentExportStatisticsBinding
+import com.reisiegel.volleyballhelper.models.SelectedTournament
 import com.reisiegel.volleyballhelper.services.GoogleDriveService
 import kotlinx.coroutines.launch
 
@@ -89,7 +90,14 @@ class ExportStatistics : Fragment() {
         val tournamentsAdapter = TournamentAdapter(viewModel.tournamentsItem.value?.toMutableList(), requireContext(), view, {viewModel.deleteTournament(it)}, {viewModel.exportTournament(it)})
         recycleTournamentsView.adapter = tournamentsAdapter
 
-        binding.root.requestLayout()
+        viewModel.exportTournament.observe(viewLifecycleOwner) { tournament ->
+            Log.d(TAG, "Exporting tournament: ${tournament?.name}")
+            if (tournament != null) {
+                Log.d(TAG, "Exporting tournament: ${tournament.name}")
+                // Call the function to create and save the Google Sheet
+                signInRequest()
+            }
+        }
 
 //        binding.exportButton.setOnClickListener {
 //            viewModel.setTournament(SelectedTournament.selectedTournament ?: return@setOnClickListener)
