@@ -8,8 +8,10 @@ class Match(var opponentName: String, var players: MutableList<Player>, var star
     private var opponentsError: Int = 0
     private var isFinished: Boolean = false
     private var timeouts = ArrayList<Int>()
+    var lastState: SetStates = SetStates.NONE
     var haveService: Boolean = true
     var serveStart: Boolean = true
+
 
     init {
         score = MatchScore(0,0)
