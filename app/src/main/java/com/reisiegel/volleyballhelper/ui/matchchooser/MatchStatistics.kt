@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.reisiegel.volleyballhelper.R
 import com.reisiegel.volleyballhelper.databinding.FragmentMatchStatisticsBinding
 import com.reisiegel.volleyballhelper.models.SelectedTournament
 import com.reisiegel.volleyballhelper.models.SetStates
@@ -64,7 +65,7 @@ class MatchStatistics : Fragment() {
         binding.serveButton.setOnClickListener {
             viewModel.changeServe()
             SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex ?: return@setOnClickListener)?.changeStartServe(viewModel.serve.value ?: return@setOnClickListener)
-            binding.serveButton.text = if (viewModel.serve.value == true) "Podání" else "Příjem"
+            binding.serveButton.text = if (viewModel.serve.value == true) getString(R.string.serve) else getString(R.string.reception)
         }
 
 
@@ -74,11 +75,11 @@ class MatchStatistics : Fragment() {
         binding.startSet.setOnClickListener {
             val canStart = viewModel.canStartSet()
             if (!canStart) {
-                val text = "Set nemohl začít"
+                val text = getString(R.string.set_could_not_start)
                 val dialog = AlertDialog.Builder(context ?: return@setOnClickListener)
-                    .setTitle("Chyba")
+                    .setTitle(getString(R.string.error_header))
                     .setMessage(text)
-                    .setPositiveButton("OK") { dialog, _ ->
+                    .setPositiveButton(getString(R.string.OK)) { dialog, _ ->
                         dialog.dismiss()
                     }
                     .create()
@@ -133,9 +134,9 @@ class MatchStatistics : Fragment() {
         binding.backToList.setOnClickListener {
             val dialog =
                 AlertDialog.Builder(context ?: return@setOnClickListener)
-                    .setTitle("Ukončit zápas")
-                    .setMessage("Chcete zápas zároveň ukončit?")
-                    .setPositiveButton("Ano") { dialog, _ ->
+                    .setTitle(getString(R.string.end_match_header))
+                    .setMessage(getString(R.string.end_match_message))
+                    .setPositiveButton(getString(R.string.yes)) { dialog, _ ->
 //                        SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.finishMatch()
 //                        SelectedTournament.selectedMatchIndex = null
 //                        viewModel.matchSelected(null)
@@ -156,7 +157,7 @@ class MatchStatistics : Fragment() {
                         requireView().requestLayout()
                         dialog.dismiss()
                     }
-                    .setNegativeButton("Ne") { dialog, _ ->
+                    .setNegativeButton(getString(R.string.no)) { dialog, _ ->
                         viewModel.closeMatch(binding)
                         dialog.dismiss()
                     }
@@ -236,7 +237,7 @@ class MatchStatistics : Fragment() {
         }
 
         viewModel.serve.observe(viewLifecycleOwner){
-            serve -> binding.serveButton.text = if (serve) "Podání" else "Příjem"
+            serve -> binding.serveButton.text = if (serve) getString(R.string.serve) else getString(R.string.reception)
         }
 
         viewModel.pageTitle.observe(viewLifecycleOwner){

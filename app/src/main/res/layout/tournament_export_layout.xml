@@ -23,14 +23,14 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="GoogleSheet"/>
+            android:text="@string/export_item_export_button"/>
 
         <Button
             android:id="@+id/delete_button"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Smazat"/>
+            android:text="@string/export_item_delete_button"/>
 
     </LinearLayout>
 

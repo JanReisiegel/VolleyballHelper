@@ -1,14 +1,101 @@
 <resources>
-    <string name="app_name">Volleyball Helper</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name" translatable="true">VolleyballHelper</string>
+    <string name="navigation_drawer_open" translatable="true">Otevřít navigační menu</string>
+    <string name="navigation_drawer_close" translatable="true">Zavřít navigační menu</string>
+    <string name="nav_header_title" translatable="true">Android Studio</string>
+    <string name="nav_header_subtitle" translatable="true">android.studio@android.com</string>
+    <string name="nav_header_desc" translatable="true">Navigační Hlavička</string>
+    <string name="action_settings" translatable="true">Nastavení</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-    <string name="default_web_client_id">812439854096-p15hblnr2n8h9vag8p9sgdcrg8oj2ln0.apps.googleusercontent.com</string>
+    <string name="menu_home" translatable="true">Domů</string>
+    <string name="menu_gallery" translatable="true">Gallerie</string>
+    <string name="menu_slideshow" translatable="true">Slideshow</string>
+
+    <!--For create tournament fragment -->
+    <string name="tournament_create_title" translatable="true">Vytvoření turnaje</string>
+    <string name="tournament_name" translatable="true">Název události</string>
+    <string name="tournament_name_hint" translatable="true">Název turnaje</string>
+    <string name="tournament_create_button" translatable="true">Vytvořit turnaj</string>,
+    <string name="tournament_matches_title" translatable="true">Zápasy</string>
+    <string name="tournament_match_opponent" translatable="true">Soupeř</string>
+    <string name="tournament_match_opponent_name_hint" translatable="true">Jméno soupeře</string>
+    <string name="tournament_match_time" translatable="true">Začátek zápasu</string>
+    <string name="tournament_players_title" translatable="true">Hráči/ky</string>
+    <string name="tournament_player_name" translatable="true">Jméno</string>
+    <string name="tournament_player_name_hint" translatable="true">Jméno hráče/ky</string>
+    <string name="tournament_add_button" translatable="true">Přidat</string>
+    <string name="tournament_player_jersey" translatable="true">Dres</string>
+    <string name="tournament_player_jersey_hint" translatable="true">Číslo dresu</string>
+    <!--for VM-->
+    <string name="player_jersey_input_error" translatable="true">Číslo musí být vyplněné a větší než 0</string>
+    <string name="player_name_input_error" translatable="true">Číslo musí být větší než 0</string>
+    <string name="match_add_error" translatable="true">Jméno soupeře a čas začátku utkání musí být vyplněno</string>
+    <string name="tournament_empty_name_error" translatable="true">Název turnaje nesmí být prázdný</string>
+    <string name="players_empty_error" translatable="true">Musíte mít alespoň jednoho hráče</string>
+    <string name="match_empty_error" translatable="true">Musíte mít alespoň jeden zápas</string>
+
+    <!--For export statistics fragment -->
+    <string name="tournament_list" translatable="true">Seznam Turnajů</string>
+    <!--forVM-->
+    <string name="authorization_failed" translatable="true">Autorizace selhala</string>
+
+    <!--For Home fragment -->
+    <string name="select_tournament" translatable="true">Vyberte turnaj</string>,
+    <string name="edit_statistics" translatable="true">Upravit statistiky</string>
+    <string name="create_tournament" translatable="true">Vytvořit nový turnaj</string>
+    <!--For VM-->
+    <string name="error_header" translatable="true">Chyba</string>
+    <string name="file_not_selected" translatable="true">Soubor nebyl vybrán</string>
+    <string name="OK" translatable="true">OK</string>
+
+    <!-- For Match Statistics Fragment -->
+    <string name="match_list" translatable="true">Seznam zápasů</string>
+    <string name="opponent_error" translatable="true">Chyba soupeře</string>
+    <string name="opponent_point" translatable="true">Bod pro soupeře</string>
+    <string name="serve" translatable="true">Podání</string>
+    <string name="finish_match" translatable="true">Ukončit zápas</string>
+    <string name="start_set" translatable="true">Zahájit set</string>
+    <string name="choose_another_match" translatable="true">Vybrat jiný zápas</string>
+    <!--For VM-->
+    <string name="reception" translatable="true">Příjem</string>
+    <string name="set_could_not_start" translatable="true">Set nemohl začít</string>
+    <string name="end_match_header" translatable="true">Ukončit zápas</string>
+    <string name="end_match_message" translatable="true">Opravdu chcete ukončit zápas?</string>
+    <string name="yes" translatable="true">Ano</string>
+    <string name="no" translatable="true">Ne</string>
+    <string name="select_player" translatable="true">Vybrat hráče</string>
+    <string name="cancel" translatable="true">Zrušit</string>
+    <string name="substitution_error_message" translatable="true">Nemůžete vyměnit hráče</string>
+    <string name="match_finished" translatable="true">Zápas je ukončen</string>
+    <string name="match_finished_message_part_1" translatable="true">Zápas proti</string>
+    <string name="match_finished_message_part_2" translatable="true">již byl ukončen. Není možné ho opět spustit</string>
+    <string name="save" translatable="true">Uložit</string>
+
+    <!-- For export item Fragment -->
+    <string name="export_item_export_button" translatable="true">GoogleSheet</string>
+    <string name="export_item_delete_button" translatable="true">Smazat</string>
+
+    <!-- For zone Item Fragment -->
+    <string name="zone_item_zone" translatable="true">Zona</string>
+    <string name="zone_item_substitution" translatable="true">Střídání</string>
+    <string name="zone_item_choose_from_lineup" translatable="true">Vybrat ze sestavy</string>
+    <string name="zone_item_ace" translatable="true">Eso</string>
+    <string name="zone_item_attack_header" translatable="true">Útok</string>
+    <string name="zone_item_point" translatable="true">Bod</string>
+    <string name="zone_item_received" translatable="true">Příjmutý</string>
+    <string name="zone_item_error" translatable="true">Zkažený</string>
+    <string name="zone_item_blocked" translatable="true">Zablokovaný</string>
+    <string name="zone_item_block_header" translatable="true">Blok</string>
+    <string name="zone_item_serve_reception_header" translatable="true">Příjem podání</string>
+    <string name="zone_item_ideal" translatable="true">Ideální</string>
+    <string name="zone_item_continue" translatable="true">Pokračujeme</string>
+    <string name="zone_item_no_continue" translatable="true">Nepokračujeme</string>
+
+    <!-- For GoogleDriveService -->
+    <string name="tournament_null" translatable="true">Turnaj neexistuje</string>
+    <string name="account_error" translatable="true">Chyba účtu</string>
+    <string name="create_sheet_error" translatable="true">Chyba při vytváření listu dokumentu</string>
+    <string name="sheet_created" translatable="true">List vytvořen a uložen na Google Drive</string>
+    <string name="sheet" translatable="true">List</string>
+    <string name="sheet_error_not_found" translatable="true">nebyl v dokumentu nalezen</string>
 </resources>

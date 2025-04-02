@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="6"
-            android:text="Zóna 1"
+            android:text="@string/zone_item_zone"
             android:textAlignment="center"
             android:textSize="20dp" />
 
@@ -41,7 +41,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_gravity="center"
-        android:text="Střídání"
+        android:text="@string/zone_item_substitution"
         android:visibility="gone"/>
 
     <LinearLayout
@@ -62,7 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Vybrat ze sestavy" />
+                android:text="@string/zone_item_choose_from_lineup" />
         </LinearLayout>
 
         <LinearLayout
@@ -76,26 +76,26 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Podání"
+                android:text="@string/serve"
                 android:textSize="20dp" />
 
             <Button
                 android:id="@+id/service_ace"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Eso" />
+                android:text="@string/zone_item_ace" />
 
             <Button
                 android:id="@+id/service_received"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Příjmutý" />
+                android:text="@string/zone_item_received" />
 
             <Button
                 android:id="@+id/service_error"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Zkažený" />
+                android:text="@string/zone_item_error" />
         </LinearLayout>
 
         <LinearLayout
@@ -116,32 +116,32 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Útok"
+                    android:text="@string/zone_item_attack_header"
                     android:textSize="20dp" />
 
                 <Button
                     android:id="@+id/attack_hit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bod" />
+                    android:text="@string/zone_item_point" />
 
                 <Button
                     android:id="@+id/attack_received"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Příjmutý" />
+                    android:text="@string/zone_item_received" />
 
                 <Button
                     android:id="@+id/attack_error"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Chyba" />
+                    android:text="@string/zone_item_error" />
 
                 <Button
                     android:id="@+id/attack_block"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Zablokovaný" />
+                    android:text="@string/zone_item_blocked" />
             </LinearLayout>
 
             <View
@@ -162,26 +162,26 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Blok"
+                    android:text="@string/zone_item_block_header"
                     android:textSize="20dp" />
 
                 <Button
                     android:id="@+id/block_point"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bod" />
+                    android:text="@string/zone_item_point" />
 
                 <Button
                     android:id="@+id/block_no_point"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Úspěšný" />
+                    android:text="@string/zone_item_received" />
 
                 <Button
                     android:id="@+id/block_error"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Chyba" />
+                    android:text="@string/zone_item_error" />
             </LinearLayout>
         </LinearLayout>
 
@@ -196,32 +196,32 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Příjem podání"
+                android:text="@string/zone_item_serve_reception_header"
                 android:textSize="20dp" />
 
             <Button
                 android:id="@+id/reception_ideal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ideální" />
+                android:text="@string/zone_item_ideal" />
 
             <Button
                 android:id="@+id/reception_continue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pokračujeme" />
+                android:text="@string/zone_item_continue" />
 
             <Button
                 android:id="@+id/reception_no_continue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nepokračujeme" />
+                android:text="@string/zone_item_no_continue" />
 
             <Button
                 android:id="@+id/reception_error"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chyba" />
+                android:text="@string/zone_item_error" />
 
         </LinearLayout>
     </LinearLayout>

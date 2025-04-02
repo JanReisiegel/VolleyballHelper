@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModel
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.reisiegel.volleyballhelper.R
 import com.reisiegel.volleyballhelper.models.Tournament
-import com.reisiegel.volleyballhelper.services.AuthService
 import java.io.File
 
 class ExportStatisticsViewModel() : ViewModel() {

@@ -38,6 +38,7 @@ import com.google.api.services.sheets.v4.model.UpdateCellsRequest
 import com.google.api.services.sheets.v4.model.UpdateDimensionPropertiesRequest
 import com.google.api.services.sheets.v4.model.ValueRange
 import com.google.firebase.auth.FirebaseAuth
+import com.reisiegel.volleyballhelper.R
 import com.reisiegel.volleyballhelper.models.Match
 import com.reisiegel.volleyballhelper.models.Tournament
 import kotlinx.coroutines.Dispatchers
@@ -50,7 +51,7 @@ class GoogleDriveService(private val context: Context, private val activity: Act
     suspend fun createGoogleSheet(auth: FirebaseAuth, authorizationLauncher: ActivityResultLauncher<Intent>, tournament: Tournament?) {
         if (tournament == null){
             Log.e(TAG, "Tournament is null")
-            Toast.makeText(context, "Tournament is null", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(R.string.tournament_null), Toast.LENGTH_SHORT).show()
             return
         }
         withContext(Dispatchers.IO) {
@@ -58,7 +59,7 @@ class GoogleDriveService(private val context: Context, private val activity: Act
 
                 val account = auth.currentUser?.email
                 if (account == null) {
-                    Log.e(TAG, "Account email is null")
+                    Log.e(TAG, context.getString(R.string.account_error))
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "Account error", Toast.LENGTH_SHORT).show()
                     }
@@ -73,7 +74,7 @@ class GoogleDriveService(private val context: Context, private val activity: Act
 
                 sheetService =
                     Sheets.Builder(NetHttpTransport(), JacksonFactory(), credential)
-                        .setApplicationName("VolleyballHelper")
+                        .setApplicationName(context.getString(R.string.app_name))
                         .build()
 
                 val spreadsheet =
@@ -87,7 +88,7 @@ class GoogleDriveService(private val context: Context, private val activity: Act
                 if (spreadsheetID == null) {
                     Log.e(TAG, "Spreadsheet ID is null")
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "Error creating sheet", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.create_sheet_error), Toast.LENGTH_SHORT).show()
                     }
                     return@withContext
                 }
@@ -119,7 +120,7 @@ class GoogleDriveService(private val context: Context, private val activity: Act
                 updateGoogleSheet(spreadsheetID, requests)
 
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Sheet created and saved!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.sheet_created), Toast.LENGTH_SHORT).show()
                 }
             } catch (e: UserRecoverableAuthIOException){
                 Log.e(TAG, "createGoogleSheet: UserRecoverableAuthIOException: ${e.message}", e)
@@ -137,7 +138,7 @@ class GoogleDriveService(private val context: Context, private val activity: Act
                 Log.e(TAG, "Exception: ${e.message}")
                 Log.e(TAG, "Exception: ${e.localizedMessage}")
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "${context.getString(R.string.error_header)}: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -562,7 +563,7 @@ class GoogleDriveService(private val context: Context, private val activity: Act
         val resultId = sheets
             .find { it.properties.title == sheetName }
             ?.properties?.sheetId
-            ?: throw IllegalArgumentException("Sheet $sheetName not found in spreadsheet")
+            ?: throw IllegalArgumentException("${context.getString(R.string.sheet)} $sheetName ${context.getString(R.string.sheet_error_not_found)}")
         return resultId
     }
     fun formateTable(spreadsheetId: String, sheetId: Int, numberOfRows: Int): List<Request> {

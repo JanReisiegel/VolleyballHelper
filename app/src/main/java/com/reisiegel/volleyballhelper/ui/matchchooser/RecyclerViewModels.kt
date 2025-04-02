@@ -76,9 +76,9 @@ class MatchAdapter(
             holder.opponent.setTextColor(redColor)
             holder.startTime.setTextColor(redColor)
             val dialog = AlertDialog.Builder(context ?: return)
-                .setTitle("Zápas je ukončen")
-                .setMessage("Zápas proti ${item.getOpponent()} již byl ukončen. Není možné ho opět spustit.")
-                .setNeutralButton("OK") { dialog, _ ->
+                .setTitle(context.getString(R.string.match_finished))
+                .setMessage("${context.getString(R.string.match_finished_message_part_1)} ${item.getOpponent()} ${context.getString(R.string.match_finished_message_part_2)}")
+                .setNeutralButton(context.getString(R.string.OK)) { dialog, _ ->
                     dialog.dismiss()
                 }
                 .create()
@@ -107,7 +107,7 @@ class MatchAdapter(
 
                 val dialog = AlertDialog.Builder(context ?: return@setOnLongClickListener false)
                     .setView(dialogView)
-                    .setPositiveButton("Save") { dialog, _ ->
+                    .setPositiveButton(context.getString(R.string.save)) { dialog, _ ->
                         SelectedTournament.selectedTournament?.getMatch(position)?.updateMatchInfo(opponentName.text.toString(), startDate.text.toString())
                         val file = File(context.filesDir, "Statistics/${SelectedTournament.filePath}")
                         SelectedTournament.selectedTournament?.saveJson(file)
@@ -118,7 +118,7 @@ class MatchAdapter(
                         view.requestLayout()
                         dialog.dismiss()
                     }
-                    .setNegativeButton("Cancel") { dialog, _ ->
+                    .setNegativeButton(context.getString(R.string.cancel)) { dialog, _ ->
                         dialog.dismiss()
                     }
                     .create()

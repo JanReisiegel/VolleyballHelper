@@ -1,6 +1,7 @@
 package com.reisiegel.volleyballhelper.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,11 +67,13 @@ class HomeFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent?.getItemAtPosition(position).toString()
                 SelectedTournament.filePath = selectedItem
-                println("Selected item: $selectedItem")
+                //println("Selected item: $selectedItem")
+                Log.d("Home", "Selected item: $selectedItem")
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                println("Nothing selected")
+                //println("Nothing selected")
+                Log.d("Home", "Nothing selected")
             }
         }
 
@@ -79,9 +82,9 @@ class HomeFragment : Fragment() {
         binding.editButton.setOnClickListener {
             if(SelectedTournament.filePath.isNullOrEmpty()){
                 val dialog = AlertDialog.Builder(context ?: return@setOnClickListener)
-                    .setTitle("Error")
-                    .setMessage("File not selected")
-                    .setPositiveButton("OK"){
+                    .setTitle(getString(R.string.error_header))
+                    .setMessage(getString(R.string.file_not_selected))
+                    .setPositiveButton(getString(R.string.OK)){
                         dialog, _ -> dialog.dismiss()
                     }
                     .create()
@@ -106,7 +109,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (requireActivity() as AppCompatActivity).supportActionBar?.title = "Vybrat Turnaj"
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.select_tournament)
     }
 
     override fun onDestroyView() {

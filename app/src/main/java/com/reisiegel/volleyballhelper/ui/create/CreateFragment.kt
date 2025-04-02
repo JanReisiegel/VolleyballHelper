@@ -106,13 +106,13 @@ class CreateFragment : Fragment() {
                 }
                 else{
                     if(player.getJersey() == 0)
-                        jerseyNumber.error = "Číslo musí být větší než 0"
+                        jerseyNumber.error = getString(R.string.player_jersey_input_error)
                     if (player.getName() == "")
-                        playerName.error = "Jméno hráče musí být vyplněno"
+                        playerName.error = getString(R.string.player_name_input_error)
                 }
             }
             catch (e: NumberFormatException){
-                jerseyNumber.error = "Číslo musí být vyplněno a větší než 0"
+                jerseyNumber.error = getString(R.string.player_jersey_input_error)
             }
             viewModel.sortPlayers()
         }
@@ -123,10 +123,10 @@ class CreateFragment : Fragment() {
                 viewModel.addMatch(match)
                 opponentName.text.clear()
                 viewModel.updateStartMatchTime("")
-                matchTimeButton.text = "Začátek zápasu"
+                matchTimeButton.text = getString(R.string.tournament_match_time)
             }
             else {
-                opponentName.error = "Jméno soupeře a čas začátku utkání musí být vyplněno"
+                opponentName.error = getString(R.string.match_add_error)
             }
 
             viewModel.sortMatches()
@@ -135,11 +135,11 @@ class CreateFragment : Fragment() {
         createTournamentButton.setOnClickListener {
             viewModel.updateActionName(tournamentName.text.toString())
             if (viewModel.tournamentName.value.isNullOrEmpty())
-                tournamentName.error = "Název turnaje nesmí být prázdný"
+                tournamentName.error = getString(R.string.tournament_empty_name_error)
             if (viewModel.players.value.isNullOrEmpty())
-                playerName.error = "Seznam hráčů nesmí být prázdný"
+                playerName.error = getString(R.string.players_empty_error)
             if (viewModel.matches.value.isNullOrEmpty())
-                opponentName.error = "Seznam zápasů nesmí být prázdný"
+                opponentName.error = getString(R.string.match_empty_error)
             if (viewModel.tournamentName.value != "" && viewModel.players.value?.isNotEmpty() == true && viewModel.matches.value?.isNotEmpty() == true) {
                 viewModel.createTournament(requireContext())
                 findNavController().navigate(R.id.redirect_to_home_fragment)

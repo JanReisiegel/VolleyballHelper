@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="Seznam zápasů"
+                android:text="@string/match_list"
                 android:textSize="30dp" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -75,7 +75,7 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:text="Chyba soupeře"
+                    android:text="@string/opponent_error"
                     android:visibility="gone" />
 
                 <Button
@@ -85,7 +85,7 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:text="Bod pro soupeře"
+                    android:text="@string/opponent_point"
                     android:visibility="gone" />
 
                 <Button
@@ -95,7 +95,7 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:text="Podání"
+                    android:text="@string/serve"
                     android:visibility="visible" />
 
                 <Button
@@ -105,7 +105,7 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:text="Ukončit zápas"
+                    android:text="@string/finish_match"
                     android:visibility="gone" />
 
                 <Button
@@ -115,7 +115,7 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:text="Zahájit set"
+                    android:text="@string/start_set"
                     android:visibility="visible" />
 
                 <View
@@ -129,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:text="Vybrat jiný zápas" />
+                    android:text="@string/choose_another_match" />
 
             </LinearLayout>
 
@@ -207,41 +207,6 @@
                     android:layout_columnWeight="1" />
 
             </GridLayout>
-
-            <!--LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <Button
-                    android:id="@+id/buttonTop"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Nahoru" />
-
-                <Button
-                    android:id="@+id/buttonBottom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="Dolů" />
-
-                <Button
-                    android:id="@+id/buttonLeft"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="Doleva" />
-
-                <Button
-                    android:id="@+id/buttonRight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:text="Doprava" />
-            </LinearLayout-->
 
         </LinearLayout>
     </FrameLayout>

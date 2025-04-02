@@ -57,7 +57,7 @@ class ExportStatistics : Fragment() {
                 createAndSaveSheet()
             } else {
                 // Authorization was denied or canceled
-                Toast.makeText(requireContext(), "Authorization failed.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.authorization_failed), Toast.LENGTH_SHORT).show()
             }
         }
     }
