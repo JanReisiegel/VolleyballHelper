@@ -28,6 +28,16 @@ class Match(var opponentName: String, var players: MutableList<Player>, var star
         return squads[squads.size - 1]
     }
 
+    fun getLastSetSquad(): MutableList<Player?>{
+        val setIndex = score.getNumberOfSet() - 2
+        val squadNumbers = squads[setIndex]
+        val resultSquad = mutableListOf<Player?>()
+        squadNumbers.forEachIndexed { index, playerNumber ->
+            resultSquad.add(index, getPlayer(playerNumber))
+        }
+        return resultSquad
+    }
+
     fun setSquad(players: List<Player?>){
         if (squads.size == 0){
             squads.add(ArrayList<Int>())
@@ -65,6 +75,10 @@ class Match(var opponentName: String, var players: MutableList<Player>, var star
      */
     fun addPlayer(player: Player){
         players.add(player)
+    }
+
+    fun getSetNumber(): Int {
+        return score.getNumberOfSet()
     }
 
     fun changeStartServe(value: Boolean){

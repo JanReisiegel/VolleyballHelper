@@ -1,12 +1,12 @@
 package com.reisiegel.volleyballhelper.ui.matchchooser
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -73,6 +73,7 @@ class MatchStatisticsViewModel() : ViewModel() {
         R.id.zone1, R.id.zone2, R.id.zone3, R.id.zone4, R.id.zone5, R.id.zone6,
     )
 
+    @SuppressLint("SetTextI18n")
     fun zoneStartInit(root: View){
         val context = root.context
         zoneIds.forEachIndexed { index, zoneId ->
@@ -521,6 +522,7 @@ class MatchStatisticsViewModel() : ViewModel() {
         _setScore.value = SelectedTournament.selectedTournament?.getMatch(index)?.getActualSetScore() ?: "0:0"
         _scoreboard.value = SelectedTournament.selectedTournament?.getMatch(index)?.getActualScore() ?: "0:0"
         _pageTitle.value = SelectedTournament.selectedTournament?.name + " × " + SelectedTournament.selectedTournament?.getMatch(index)?.opponentName
+        _setState.value = SelectedTournament.selectedTournament?.getMatch(index)?.lastState
     }
 
     private fun containsPlayer(index: Int): Boolean {
@@ -555,9 +557,9 @@ class MatchStatisticsViewModel() : ViewModel() {
         } else if (serveType == ServeEnum.RECEIVED){
             _setState.value = SetStates.ATTACK_BLOCK
         } else if (serveType == ServeEnum.ERROR){
-            changeScoreboard()
             changeServe()
             _setState.value = SetStates.RECEIVE
+            changeScoreboard()
         }
         rerenderLayout(root)
     }
@@ -570,15 +572,15 @@ class MatchStatisticsViewModel() : ViewModel() {
             if (serve.value == true){
                 changeServe()
             }
-            changeScoreboard()
             _setState.value = SetStates.RECEIVE
+            changeScoreboard()
         } else if(attackType == AttackEnum.HIT){
             if (serve.value == false){
                 rotateFormation(root)
                 changeServe()
             }
-            changeScoreboard()
             _setState.value = SetStates.SERVE
+            changeScoreboard()
         }
         rerenderLayout(root)
     }
@@ -592,15 +594,15 @@ class MatchStatisticsViewModel() : ViewModel() {
             if (serve.value == true){
                 changeServe()
             }
-            changeScoreboard()
             _setState.value = SetStates.RECEIVE
+            changeScoreboard()
         } else if(blockType == BlockEnum.POINT){
             if (serve.value == false){
                 rotateFormation(root)
                 changeServe()
             }
-            changeScoreboard()
             _setState.value = SetStates.SERVE
+            changeScoreboard()
         }
         rerenderLayout(root)
     }
@@ -644,9 +646,15 @@ class MatchStatisticsViewModel() : ViewModel() {
         val teamScore = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getActualScore()
         val newSetScore: String? = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getActualSetScore()
         if (newSetScore != setScore.value){
-            _setState.value = SetStates.END_SET
             _setScore.value = newSetScore ?: "Error"
             clearSquad()
+            _setState.value = SetStates.END_SET
+            val newSetNumber = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getSetNumber()
+            if (newSetNumber == 2 || newSetNumber == 4){
+                _serve.value = SelectedTournament.selectedTournament!!.getMatch(SelectedTournament.selectedMatchIndex!!).serveStart.not()
+            } else{
+                _serve.value = SelectedTournament.selectedTournament!!.getMatch(SelectedTournament.selectedMatchIndex!!).serveStart
+            }
         }
         _scoreboard.value = teamScore ?: "Error"
     }
@@ -789,6 +797,8 @@ class MatchStatisticsViewModel() : ViewModel() {
     fun endMatch(binding: FragmentMatchStatisticsBinding ){
         _matchList.value?.get(SelectedTournament.selectedMatchIndex!!)?.setFinished(true)
 
+        SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.lastState =
+            _setState.value!!
         SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.finishMatch()
         SelectedTournament.selectedMatchIndex = null
 
@@ -806,6 +816,8 @@ class MatchStatisticsViewModel() : ViewModel() {
         if (playersSquad.value != null || SelectedTournament.selectedMatchIndex != null || playersSquad.value?.contains(null) != true)
             SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.changeSquad(playersSquad.value!!.toList())
 
+        SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.lastState =
+            _setState.value!!
         SelectedTournament.selectedMatchIndex = null
         _pageTitle.value = SelectedTournament.selectedTournament?.name
         _setState.value = SetStates.NONE
@@ -813,6 +825,11 @@ class MatchStatisticsViewModel() : ViewModel() {
         binding.matchStatistics.visibility = View.GONE
         binding.matchList.visibility = View.VISIBLE
         binding.root.requestLayout()
+    }
+
+    fun serveButtonEnabled(): Boolean{
+        var setNumber = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getSetNumber() ?: 0
+        return (setNumber == 0 || setNumber == 3 || setNumber == 5)
     }
 
     fun startSet(){
@@ -823,5 +840,23 @@ class MatchStatisticsViewModel() : ViewModel() {
         else{
             setSetState(SetStates.RECEIVE)
         }
+    }
+
+    fun sameLineup(root: View){
+        val lastSetSquad = SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.getLastSetSquad() ?: return
+        val benchTemp = _playersBench.value ?: return
+        val squadTemp = _playersSquad.value ?: return
+        lastSetSquad.forEachIndexed { index, player ->
+            if (player != null){
+                squadTemp[index] = player
+                benchTemp.remove(player)
+            }
+            else{
+                squadTemp[index] = null
+            }
+        }
+        _playersBench.value = benchTemp
+        _playersSquad.value = squadTemp
+        rerenderLayout(root)
     }
 }

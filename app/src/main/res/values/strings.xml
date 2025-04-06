@@ -56,6 +56,8 @@
     <string name="finish_match" translatable="true">Ukončit zápas</string>
     <string name="start_set" translatable="true">Zahájit set</string>
     <string name="choose_another_match" translatable="true">Vybrat jiný zápas</string>
+    <string name="same_lineup" translatable="true">Sestava z předchozího setu</string>
+    <string name="rotate_lineup" translatable="true">Otočit sestavu</string>
     <!--For VM-->
     <string name="reception" translatable="true">Příjem</string>
     <string name="set_could_not_start" translatable="true">Set nemohl začít</string>

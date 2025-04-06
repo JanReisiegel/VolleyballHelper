@@ -93,12 +93,20 @@ class MatchStatistics : Fragment() {
             binding.serveButton.isEnabled = false
 
             binding.opponentPoint.setOnClickListener {
-                viewModel.changeZones(root, SetStates.RECEIVE)
                 viewModel.opponentPoint()
+                val state = if (viewModel.setState.value == SetStates.END_SET) SetStates.END_SET else SetStates.RECEIVE
+                viewModel.changeZones(root, state)
             }
             binding.opponentError.setOnClickListener {
                 viewModel.opponentError(root)
-                viewModel.changeZones(root, SetStates.SERVE)
+                val state = if (viewModel.setState.value == SetStates.END_SET) SetStates.END_SET else SetStates.SERVE
+                viewModel.changeZones(root, state)
+            }
+            binding.sameLineup.setOnClickListener {
+                viewModel.sameLineup(root)
+            }
+            binding.rotateLineup.setOnClickListener {
+                viewModel.rotateFormation(root)
             }
         }
 
@@ -186,51 +194,73 @@ class MatchStatistics : Fragment() {
         viewModel.setState.observe(viewLifecycleOwner){
             state -> when(state){
                 SetStates.NONE -> {
-                    binding.startSet.visibility = View.VISIBLE
                     binding.opponentError.visibility = View.GONE
-                    binding.endMatch.visibility = View.GONE
-                    binding.serveButton.isEnabled = true
                     binding.opponentPoint.visibility = View.GONE
+                    binding.serveButton.isEnabled = true
+                    binding.endMatch.visibility = View.GONE
+                    binding.startSet.visibility = View.VISIBLE
+                    binding.sameLineup.visibility = View.GONE
+                    binding.rotateLineup.visibility = View.VISIBLE
+
                     viewModel.changeZones(binding.root.rootView, state)
                 }
                 SetStates.SERVE -> {
-                    binding.startSet.visibility = View.GONE
-                    binding.opponentError.visibility = View.VISIBLE
+                    binding.opponentError.visibility = View.GONE
+                    binding.opponentPoint.visibility = View.GONE
                     binding.serveButton.isEnabled = false
                     binding.endMatch.visibility = View.GONE
+                    binding.startSet.visibility = View.GONE
+                    binding.sameLineup.visibility = View.GONE
+                    binding.rotateLineup.visibility = View.GONE
+
+
                     viewModel.changeZones(binding.root.rootView, state)
-                    binding.opponentPoint.visibility = View.VISIBLE
                 }
                 SetStates.RECEIVE -> {
                     binding.opponentError.visibility = View.VISIBLE
+                    binding.opponentPoint.visibility = View.VISIBLE
+                    binding.serveButton.isEnabled = false
                     binding.endMatch.visibility = View.GONE
                     binding.startSet.visibility = View.GONE
-                    binding.serveButton.isEnabled = false
+                    binding.sameLineup.visibility = View.GONE
+                    binding.rotateLineup.visibility = View.GONE
+
                     viewModel.changeZones(binding.root.rootView, state)
-                    binding.opponentPoint.visibility = View.VISIBLE
                 }
                 SetStates.ATTACK_BLOCK -> {
                     binding.opponentError.visibility = View.VISIBLE
-                    binding.endMatch.visibility = View.GONE
-                    binding.serveButton.isEnabled = false
-                    viewModel.changeZones(binding.root.rootView, state)
                     binding.opponentPoint.visibility = View.VISIBLE
+                    binding.serveButton.isEnabled = false
+                    binding.endMatch.visibility = View.GONE
+                    binding.startSet.visibility = View.GONE
+                    binding.sameLineup.visibility = View.GONE
+                    binding.rotateLineup.visibility = View.GONE
+
+                    viewModel.changeZones(binding.root.rootView, state)
+
                 }
                 SetStates.END_SET -> {
                     viewModel.clearSquad()
+
                     binding.opponentError.visibility = View.GONE
-                    binding.startSet.visibility = View.VISIBLE
-                    binding.serveButton.isEnabled = false
-                    binding.endMatch.visibility = View.VISIBLE
-                    viewModel.changeZones(binding.root.rootView, state)
                     binding.opponentPoint.visibility = View.GONE
+                    binding.serveButton.isEnabled = viewModel.serveButtonEnabled()
+                    binding.endMatch.visibility = View.VISIBLE
+                    binding.startSet.visibility = View.VISIBLE
+                    binding.sameLineup.visibility = View.VISIBLE
+                    binding.rotateLineup.visibility = View.VISIBLE
+
+                    viewModel.changeZones(binding.root.rootView, state)
                     viewModel.changeServeStartSet()
                 }
                 else -> {
-                    binding.startSet.isEnabled = true
-                    binding.opponentError.isEnabled = true
-                    binding.endMatch.visibility = View.GONE
+                    binding.opponentError.visibility = View.GONE
                     binding.opponentPoint.visibility = View.GONE
+                    binding.serveButton.isEnabled = true
+                    binding.endMatch.visibility = View.GONE
+                    binding.startSet.visibility = View.VISIBLE
+                    binding.sameLineup.visibility = View.GONE
+                    binding.rotateLineup.visibility = View.GONE
                 }
             }
             binding.root.requestLayout()
@@ -245,10 +275,17 @@ class MatchStatistics : Fragment() {
         }
     }
 
+    private fun saveTournament(){
+        if (SelectedTournament.filePath.isNotEmpty()) {
+            val file = File(context?.filesDir, "Statistics/${SelectedTournament.filePath}")
+            SelectedTournament.selectedTournament!!.saveJson(file)
+        }
+    }
 
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        saveTournament()
     }
 }
