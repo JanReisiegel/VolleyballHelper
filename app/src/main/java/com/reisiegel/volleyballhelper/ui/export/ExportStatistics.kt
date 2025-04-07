@@ -87,8 +87,15 @@ class ExportStatistics : Fragment() {
         recycleTournamentsView = binding.tournamentList
         recycleTournamentsView.layoutManager = LinearLayoutManager(requireContext())
 
-        val tournamentsAdapter = TournamentAdapter(viewModel.tournamentsItem.value?.toMutableList(), requireContext(), view, {viewModel.deleteTournament(it)}, {viewModel.exportTournament(it)})
+        val tournamentsAdapter = TournamentAdapter(viewModel.tournamentsItem.value?.toMutableList(), requireContext(), view, {viewModel.deleteTournament(it, requireContext())}, {viewModel.exportTournament(it)})
         recycleTournamentsView.adapter = tournamentsAdapter
+
+        viewModel.tournamentsItem.observe(viewLifecycleOwner) {
+            //TODO: update tournaments list in recyclerView
+            val tournamentsAdapter = TournamentAdapter(viewModel.tournamentsItem.value?.toMutableList(), requireContext(), view, {viewModel.deleteTournament(it, requireContext())}, {viewModel.exportTournament(it)})
+            recycleTournamentsView.adapter = tournamentsAdapter
+            view.requestLayout()
+        }
 
         viewModel.exportTournament.observe(viewLifecycleOwner) { tournament ->
             Log.d(TAG, "Exporting tournament: ${tournament?.name}")

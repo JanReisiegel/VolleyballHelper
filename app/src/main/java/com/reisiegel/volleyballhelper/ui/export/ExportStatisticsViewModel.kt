@@ -42,8 +42,13 @@ class ExportStatisticsViewModel() : ViewModel() {
         _exportTournament.value = tournament
     }
 
-    fun deleteTournament(index: Int){
-        //TODO: delete tournament from storage
+    fun deleteTournament(path: String, context: Context){
+        Log.d("ExportStatistics", "Deleting tournament: $path")
+        val tournamentFile = File(path)
+        if (tournamentFile.exists() && tournamentFile.isDirectory.not()){
+            tournamentFile.delete()
+        }
+        loadTournaments(context)
     }
 
     fun loadTournaments(context: Context){
