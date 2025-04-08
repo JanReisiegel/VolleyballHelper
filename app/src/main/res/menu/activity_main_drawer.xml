@@ -6,22 +6,19 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/baseline_home_24"
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_create"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Create"
-            tools:ignore="HardcodedText" />
+            android:icon="@drawable/baseline_create_new_folder_24"
+            android:title="@string/create_nav_menu"/>
         <item
             android:id="@+id/nav_match_statistics"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Match Statistics"
-            tools:ignore="HardcodedText" />
+            android:icon="@drawable/baseline_edit_note_24"
+            android:title="@string/edit_statistics_nav_menu"/>
         <item
             android:id="@+id/nav_export"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Export Statistics"
-            tools:ignore="HardcodedText" />
+            android:icon="@drawable/baseline_edit_document_24"
+            android:title="@string/edit_tournaments_menu" />
     </group>
 </menu>

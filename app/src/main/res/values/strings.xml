@@ -1,11 +1,14 @@
 <resources>
-    <string name="app_name" translatable="true">VolleyballHelper</string>
+    <string name="app_name" translatable="true">Volleyball Helper</string>
     <string name="navigation_drawer_open" translatable="true">Otevřít navigační menu</string>
     <string name="navigation_drawer_close" translatable="true">Zavřít navigační menu</string>
     <string name="nav_header_title" translatable="true">Android Studio</string>
     <string name="nav_header_subtitle" translatable="true">android.studio@android.com</string>
     <string name="nav_header_desc" translatable="true">Navigační Hlavička</string>
     <string name="action_settings" translatable="true">Nastavení</string>
+    <string name="create_nav_menu" translatable="true">Vytvořit turnaj</string>
+    <string name="edit_statistics_nav_menu" translatable="true">Tvorba statistik</string>
+    <string name="edit_tournaments_menu" translatable="true">Nastavení turnajů</string>
 
     <string name="menu_home" translatable="true">Domů</string>
     <string name="menu_gallery" translatable="true">Gallerie</string>
@@ -78,6 +81,7 @@
     <!-- For export item Fragment -->
     <string name="export_item_export_button" translatable="true">GoogleSheet</string>
     <string name="export_item_delete_button" translatable="true">Smazat</string>
+    <string name="export_item_edit_button" translatable="true">Upravit hráče</string>
 
     <!-- For zone Item Fragment -->
     <string name="zone_item_zone" translatable="true">Zona</string>
