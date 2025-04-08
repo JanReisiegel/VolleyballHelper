@@ -36,6 +36,7 @@ import com.google.api.services.sheets.v4.model.Spreadsheet
 import com.google.api.services.sheets.v4.model.SpreadsheetProperties
 import com.google.api.services.sheets.v4.model.UpdateCellsRequest
 import com.google.api.services.sheets.v4.model.UpdateDimensionPropertiesRequest
+import com.google.api.services.sheets.v4.model.UpdateSheetPropertiesRequest
 import com.google.api.services.sheets.v4.model.ValueRange
 import com.google.firebase.auth.FirebaseAuth
 import com.reisiegel.volleyballhelper.R
@@ -109,6 +110,17 @@ class GoogleDriveService(private val context: Context, private val activity: Act
                     .update(createdSpreadsheet.spreadsheetId, "A1", body)
                     .setValueInputOption("RAW")
                     .execute()
+
+                val renameRequest = Request().setUpdateSheetProperties(
+                    UpdateSheetPropertiesRequest().setProperties(
+                        SheetProperties()
+                            .setSheetId(summarySheetId)
+                            .setTitle(tournament.name)
+                    ).setFields("title")
+                )
+
+                requests.add(renameRequest)
+
 
                 val playersNumber = tournament.getNumberOfPlayers()
                 formateTable(spreadsheetID, summarySheetId, playersNumber).forEach {

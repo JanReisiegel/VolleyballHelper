@@ -91,7 +91,6 @@ class ExportStatistics : Fragment() {
         recycleTournamentsView.adapter = tournamentsAdapter
 
         viewModel.tournamentsItem.observe(viewLifecycleOwner) {
-            //TODO: update tournaments list in recyclerView
             val tournamentsAdapter = TournamentAdapter(viewModel.tournamentsItem.value?.toMutableList(), requireContext(), view, {viewModel.deleteTournament(it, requireContext())}, {viewModel.exportTournament(it)})
             recycleTournamentsView.adapter = tournamentsAdapter
             view.requestLayout()

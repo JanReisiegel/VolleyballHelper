@@ -1,5 +1,7 @@
 package com.reisiegel.volleyballhelper.models
 
+import android.annotation.SuppressLint
+
 class Match(var opponentName: String, var players: MutableList<Player>, var startTime: String) {
     private var substitutions: ArrayList<Substitution>
     private var squads: ArrayList<ArrayList<Int>> = ArrayList<ArrayList<Int>>() // list of players in each squad
@@ -261,6 +263,7 @@ class Match(var opponentName: String, var players: MutableList<Player>, var star
         squads.add(ArrayList<Int>())
     }
 
+    @SuppressLint("DefaultLocale")
     fun getTableData(): List<List<String>> {
         val tableData = ArrayList<List<String>>()
         val header = listOf(
@@ -278,7 +281,7 @@ class Match(var opponentName: String, var players: MutableList<Player>, var star
                 "", "", "" )
         )
         header.forEach { item -> tableData.add(item) }
-        var summary = MutableList<Int>(25) {0}
+        var summary = MutableList<Double>(25) {0.0}
         players.sortBy { it.jerseyNumber }
         for (player in players) {
             val playerData = player.getPlayerData()
@@ -286,7 +289,13 @@ class Match(var opponentName: String, var players: MutableList<Player>, var star
             summary = player.updateSummary(summary)
         }
         val footer = mutableListOf<String>("", "Celkem/Průměr")
-        summary.forEach { item -> footer.add(item.toString()) }
+        val indexes = listOf(2, 4, 7, 9, 11, 16, 21)
+        summary.forEachIndexed { index, item ->
+            if (index in indexes)
+                footer.add(String.format("%.2f", item))
+            else
+                footer.add(item.toInt().toString())
+        }
 
         tableData.add(footer.toList())
 

@@ -1,5 +1,6 @@
 package com.reisiegel.volleyballhelper.models
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.google.gson.Gson
 import java.io.File
@@ -130,8 +131,10 @@ class Tournament private constructor(var name: String, private var matches: Arra
         file.writeText(jsonString)
     }
 
+    @SuppressLint("DefaultLocale")
     fun getSummaryTable(): List<List<String>>{
         val summaryTable = mutableListOf<List<String>>()
+        val indexes = listOf(2, 4, 7, 9, 11, 16, 21)
         val header = listOf(
             listOf("Hráč", "",
                 "Podání", "", "", "", "",
@@ -148,25 +151,42 @@ class Tournament private constructor(var name: String, private var matches: Arra
         )
         header.forEach { item -> summaryTable.add(item) }
         val playerNumbers = players.keys.sorted()
-        var playersSummaryStats = MutableList<Int>(25) {0}
+        var playersSummaryStats = MutableList<Double>(25) {0.0}
         playerNumbers.forEach { number ->
-            var stats = MutableList<Int>(25) { 0 }
+            var stats: MutableList<Double> = MutableList<Double>(25) { 0.0 }
             matches.forEach { match ->
                 val player = match.getPlayer(number)
                 stats = player!!.updateSummary(stats)
             }
             playersSummaryStats.forEachIndexed { index, stat ->
-                val temp = stat + stats[index]
-                playersSummaryStats[index] = if (temp == stats[index]) temp else temp / 2
+                playersSummaryStats[index] += stats[index]
             }
 
             val playerName = players[number]
             val playerLine = mutableListOf<String>(number.toString(), playerName.toString())
-            stats.forEach { it -> playerLine.add(it.toString()) }
+            stats.forEachIndexed { index, item ->
+                if (index in indexes){
+                    playerLine.add(String.format("%.2f", item))
+                } else{
+                    playerLine.add(item.toInt().toString())
+                }
+            }
             summaryTable.add(playerLine.toList())
         }
         val footer = mutableListOf<String>("", "Celkem/Průměr")
-        playersSummaryStats.forEach { it -> footer.add(it.toString()) }
+
+        playersSummaryStats.forEachIndexed { index, item ->
+            when (index) {
+                2 -> footer.add(String.format("%.0f", if(playersSummaryStats[0] == 0.0) 0.0 else (playersSummaryStats[1] / playersSummaryStats[0]) * 100))
+                4 -> footer.add(String.format("%.0f", if(playersSummaryStats[0] == 0.0) 0.0 else (playersSummaryStats[3] / playersSummaryStats[0]) * 100))
+                7 -> footer.add(String.format("%.0f", if(playersSummaryStats[5] == 0.0) 0.0 else (playersSummaryStats[6] / playersSummaryStats[5]) * 100))
+                9 -> footer.add(String.format("%.0f", if(playersSummaryStats[5] == 0.0) 0.0 else (playersSummaryStats[8] / playersSummaryStats[5]) * 100))
+                11 -> footer.add(String.format("%.0f", if(playersSummaryStats[5] == 0.0) 0.0 else (playersSummaryStats[10] / playersSummaryStats[5]) * 100))
+                16 -> footer.add(String.format("%.0f", if(playersSummaryStats[12] == 0.0) 0.0 else (playersSummaryStats[13] / playersSummaryStats[12]) * 100))
+                21 -> footer.add(String.format("%.0f", if(playersSummaryStats[17] == 0.0) 0.0 else ((playersSummaryStats[19] + playersSummaryStats[20]) / playersSummaryStats[17]) * 100))
+                else -> footer.add(item.toInt().toString())
+            }
+        }
         summaryTable.add(footer.toList())
         return summaryTable
     }
