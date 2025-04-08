@@ -49,8 +49,9 @@ class HomeFragment : Fragment() {
         val listFileNames = ArrayList<String>()
 
         statisticFiles?.forEach { file: File ->
-            filesAdapter[file.name] = file.path
-            listFileNames.add(file.name)
+            val fileName = file.name.subSequence(0,file.name.length-5).toString()
+            filesAdapter[fileName] = file.path
+            listFileNames.add(fileName)
         }
 
         val filesView: Spinner = binding.spinner
@@ -66,7 +67,8 @@ class HomeFragment : Fragment() {
         filesView.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent?.getItemAtPosition(position).toString()
-                SelectedTournament.filePath = selectedItem
+                val selectedPath = filesAdapter[selectedItem]
+                SelectedTournament.filePath = selectedPath.toString()
                 //println("Selected item: $selectedItem")
                 Log.d("Home", "Selected item: $selectedItem")
             }

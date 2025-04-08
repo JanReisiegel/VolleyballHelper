@@ -75,6 +75,8 @@ class MatchAdapter(
             val redColor = ContextCompat.getColor(context!!, R.color.red)
             holder.opponent.setTextColor(redColor)
             holder.startTime.setTextColor(redColor)
+            holder.editButton.isEnabled = false
+            holder.editMatchButton.isEnabled = false
             val dialog = AlertDialog.Builder(context ?: return)
                 .setTitle(context.getString(R.string.match_finished))
                 .setMessage("${context.getString(R.string.match_finished_message_part_1)} ${item.getOpponent()} ${context.getString(R.string.match_finished_message_part_2)}")
@@ -87,7 +89,9 @@ class MatchAdapter(
             }
         }
         if (context != null) {
-            holder.matchLine.setOnLongClickListener {
+            holder.editButton.isEnabled = true
+            holder.editMatchButton.isEnabled = true
+            holder.editMatchButton.setOnClickListener {
                 val dialogView =
                     LayoutInflater.from(context).inflate(R.layout.change_match_dialog_layout, null)
 
@@ -105,11 +109,11 @@ class MatchAdapter(
                     }
                 }
 
-                val dialog = AlertDialog.Builder(context ?: return@setOnLongClickListener false)
+                val dialog = AlertDialog.Builder(context)
                     .setView(dialogView)
                     .setPositiveButton(context.getString(R.string.save)) { dialog, _ ->
                         SelectedTournament.selectedTournament?.getMatch(position)?.updateMatchInfo(opponentName.text.toString(), startDate.text.toString())
-                        val file = File(context.filesDir, "Statistics/${SelectedTournament.filePath}")
+                        val file = File(SelectedTournament.filePath)
                         SelectedTournament.selectedTournament?.saveJson(file)
                         items[position].setOpponent(opponentName.text.toString())
                         items[position].setStartTime(startDate.text.toString())
@@ -123,9 +127,9 @@ class MatchAdapter(
                     }
                     .create()
                 dialog.show()
-                return@setOnLongClickListener false
+                return@setOnClickListener
             }
-            holder.matchLine.setOnClickListener {
+            holder.editButton.setOnClickListener {
                 SelectedTournament.selectedMatchIndex = position
                 val matchListLayout =
                     view.findViewById<FrameLayout>(R.id.match_list) ?: return@setOnClickListener
@@ -200,6 +204,8 @@ class MatchAdapter(
         val startTime: TextView = itemView.findViewById(R.id.startTime)
         val matchLine: LinearLayout = itemView.findViewById(R.id.match_line)
         //val deleteButton: TextView = itemView.findViewById(R.id.matchDeleteButton)
+        val editMatchButton: Button = itemView.findViewById(R.id.matchEditButton)
+        val editButton: Button = itemView.findViewById(R.id.matchEditStatsButton)
     }
 
     fun updateItems(newItems: MutableList<MatchItem>) {

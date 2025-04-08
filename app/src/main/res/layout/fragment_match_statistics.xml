@@ -11,12 +11,13 @@
         android:id="@+id/match_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="visible">
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+
             android:orientation="vertical">
 
             <TextView
@@ -30,6 +31,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/match_list_view"
                 android:layout_width="match_parent"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="5dp"
                 android:layout_height="wrap_content" />
         </LinearLayout>
 

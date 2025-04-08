@@ -58,9 +58,9 @@ class ExportStatisticsViewModel() : ViewModel() {
         val statisticFiles = statisticsDirectory.listFiles()
         val tournamentsTemp = mutableListOf<TournamentItem>()
         statisticFiles?.forEach {file ->
-            val fileName = file.name
+            val fileName = file.name.subSequence(0, file.name.length-5)
             val filePath = file.path
-            val tournamentItem = TournamentItem(fileName, filePath)
+            val tournamentItem = TournamentItem(fileName.toString(), filePath)
             tournamentsTemp.add(tournamentItem)
         }
         _tournamentsItem.value = tournamentsTemp

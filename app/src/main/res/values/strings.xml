@@ -50,6 +50,8 @@
 
     <!-- For Match Statistics Fragment -->
     <string name="match_list" translatable="true">Seznam zápasů</string>
+    <string name="edith_match_statistics" translatable="true">Upravit statistiky zápasu</string>
+    <string name="edit_match_button" translatable="true">Upravit zápas</string>
     <string name="opponent_error" translatable="true">Chyba soupeře</string>
     <string name="opponent_point" translatable="true">Bod pro soupeře</string>
     <string name="serve" translatable="true">Podání</string>

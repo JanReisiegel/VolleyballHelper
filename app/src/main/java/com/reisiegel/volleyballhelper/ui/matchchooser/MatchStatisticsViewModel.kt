@@ -20,6 +20,7 @@ import com.reisiegel.volleyballhelper.models.ReceiveServeEnum
 import com.reisiegel.volleyballhelper.models.SelectedTournament
 import com.reisiegel.volleyballhelper.models.ServeEnum
 import com.reisiegel.volleyballhelper.models.SetStates
+import java.io.File
 
 class MatchStatisticsViewModel() : ViewModel() {
     private val _matchList = MutableLiveData<MutableList<MatchItem>>()
@@ -67,6 +68,16 @@ class MatchStatisticsViewModel() : ViewModel() {
             _playersSquad.value = activeSquad
             _playersBench.value = bench
         }
+    }
+
+    fun clear(){
+        _matchList.value = mutableListOf()
+        _playersSquad.value = mutableListOf()
+        _playersBench.value = mutableListOf()
+        _serve.value = true
+        _setState.value = SetStates.NONE
+        _setScore.value = "0:0"
+        SelectedTournament.selectedMatchIndex = null
     }
 
     val zoneIds = listOf(
@@ -324,8 +335,8 @@ class MatchStatisticsViewModel() : ViewModel() {
     fun addMatchItem(match: MatchItem){
         val updatedMatchList = _matchList.value ?: mutableListOf()
         if (updatedMatchList.contains(match)) return
-        _matchList.value = updatedMatchList
         updatedMatchList.add(match)
+        _matchList.value = updatedMatchList
     }
 
     private fun addPlayerToSquad(jerseyNumber: Int, position: Int, change: Boolean = false){
@@ -522,7 +533,7 @@ class MatchStatisticsViewModel() : ViewModel() {
         _setScore.value = SelectedTournament.selectedTournament?.getMatch(index)?.getActualSetScore() ?: "0:0"
         _scoreboard.value = SelectedTournament.selectedTournament?.getMatch(index)?.getActualScore() ?: "0:0"
         _pageTitle.value = SelectedTournament.selectedTournament?.name + " × " + SelectedTournament.selectedTournament?.getMatch(index)?.opponentName
-        _setState.value = SelectedTournament.selectedTournament?.getMatch(index)?.lastState
+        _setState.value = SelectedTournament.selectedTournament?.getMatch(index)?.lastState ?: SetStates.NONE
     }
 
     private fun containsPlayer(index: Int): Boolean {
@@ -809,15 +820,14 @@ class MatchStatisticsViewModel() : ViewModel() {
         binding.matchList.visibility = View.VISIBLE
         binding.root.requestLayout()
 
-        //TODO: Uložení do souboru
+        SelectedTournament.selectedTournament?.saveJson(File(SelectedTournament.filePath))
     }
 
     fun closeMatch(binding: FragmentMatchStatisticsBinding){
         if (playersSquad.value != null || SelectedTournament.selectedMatchIndex != null || playersSquad.value?.contains(null) != true)
             SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.changeSquad(playersSquad.value!!.toList())
 
-        SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.lastState =
-            _setState.value!!
+        SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.lastState = _setState.value ?: SetStates.NONE
         SelectedTournament.selectedMatchIndex = null
         _pageTitle.value = SelectedTournament.selectedTournament?.name
         _setState.value = SetStates.NONE

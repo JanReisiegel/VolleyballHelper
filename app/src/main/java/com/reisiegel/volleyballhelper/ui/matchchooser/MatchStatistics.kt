@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.reisiegel.volleyballhelper.R
 import com.reisiegel.volleyballhelper.databinding.FragmentMatchStatisticsBinding
+import com.reisiegel.volleyballhelper.models.Match
 import com.reisiegel.volleyballhelper.models.SelectedTournament
 import com.reisiegel.volleyballhelper.models.SetStates
 import com.reisiegel.volleyballhelper.models.Tournament
@@ -35,7 +36,7 @@ class MatchStatistics : Fragment() {
         viewModel = ViewModelProvider(this)[MatchStatisticsViewModel::class.java]
         _binding = FragmentMatchStatisticsBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        SelectedTournament.selectedTournament = Tournament.loadFromJson(File(context?.filesDir, "Statistics/${SelectedTournament.filePath}"))
+        SelectedTournament.selectedTournament = Tournament.loadFromJson(File(SelectedTournament.filePath))
 
         val matchListLayout = binding.matchList
         val statisticsLayout = binding.matchStatistics
@@ -178,9 +179,14 @@ class MatchStatistics : Fragment() {
         }
         recycleMatchesView.adapter = matchesAdapter
 
-        viewModel.matchList.observe(viewLifecycleOwner){
-                matches -> matchesAdapter.updateItems(matches)
-            matchesAdapter.notifyDataSetChanged()
+        viewModel.matchList.observe(viewLifecycleOwner) { mathces ->
+            val matchesNewAdapter = MatchAdapter(mathces, requireContext(), view) {
+                viewModel.matchSelected(it, binding.root.rootView)
+            }
+            recycleMatchesView.adapter = matchesNewAdapter
+            view.requestLayout()
+//            matchesAdapter.updateItems(mathces)
+//            matchesAdapter.notifyDataSetChanged()
         }
 
         viewModel.scoreboard.observe(viewLifecycleOwner){
@@ -277,7 +283,7 @@ class MatchStatistics : Fragment() {
 
     private fun saveTournament(){
         if (SelectedTournament.filePath.isNotEmpty()) {
-            val file = File(context?.filesDir, "Statistics/${SelectedTournament.filePath}")
+            val file = File(SelectedTournament.filePath)
             SelectedTournament.selectedTournament!!.saveJson(file)
         }
     }
@@ -286,6 +292,7 @@ class MatchStatistics : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        viewModel.clear()
         saveTournament()
     }
 }
