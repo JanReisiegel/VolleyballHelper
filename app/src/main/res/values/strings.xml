@@ -9,6 +9,7 @@
     <string name="create_nav_menu" translatable="true">Vytvořit turnaj</string>
     <string name="edit_statistics_nav_menu" translatable="true">Tvorba statistik</string>
     <string name="edit_tournaments_menu" translatable="true">Nastavení turnajů</string>
+    <string name="menu_help" translatable="true">Pomoc</string>
 
     <string name="menu_home" translatable="true">Domů</string>
     <string name="menu_gallery" translatable="true">Gallerie</string>
@@ -31,7 +32,7 @@
     <string name="tournament_player_jersey_hint" translatable="true">Číslo dresu</string>
     <!--for VM-->
     <string name="player_jersey_input_error" translatable="true">Číslo musí být vyplněné a větší než 0</string>
-    <string name="player_name_input_error" translatable="true">Číslo musí být větší než 0</string>
+    <string name="player_name_input_error" translatable="true">Jméno nesmí být prázdné</string>
     <string name="match_add_error" translatable="true">Jméno soupeře a čas začátku utkání musí být vyplněno</string>
     <string name="tournament_empty_name_error" translatable="true">Název turnaje nesmí být prázdný</string>
     <string name="players_empty_error" translatable="true">Musíte mít alespoň jednoho hráče</string>

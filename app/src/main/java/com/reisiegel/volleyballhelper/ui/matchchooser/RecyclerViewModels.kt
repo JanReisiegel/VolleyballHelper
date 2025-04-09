@@ -77,7 +77,7 @@ class MatchAdapter(
             holder.startTime.setTextColor(redColor)
             holder.editButton.isEnabled = false
             holder.editMatchButton.isEnabled = false
-            val dialog = AlertDialog.Builder(context ?: return)
+            val dialog = AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.match_finished))
                 .setMessage("${context.getString(R.string.match_finished_message_part_1)} ${item.getOpponent()} ${context.getString(R.string.match_finished_message_part_2)}")
                 .setNeutralButton(context.getString(R.string.OK)) { dialog, _ ->

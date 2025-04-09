@@ -67,6 +67,16 @@ class Tournament private constructor(var name: String, private var matches: Arra
         }
     }
 
+    fun getPlayers(): HashMap<Int, String>{
+        return players
+    }
+    fun updatePlayer(oldNumber: Int, number: Int, name: String){
+        players[number] = name
+        for (match: Match in matches){
+            match.updatePlayer(oldNumber, number, name)
+        }
+    }
+
     fun getNumberOfPlayers(): Int{
         return players.size
     }

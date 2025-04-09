@@ -302,4 +302,14 @@ class Match(var opponentName: String, var players: MutableList<Player>, var star
         return tableData.toList()
     }
 
+    fun updatePlayer(oldJerseyNumber: Int, jerseyNumber: Int, name: String){
+        for(player: Player in players) {
+            if (player.jerseyNumber == oldJerseyNumber) {
+                player.jerseyNumber = jerseyNumber
+                player.name = name
+                break
+            }
+
+        }
+    }
 }

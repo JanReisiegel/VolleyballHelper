@@ -87,11 +87,23 @@ class ExportStatistics : Fragment() {
         recycleTournamentsView = binding.tournamentList
         recycleTournamentsView.layoutManager = LinearLayoutManager(requireContext())
 
-        val tournamentsAdapter = TournamentAdapter(viewModel.tournamentsItem.value?.toMutableList(), requireContext(), view, {viewModel.deleteTournament(it, requireContext())}, {viewModel.exportTournament(it)})
+        val tournamentsAdapter = TournamentAdapter(
+            viewModel.tournamentsItem.value?.toMutableList(),
+            requireContext(),
+            view,
+            { viewModel.deleteTournament(it, requireContext()) },
+            { viewModel.exportTournament(it) },
+            { path, view -> viewModel.editTournamentPlayers(path, view, requireContext()) })
         recycleTournamentsView.adapter = tournamentsAdapter
 
         viewModel.tournamentsItem.observe(viewLifecycleOwner) {
-            val tournamentsAdapter = TournamentAdapter(viewModel.tournamentsItem.value?.toMutableList(), requireContext(), view, {viewModel.deleteTournament(it, requireContext())}, {viewModel.exportTournament(it)})
+            val tournamentsAdapter = TournamentAdapter(
+                viewModel.tournamentsItem.value?.toMutableList(),
+                requireContext(),
+                view,
+                { viewModel.deleteTournament(it, requireContext()) },
+                { viewModel.exportTournament(it) },
+                { path, view -> viewModel.editTournamentPlayers(path, view, requireContext()) })
             recycleTournamentsView.adapter = tournamentsAdapter
             view.requestLayout()
         }
