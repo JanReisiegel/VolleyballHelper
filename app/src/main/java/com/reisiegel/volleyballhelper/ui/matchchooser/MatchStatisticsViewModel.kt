@@ -409,8 +409,8 @@ class MatchStatisticsViewModel() : ViewModel() {
                 }
             }
             if (activeSquad.size != 0) {
-                zoneIds.forEachIndexed { index, zoneId ->
-                    val player = activeSquad[index]
+                zoneIds.forEachIndexed loop@{ id, zoneId ->
+                    val player = activeSquad[id]
                     val zoneView = root.findViewById<View>(zoneId)
                     val playerName = zoneView.findViewById<TextView>(R.id.player_name)
                     val playerNumber = zoneView.findViewById<TextView>(R.id.player_number)
@@ -418,7 +418,7 @@ class MatchStatisticsViewModel() : ViewModel() {
                         playerName.text = player.name
                         playerNumber.text = player.jerseyNumber.toString()
                     } else {
-                        playerName.text = "${root.context.getString(R.string.zone_item_zone)} ${index + 1}"
+                        playerName.text = "${root.context.getString(R.string.zone_item_zone)} ${id + 1}"
                         playerNumber.text = ""
                     }
                     serveButtonIds.forEach { id ->

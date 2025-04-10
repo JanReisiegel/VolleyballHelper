@@ -104,7 +104,10 @@ class GoogleDriveService(private val context: Context, private val activity: Act
                 //TODO: Add data to the summary sheet
                 val summarySheetId = createdSpreadsheet.sheets[0].properties.sheetId
 
+                //TADY to nejspíš spadne??
+
                 val values = tournament.getSummaryTable()
+                // TADY to padá
                 val body = ValueRange().setValues(values)
                 sheetService.spreadsheets().values()
                     .update(createdSpreadsheet.spreadsheetId, "A1", body)

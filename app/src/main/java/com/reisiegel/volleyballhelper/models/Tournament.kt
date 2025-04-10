@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import com.google.gson.Gson
 import java.io.File
+import android.util.Log
 
 
 class Tournament private constructor(var name: String, private var matches: ArrayList<Match> = ArrayList<Match>(), private var players: HashMap<Int, String> = HashMap<Int, String>(), var startDate: String, var endDate: String) {
@@ -162,26 +163,36 @@ class Tournament private constructor(var name: String, private var matches: Arra
         header.forEach { item -> summaryTable.add(item) }
         val playerNumbers = players.keys.sorted()
         var playersSummaryStats = MutableList<Double>(25) {0.0}
-        playerNumbers.forEach { number ->
-            var stats: MutableList<Double> = MutableList<Double>(25) { 0.0 }
-            matches.forEach { match ->
-                val player = match.getPlayer(number)
-                stats = player!!.updateSummary(stats)
-            }
-            playersSummaryStats.forEachIndexed { index, stat ->
-                playersSummaryStats[index] += stats[index]
-            }
+        try {
+            playerNumbers.forEach { number ->
 
-            val playerName = players[number]
-            val playerLine = mutableListOf<String>(number.toString(), playerName.toString())
-            stats.forEachIndexed { index, item ->
-                if (index in indexes){
-                    playerLine.add(String.format("%.2f", item))
-                } else{
-                    playerLine.add(item.toInt().toString())
+                var stats: MutableList<Double> = MutableList<Double>(25) { 0.0 }
+                matches.forEach { match ->
+                    val player = match.getPlayer(number)
+                    stats = player!!.updateSummary(stats)
                 }
+                playersSummaryStats.forEachIndexed { index, stat ->
+                    playersSummaryStats[index] += stats[index]
+                }
+
+                val playerName = players[number]
+                if (playerName == null) {
+                    return@forEach
+                }
+                val playerLine = mutableListOf<String>(number.toString(), playerName.toString())
+                stats.forEachIndexed { index, item ->
+                    if (index in indexes) {
+                        playerLine.add(String.format("%.2f", item))
+                    } else {
+                        playerLine.add(item.toInt().toString())
+                    }
+                }
+                summaryTable.add(playerLine.toList())
+
             }
-            summaryTable.add(playerLine.toList())
+        } catch (e: Exception) {
+            Log.e("Tournament", "Chyba při načítání zápasu")
+            e.printStackTrace()
         }
         val footer = mutableListOf<String>("", "Celkem/Průměr")
 
