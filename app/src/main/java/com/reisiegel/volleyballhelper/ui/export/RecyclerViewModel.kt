@@ -80,7 +80,8 @@ class TournamentAdapter(
 
 class PlayerItem(
     private var jerseyNumber: Int,
-    private var name: String
+    private var name: String,
+    private var oldJerseyNumber: Int
 ) {
     fun getName(): String {
         return name
@@ -93,6 +94,10 @@ class PlayerItem(
     }
     fun setJerseyNumber(jerseyNumber: Int) {
         this.jerseyNumber = jerseyNumber
+    }
+
+    fun getOldJerseyNumber(): Int {
+        return oldJerseyNumber
     }
 }
 

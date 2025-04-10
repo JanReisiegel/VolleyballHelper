@@ -198,13 +198,13 @@ class Tournament private constructor(var name: String, private var matches: Arra
 
         playersSummaryStats.forEachIndexed { index, item ->
             when (index) {
-                2 -> footer.add(String.format("%.0f", if(playersSummaryStats[0] == 0.0) 0.0 else (playersSummaryStats[1] / playersSummaryStats[0]) * 100))
-                4 -> footer.add(String.format("%.0f", if(playersSummaryStats[0] == 0.0) 0.0 else (playersSummaryStats[3] / playersSummaryStats[0]) * 100))
-                7 -> footer.add(String.format("%.0f", if(playersSummaryStats[5] == 0.0) 0.0 else (playersSummaryStats[6] / playersSummaryStats[5]) * 100))
-                9 -> footer.add(String.format("%.0f", if(playersSummaryStats[5] == 0.0) 0.0 else (playersSummaryStats[8] / playersSummaryStats[5]) * 100))
-                11 -> footer.add(String.format("%.0f", if(playersSummaryStats[5] == 0.0) 0.0 else (playersSummaryStats[10] / playersSummaryStats[5]) * 100))
-                16 -> footer.add(String.format("%.0f", if(playersSummaryStats[12] == 0.0) 0.0 else (playersSummaryStats[13] / playersSummaryStats[12]) * 100))
-                21 -> footer.add(String.format("%.0f", if(playersSummaryStats[17] == 0.0) 0.0 else ((playersSummaryStats[19] + playersSummaryStats[20]) / playersSummaryStats[17]) * 100))
+                2 -> footer.add(String.format("%.2f", if(playersSummaryStats[0] == 0.0) 0.0 else (playersSummaryStats[1] / playersSummaryStats[0]) * 100))
+                4 -> footer.add(String.format("%.2f", if(playersSummaryStats[0] == 0.0) 0.0 else (playersSummaryStats[3] / playersSummaryStats[0]) * 100))
+                7 -> footer.add(String.format("%.2f", if(playersSummaryStats[5] == 0.0) 0.0 else (playersSummaryStats[6] / playersSummaryStats[5]) * 100))
+                9 -> footer.add(String.format("%.2f", if(playersSummaryStats[5] == 0.0) 0.0 else (playersSummaryStats[8] / playersSummaryStats[5]) * 100))
+                11 -> footer.add(String.format("%.2f", if(playersSummaryStats[5] == 0.0) 0.0 else (playersSummaryStats[10] / playersSummaryStats[5]) * 100))
+                16 -> footer.add(String.format("%.2f", if(playersSummaryStats[12] == 0.0) 0.0 else (playersSummaryStats[13] / playersSummaryStats[12]) * 100))
+                21 -> footer.add(String.format("%.2f", if(playersSummaryStats[17] == 0.0) 0.0 else ((playersSummaryStats[19] + playersSummaryStats[20]) / playersSummaryStats[17]) * 100))
                 else -> footer.add(item.toInt().toString())
             }
         }

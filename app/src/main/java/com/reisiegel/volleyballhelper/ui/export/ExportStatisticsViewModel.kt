@@ -95,12 +95,10 @@ class ExportStatisticsViewModel() : ViewModel() {
 
         val playersMap = tournament.getPlayers()
         val players = mutableListOf<PlayerItem>()
-        val backupPlayers = mutableListOf<Int>()
 
         playersMap.keys.forEach { number ->
-            val playerItem = PlayerItem(number, playersMap[number] ?: "")
+            val playerItem = PlayerItem(number, playersMap[number] ?: "", number)
             players.add(playerItem)
-            backupPlayers.add(number)
         }
 
         val dialogView = LayoutInflater.from(context).inflate(R.layout.edit_players_dialog, null)
@@ -130,7 +128,7 @@ class ExportStatisticsViewModel() : ViewModel() {
         val saveButton = dialogView.findViewById<View>(R.id.save_button)
         saveButton.setOnClickListener {
             players.forEachIndexed { index, item ->
-                tournament.updatePlayer(backupPlayers[index], item.getJerseyNumber(), item.getName())
+                tournament.updatePlayer(item.getOldJerseyNumber(), item.getJerseyNumber(), item.getName())
             }
             tournament.saveJson(tournamentFile)
             dialog.dismiss()
