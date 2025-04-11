@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
@@ -98,7 +99,8 @@ class MatchAdapter(private var items: MutableList<MatchItem>/*, private val onDe
         val item = items[position]
         holder.opponent.text = item.getOpponent()
         holder.startTime.text = item.getStartTime()
-
+        holder.editMatchButton.visibility = View.GONE
+        holder.editStatsButton.visibility = View.GONE
         /*holder.deleteButton.setOnClickListener{
             onDeleteClick(item)
         }*/
@@ -116,6 +118,8 @@ class MatchAdapter(private var items: MutableList<MatchItem>/*, private val onDe
     class MatchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val opponent: TextView = itemView.findViewById(R.id.opponent)
         val startTime: TextView = itemView.findViewById(R.id.startTime)
+        val editMatchButton: Button = itemView.findViewById(R.id.matchEditStatsButton)
+        val editStatsButton: Button = itemView.findViewById(R.id.matchEditButton)
         //val deleteButton: TextView = itemView.findViewById(R.id.matchDeleteButton)
     }
 

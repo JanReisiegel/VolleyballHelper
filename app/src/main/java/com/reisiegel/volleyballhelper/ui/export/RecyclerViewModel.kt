@@ -60,9 +60,9 @@ class TournamentAdapter(
             Log.d("ExportStatistics", "Exporting tournament: ${item?.getName()}")
             onClickExport(item?.getPath() ?: return@setOnClickListener)
         }
-        holder.editPlayersButton.setOnClickListener {
-            onClickEditPlayers(item?.getPath() ?: return@setOnClickListener, view)
-        }
+//        holder.editPlayersButton.setOnClickListener {
+//            onClickEditPlayers(item?.getPath() ?: return@setOnClickListener, view)
+//        }
 
     }
 
@@ -74,7 +74,7 @@ class TournamentAdapter(
         val tournamentName: TextView = itemView.findViewById(R.id.tournament_name)
         val deleteButton: Button = itemView.findViewById(R.id.delete_button)
         val exportButton: Button = itemView.findViewById(R.id.export_button)
-        val editPlayersButton: Button = itemView.findViewById(R.id.edit_players_button)
+        //val editPlayersButton: Button = itemView.findViewById(R.id.edit_players_button)
     }
 }
 

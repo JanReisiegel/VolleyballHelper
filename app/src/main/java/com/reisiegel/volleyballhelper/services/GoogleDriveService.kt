@@ -71,7 +71,9 @@ class GoogleDriveService(private val context: Context, private val activity: Act
                     context,
                     listOf(DriveScopes.DRIVE_FILE, SheetsScopes.SPREADSHEETS)
                 )
-                    .setSelectedAccountName(account)
+                    .setSelectedAccountName(auth.currentUser?.email)
+
+                val token = credential.token
 
                 sheetService =
                     Sheets.Builder(NetHttpTransport(), JacksonFactory(), credential)

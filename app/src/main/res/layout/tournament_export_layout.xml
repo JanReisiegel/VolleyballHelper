@@ -29,15 +29,15 @@
             android:textSize="20sp"
             android:layout_marginEnd="5dp"/>
 
-        <Button
-            android:id="@+id/edit_players_button"
-            style="@style/Widget.Material3.Button"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="@string/export_item_edit_button"
-            android:textSize="20sp"
-            android:layout_marginEnd="5dp"/>
+<!--        <Button-->
+<!--            android:id="@+id/edit_players_button"-->
+<!--            style="@style/Widget.Material3.Button"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/export_item_edit_button"-->
+<!--            android:textSize="20sp"-->
+<!--            android:layout_marginEnd="5dp"/>-->
 
         <Button
             android:id="@+id/delete_button"
