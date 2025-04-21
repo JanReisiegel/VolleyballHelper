@@ -9,7 +9,6 @@ class MatchScore(private var teamSets: Int = 0, private var opponentSets: Int = 
             teamPoints.add(0)
         val opponentPoint = opponentPoints[setNumber-1]
         val teamPoint = teamPoints[setNumber-1]
-        val testLats = teamPoints.last()
         if(teamPoint >= 25 && (teamPoint-opponentPoint)>=2)
             teamSets++
         else if (opponentPoint >= 25 && (opponentPoint-teamPoint)>=2)

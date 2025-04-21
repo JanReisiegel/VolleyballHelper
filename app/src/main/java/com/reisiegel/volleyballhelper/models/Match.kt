@@ -9,7 +9,6 @@ class Match(var opponentName: String, var players: MutableList<Player>, var star
     private var score: MatchScore
     private var opponentsError: Int = 0
     private var isFinished: Boolean = false
-    private var timeouts = ArrayList<Int>()
     var lastState: SetStates = SetStates.NONE
     var haveService: Boolean = true
     var serveStart: Boolean = true
@@ -217,7 +216,7 @@ class Match(var opponentName: String, var players: MutableList<Player>, var star
             }
         }
         var newSet: Boolean = false
-        if (receiveServeType == ReceiveServeEnum.ERROR || receiveServeType == ReceiveServeEnum.CANT_CONTINUE){
+        if (receiveServeType == ReceiveServeEnum.ERROR){
             newSet = score.opponentPoint()
         }
         if (newSet){
@@ -235,14 +234,6 @@ class Match(var opponentName: String, var players: MutableList<Player>, var star
         val teamSetScore = score.getTeamSetScore()
         val opponentSetScore = score.getOpponentSetScore()
         return "$teamSetScore:$opponentSetScore"
-    }
-
-    /**
-     * Function for remembering rotations. This will be use while the application drop down
-     */
-    fun rotate(){
-        var temp: Int = rotations
-        rotations = (temp+1)%6
     }
 
     fun addSubstitution(playerInNumber: Int, playerOutNumber: Int){

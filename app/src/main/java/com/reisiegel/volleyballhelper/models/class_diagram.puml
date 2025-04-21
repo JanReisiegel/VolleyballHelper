@@ -6,22 +6,31 @@ class Tournament{
     + {static} createTournament(String, ArrayList<Match>,
     HashMap<Int, String>): Tournament
     + {static} createTournament(): Tournament
+    + {static} loadFromJson(File): Tournament
     + addPlayer(String, Int): void
+    + getPlayers(): HashMap<Int, String>
+    + updatePlayer(Int, Int, String): void
+    + getNumberOfPlayers(): Int
     + addMatch(String): void
     + getMatch(Int): Match
-    + saveToGoogleSheet(): void
-    + saveJson(): void
+    + getMatchesArrayList(): ArrayList<Match>
+    + getSummaryTable(): List<List<String>>
+    + saveJson(File): void
 }
 
 class Match{
     + startTime: DateTime
     + opponentName: String
     + players: ArrayList<Player>
+    + lastState: SetState
+    + haveService: Boolean
+    + serveStart: Boolean
     - substitutions: ArrayList<Substitution>
     - startSquads: ArrayList<ArrayList<Int>>
     - rotations: Int
     - score: MatchScore
     - opponentError: Int
+    - isFinished: Boolean
     + addPlayer(): void
     + opponentError(): void
     + playerAttack(Int, AttackEnum): void
@@ -43,12 +52,15 @@ class MatchScore{
     + getNumberOfSet(): void
     + getSetsScore(): String
     + getFinalScore(): String
+    + getTeamSetScore(Int): Int
+    + getTeamSetScore(): Int
+    + getOpponentSetScore(Int): Int
+    + getOpponentSetScore(): Int
 }
 
 class Player{
     + name: String
     + jerseyNumber: Int
-    - errors: Int
     - serveStats: ServiceStats
     - blockStats: BlockStats
     - attackStats: AttackStats
@@ -57,6 +69,8 @@ class Player{
     + addBlockStat(BlockEnum): void
     + addReceiveStat(ReceiveServeEnum): void
     + addAttackStat(AttackEnum): void
+    + getPlayerData(): List<String>
+    + updateSummary(MutableList<Double>):  MutableList<Double>
 }
 
 class ReceiveServeStats{
@@ -66,6 +80,7 @@ class ReceiveServeStats{
     - errors: Int
     + receiveServe(ReceiveServeEnum): void
     + getAttempts(): Int
+    + getStatistics(ReceiveServeEnum): Int
 }
 class ServiceStats{
     - receive: Int
@@ -73,6 +88,7 @@ class ServiceStats{
     - errors: Int
     + serve(ServeEnum): void
     + getAttempts(): Int
+    + getStatistics(ServeEnum): Int
 }
 class AttackStats{
     - received: Int
@@ -81,6 +97,7 @@ class AttackStats{
     - blocks: Int
     + attack(AttackEnum): void
     + getAttempts(): Int
+    + getStatistics(AttackEnum): Int
 }
 class BlockStats{
     - noPoint: Int
@@ -88,6 +105,7 @@ class BlockStats{
     - errors: Int
     + block(ReceiveServeEnum): void
     + getAttempts(): Int
+    + getStatistics(BlockEnum): Int
 }
 
 class Substitution{
@@ -97,6 +115,17 @@ class Substitution{
     + teamScore: Int
     + opponentScore: Int
 }
+
+Player -- ReceiveServeStats
+Player -- AttackStats
+Player -- BlockStats
+Player -right- ServiceStats
+
+Tournament o-right- Match
+Match o-right- Player
+
+Match -- MatchScore
+Match o-- Substitution
 
 enum ReceiveServeEnum{
     IDEAL
@@ -124,16 +153,13 @@ enum BlockEnum{
     NO_POINT
 }
 
-Player -- ReceiveServeStats
-Player -- AttackStats
-Player -- BlockStats
-Player -- ServiceStats
-
-Tournament o-- Match
-Match o-- Player
-
-Match -- MatchScore
-Match o-- Substitution
+enum SetState{
+    SERVE
+    RECEIVE
+    ATTACK_BLOCK
+    END_SET
+    NONE
+}
 
 
 @enduml

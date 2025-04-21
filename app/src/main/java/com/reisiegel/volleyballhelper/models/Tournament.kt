@@ -131,7 +131,7 @@ class Tournament private constructor(var name: String, private var matches: Arra
      */
     fun getMatchesArrayList() : ArrayList<Match>{
         return matches
-    }
+    }//změnit na MutableList
 
     /**
      * To save unshared match into local device

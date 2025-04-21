@@ -98,7 +98,7 @@
     <string name="zone_item_serve_reception_header" translatable="true">Příjem podání</string>
     <string name="zone_item_ideal" translatable="true">Ideální</string>
     <string name="zone_item_continue" translatable="true">Pokračujeme</string>
-    <string name="zone_item_no_continue" translatable="true">Nepokračujeme</string>
+    <string name="zone_item_no_continue" translatable="true">K soupeři</string>
 
     <!-- For GoogleDriveService -->
     <string name="tournament_null" translatable="true">Turnaj neexistuje</string>
