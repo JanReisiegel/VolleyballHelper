@@ -1,7 +1,6 @@
 package com.reisiegel.volleyballhelper.services
 
 import android.accounts.Account
-import android.accounts.AccountManager
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -11,11 +10,6 @@ import androidx.activity.result.ActivityResultLauncher
 import com.google.android.gms.auth.GoogleAuthException
 import com.google.android.gms.auth.GoogleAuthUtil
 import com.google.android.gms.auth.UserRecoverableAuthException
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.auth.api.signin.GoogleSignInOptionsExtension
-import com.google.android.gms.common.api.Scope
-import com.google.android.gms.tasks.Tasks
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
@@ -27,13 +21,11 @@ import com.google.api.services.sheets.v4.SheetsScopes
 import com.google.api.services.sheets.v4.model.AddSheetRequest
 import com.google.api.services.sheets.v4.model.AutoResizeDimensionsRequest
 import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetRequest
-import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetResponse
 import com.google.api.services.sheets.v4.model.Border
 import com.google.api.services.sheets.v4.model.Borders
 import com.google.api.services.sheets.v4.model.CellData
 import com.google.api.services.sheets.v4.model.CellFormat
 import com.google.api.services.sheets.v4.model.Color
-import com.google.api.services.sheets.v4.model.DimensionProperties
 import com.google.api.services.sheets.v4.model.DimensionRange
 import com.google.api.services.sheets.v4.model.ExtendedValue
 import com.google.api.services.sheets.v4.model.GridRange
@@ -45,7 +37,6 @@ import com.google.api.services.sheets.v4.model.SheetProperties
 import com.google.api.services.sheets.v4.model.Spreadsheet
 import com.google.api.services.sheets.v4.model.SpreadsheetProperties
 import com.google.api.services.sheets.v4.model.UpdateCellsRequest
-import com.google.api.services.sheets.v4.model.UpdateDimensionPropertiesRequest
 import com.google.api.services.sheets.v4.model.UpdateSheetPropertiesRequest
 import com.google.api.services.sheets.v4.model.ValueRange
 import com.google.firebase.auth.FirebaseAuth
@@ -72,7 +63,7 @@ class GoogleDriveService(private val context: Context, private val activity: Act
                 if (firebaseUser == null) {
                     Log.e(TAG, "Firebase user is null")
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "Firebase user not found", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.firebase_user_not_available), Toast.LENGTH_SHORT).show()
                     }
                     return@withContext
                 }
@@ -84,20 +75,18 @@ class GoogleDriveService(private val context: Context, private val activity: Act
                 )
                     //.setSelectedAccountName(account.email)
 
+                //získání emailu z firebase usera
                 val userEmail = firebaseUser.email
                 if (userEmail == null) {
                     Log.e(TAG, "User email is null")
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "User email not available", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.user_mail_not_available), Toast.LENGTH_SHORT).show()
                     }
                     return@withContext
                 }
-
-                // Set up the account
                 try {
+                    // nastavení účtu pomocí emailu do credential
                     credential.selectedAccount = Account(userEmail, GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE)
-
-                    // Try to get a token - this will throw an exception if consent is needed
                     GoogleAuthUtil.getToken(
                         context,
                         userEmail,
@@ -114,7 +103,7 @@ class GoogleDriveService(private val context: Context, private val activity: Act
                 } catch (e: GoogleAuthException) {
                     Log.e(TAG, "GoogleAuthException: ${e.message}")
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "Google Auth Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "${context.getString(R.string.google_auth_error)} ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                     return@withContext
                 }

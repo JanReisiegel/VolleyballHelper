@@ -107,4 +107,8 @@
     <string name="sheet_created" translatable="true">List vytvořen a uložen na Google Drive</string>
     <string name="sheet" translatable="true">List</string>
     <string name="sheet_error_not_found" translatable="true">nebyl v dokumentu nalezen</string>
+
+    <string name="user_mail_not_available" translatable="true">Email není dostupný</string>
+    <string name="firebase_user_not_available" translatable="true">Uživatel nebyl nalezen</string>
+    <string name="google_auth_error" translatable="true">Chyba při ověřování uživatele</string>
 </resources>
