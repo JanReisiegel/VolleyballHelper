@@ -1,11 +1,21 @@
 package com.reisiegel.volleyballhelper.services
 
+import android.accounts.Account
+import android.accounts.AccountManager
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import com.google.android.gms.auth.GoogleAuthException
+import com.google.android.gms.auth.GoogleAuthUtil
+import com.google.android.gms.auth.UserRecoverableAuthException
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInOptionsExtension
+import com.google.android.gms.common.api.Scope
+import com.google.android.gms.tasks.Tasks
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.google.api.client.googleapis.json.GoogleJsonResponseException
@@ -58,20 +68,58 @@ class GoogleDriveService(private val context: Context, private val activity: Act
         withContext(Dispatchers.IO) {
             try {
 
-                val account = auth.currentUser?.email
-                if (account == null) {
-                    Log.e(TAG, context.getString(R.string.account_error))
+                val firebaseUser = auth.currentUser
+                if (firebaseUser == null) {
+                    Log.e(TAG, "Firebase user is null")
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "Account error", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Firebase user not found", Toast.LENGTH_SHORT).show()
                     }
                     return@withContext
                 }
+
 
                 val credential = GoogleAccountCredential.usingOAuth2(
                     context,
                     listOf(DriveScopes.DRIVE_FILE, SheetsScopes.SPREADSHEETS)
                 )
-                    .setSelectedAccountName(auth.currentUser?.email)
+                    //.setSelectedAccountName(account.email)
+
+                val userEmail = firebaseUser.email
+                if (userEmail == null) {
+                    Log.e(TAG, "User email is null")
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "User email not available", Toast.LENGTH_SHORT).show()
+                    }
+                    return@withContext
+                }
+
+                // Set up the account
+                try {
+                    credential.selectedAccount = Account(userEmail, GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE)
+
+                    // Try to get a token - this will throw an exception if consent is needed
+                    GoogleAuthUtil.getToken(
+                        context,
+                        userEmail,
+                        "oauth2:" + DriveScopes.DRIVE_FILE + " " + SheetsScopes.SPREADSHEETS
+                    )
+
+                } catch (e: UserRecoverableAuthException) {
+                    // User needs to grant permission
+                    Log.d(TAG, "Need user consent, launching intent")
+                    withContext(Dispatchers.Main) {
+                        authorizationLauncher.launch(e.intent)
+                    }
+                    return@withContext
+                } catch (e: GoogleAuthException) {
+                    Log.e(TAG, "GoogleAuthException: ${e.message}")
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Google Auth Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+                    return@withContext
+                }
+
+
 
                 val token = credential.token
 
