@@ -24,6 +24,7 @@
     <string name="tournament_match_opponent" translatable="true">Soupeř</string>
     <string name="tournament_match_opponent_name_hint" translatable="true">Jméno soupeře</string>
     <string name="tournament_match_time" translatable="true">Začátek zápasu</string>
+    <string name="tournament_change_match_time" translatable="true">Změnit začátek zápasu</string>
     <string name="tournament_players_title" translatable="true">Hráči/ky</string>
     <string name="tournament_player_name" translatable="true">Jméno</string>
     <string name="tournament_player_name_hint" translatable="true">Jméno hráče/ky</string>
