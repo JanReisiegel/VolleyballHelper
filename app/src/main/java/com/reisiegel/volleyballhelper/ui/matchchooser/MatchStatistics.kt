@@ -295,4 +295,9 @@ class MatchStatistics : Fragment() {
         viewModel.clear()
         saveTournament()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        saveTournament()
+    }
 }
