@@ -92,7 +92,7 @@
     <string name="zone_item_ace" translatable="true">Eso</string>
     <string name="zone_item_attack_header" translatable="true">Útok</string>
     <string name="zone_item_point" translatable="true">Bod</string>
-    <string name="zone_item_received" translatable="true">Příjmutý</string>
+    <string name="zone_item_received" translatable="true">Přijatý</string>
     <string name="zone_item_error" translatable="true">Zkažený</string>
     <string name="zone_item_blocked" translatable="true">Zablokovaný</string>
     <string name="zone_item_block_header" translatable="true">Blok</string>
