@@ -124,7 +124,6 @@ class MatchStatisticsViewModel() : ViewModel() {
                         R.id.service_received -> serveButtonsAction(ServeEnum.RECEIVED, index, root)
                         else -> return@setOnClickListener
                     }
-                    //TODO: Nefunguje přičítání->podívat se na to
                 }
 
             }
@@ -139,7 +138,6 @@ class MatchStatisticsViewModel() : ViewModel() {
                         R.id.attack_block -> attackButtonAction(AttackEnum.BLOCK, index, root)
                         else -> return@setOnClickListener
                     }
-                    //TODO: Nefunguje přičítání->podívat se na to
                 }
             }
 
@@ -153,7 +151,6 @@ class MatchStatisticsViewModel() : ViewModel() {
                         else -> return@setOnClickListener
                     }
 
-                    //TODO: Nefunguje přičítání->podívat se na to
                 }
 
             }
@@ -168,7 +165,6 @@ class MatchStatisticsViewModel() : ViewModel() {
                         R.id.reception_no_continue -> receiveButtonAction(ReceiveServeEnum.CANT_CONTINUE, index, root)
                         else -> return@setOnClickListener
                     }
-                    //TODO: Nefunguje přičítání->podívat se na to
                 }
             }
 
@@ -237,7 +233,7 @@ class MatchStatisticsViewModel() : ViewModel() {
                                 }
                                 button.text = newValue
                             }
-                            //SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?. Todo: přidat hráče do sestavy, ale asi až než začne zápas
+                            //SelectedTournament.selectedTournament?.getMatch(SelectedTournament.selectedMatchIndex!!)?.
                             root.requestLayout()
                         }
                     }
@@ -399,7 +395,7 @@ class MatchStatisticsViewModel() : ViewModel() {
                             ?.contains(it.jerseyNumber) == true){
                         val position = SelectedTournament.selectedTournament?.getMatch(index)?.getActiveSquad()
                             ?.indexOf(it.jerseyNumber)
-                        activeSquad[position!!] = it // Todo: skontrolovat, zda je mezi sety + ošetřit začátek setu
+                        activeSquad[position!!] = it
                     }
                     else{
                         bench.add(it)

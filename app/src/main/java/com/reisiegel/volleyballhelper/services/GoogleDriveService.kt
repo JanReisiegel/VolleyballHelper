@@ -140,7 +140,6 @@ class GoogleDriveService(private val context: Context, private val activity: Act
                         requests.add(it)
                     }
                 }
-                //TODO: Add data to the summary sheet
                 val summarySheetId = createdSpreadsheet.sheets[0].properties.sheetId
 
                 //TADY to nejspíš spadne??

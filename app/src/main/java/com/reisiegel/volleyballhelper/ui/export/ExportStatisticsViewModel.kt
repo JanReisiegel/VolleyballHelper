@@ -42,10 +42,6 @@ class ExportStatisticsViewModel() : ViewModel() {
     val tournamentsItem: LiveData<MutableList<TournamentItem>> = _tournamentsItem
     val exportTournament: LiveData<Tournament?> = _exportTournament
 
-    init{
-        //TODO: load tournaments storage
-    }
-
     fun exportTournament(path: String){
         val tournamentFile = File(path)
         val tournament = Tournament.loadFromJson(tournamentFile)
