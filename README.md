@@ -1,5 +1,6 @@
 # Volleyball Helper
 
+## Návod na instalaci
 1. Na zařízení si otevřete [Google Disk obsahující aplikaci](https://drive.google.com/drive/folders/1qBreCl1PCioz76EheR9vFgp6NGdwoZiV?usp=sharing)
 2. Po otevření se zobrazí složka s aplikací
    ![Zobrazení disku](images/test_disk.png)
