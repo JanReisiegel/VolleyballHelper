@@ -1,0 +1,109 @@
+<resources>
+    <string name="app_name" translatable="true">Volleyball Helper</string>
+    <string name="navigation_drawer_open" translatable="true">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="true">Close navigation drawer</string>
+    <string name="nav_header_title" translatable="true">Android Studio</string>
+    <string name="nav_header_subtitle" translatable="true">android.studio@android.com</string>
+    <string name="nav_header_desc" translatable="true">Navigation header</string>
+    <string name="action_settings" translatable="true">Nastavení</string>
+    <string name="create_nav_menu" translatable="true">Create Tournament</string>
+    <string name="edit_statistics_nav_menu" translatable="true">Edit statistics</string>
+    <string name="edit_tournaments_menu" translatable="true">Edit tournaments</string>
+    <string name="menu_help" translatable="true">Help</string>
+
+    <string name="menu_home" translatable="true">Home</string>
+    <string name="menu_gallery" translatable="true">Gallery</string>
+    <string name="menu_slideshow" translatable="true">Slideshow</string>
+
+    <string name="tournament_create_title" translatable="true">Create tournament</string>
+    <string name="tournament_name" translatable="true">Action name</string>
+    <string name="tournament_name_hint" translatable="true">Tournament name</string>
+    <string name="tournament_create_button" translatable="true">Create Tournament</string>,
+    <string name="tournament_matches_title" translatable="true">Matches</string>
+    <string name="tournament_match_opponent" translatable="true">Opponent</string>
+    <string name="tournament_match_opponent_name_hint" translatable="true">Opponent name</string>
+    <string name="tournament_match_time" translatable="true">Start of the match</string>
+    <string name="tournament_change_match_time" translatable="true">Change start of the match</string>
+    <string name="tournament_players_title" translatable="true">Players</string>
+    <string name="tournament_player_name" translatable="true">Name</string>
+    <string name="tournament_player_name_hint" translatable="true">Player name</string>
+    <string name="tournament_add_button" translatable="true">Add</string>
+    <string name="tournament_player_jersey" translatable="true">Jersey</string>
+    <string name="tournament_player_jersey_hint" translatable="true">Jersey number</string>
+    <!--for VM-->
+    <string name="player_jersey_input_error" translatable="true">Number must be filled in and greater than 0</string>
+    <string name="player_name_input_error" translatable="true">Player name must be filled in</string>
+    <string name="match_add_error" translatable="true">Opponent\'s name and match start time must be filled in</string>
+    <string name="tournament_empty_name_error" translatable="true">Tournament name cannot be empty</string>
+    <string name="players_empty_error" translatable="true">You must have at least one player</string>
+    <string name="match_empty_error" translatable="true">You must have at least one match</string>
+
+
+    <string name="tournament_list" translatable="true">Tournaments</string>
+    <!--for VM-->
+    <string name="authorization_failed" translatable="true">Authorization failed</string>
+
+    <string name="select_tournament" translatable="true">Select tournament</string>,
+    <string name="edit_statistics" translatable="true">Edit statistics</string>
+    <string name="create_tournament" translatable="true">Create new tournament</string>
+    <!--For VM-->
+    <string name="error_header" translatable="true">Error</string>
+    <string name="file_not_selected" translatable="true">File not selected</string>
+    <string name="OK" translatable="true">OK</string>
+
+    <string name="match_list" translatable="true">Matches</string>
+    <string name="edith_match_statistics" translatable="true">Edit match statistics</string>
+    <string name="edit_match_button" translatable="true">Edit match</string>
+    <string name="opponent_error" translatable="true">Opponent error</string>
+    <string name="opponent_point" translatable="true">Opponent point</string>
+    <string name="serve" translatable="true">Serve</string>
+    <string name="finish_match" translatable="true">End match</string>
+    <string name="start_set" translatable="true">Start set</string>
+    <string name="choose_another_match" translatable="true">Choose another match</string>
+    <string name="same_lineup" translatable="true">Lineup from the previous set</string>
+    <string name="rotate_lineup" translatable="true">Rotate formation</string>
+    <!--For VM-->
+    <string name="reception" translatable="true">Reception</string>
+    <string name="set_could_not_start" translatable="true">Could not start set</string>
+    <string name="end_match_header" translatable="true">Finish match</string>
+    <string name="end_match_message" translatable="true">Do you really want to finish the match?</string>
+    <string name="yes" translatable="true">Yes</string>
+    <string name="no" translatable="true">No</string>
+    <string name="select_player" translatable="true">Select player</string>
+    <string name="cancel" translatable="true">Cancel</string>
+    <string name="substitution_error_message" translatable="true">You cannot substitute players</string>
+    <string name="match_finished" translatable="true">Match finished</string>
+    <string name="match_finished_message_part_1" translatable="true">Match against</string>
+    <string name="match_finished_message_part_2" translatable="true">has already ended. It can\'t be started again.</string>
+    <string name="save" translatable="true">Save</string>
+
+    <string name="export_item_export_button" translatable="true">GoogleSheet</string>
+    <string name="export_item_delete_button" translatable="true">Delete</string>
+    <string name="export_item_edit_button" translatable="true">Edit players</string>
+
+    <string name="zone_item_zone" translatable="true">Zone</string>
+    <string name="zone_item_substitution" translatable="true">Substitution</string>
+    <string name="zone_item_choose_from_lineup" translatable="true">Choose from lineup</string>
+    <string name="zone_item_ace" translatable="true">Ace</string>
+    <string name="zone_item_attack_header" translatable="true">Attack</string>
+    <string name="zone_item_point" translatable="true">Hit</string>
+    <string name="zone_item_received" translatable="true">Received</string>
+    <string name="zone_item_error" translatable="true">Error</string>
+    <string name="zone_item_blocked" translatable="true">Blocked</string>
+    <string name="zone_item_block_header" translatable="true">Block</string>
+    <string name="zone_item_serve_reception_header" translatable="true">Serve reception</string>
+    <string name="zone_item_ideal" translatable="true">Ideal</string>
+    <string name="zone_item_continue" translatable="true">Continue</string>
+    <string name="zone_item_no_continue" translatable="true">To opponent</string>
+
+    <string name="tournament_null" translatable="true">Tournament don\'t exist</string>
+    <string name="account_error" translatable="true">Account error</string>
+    <string name="create_sheet_error" translatable="true">Error creating document sheet</string>
+    <string name="sheet_created" translatable="true">Sheet created and saved to Google Drive</string>
+    <string name="sheet" translatable="true">Sheet</string>
+    <string name="sheet_error_not_found" translatable="true">not found in spreadsheet</string>
+
+    <string name="user_mail_not_available" translatable="true">Email not available</string>
+    <string name="firebase_user_not_available" translatable="true">User not found</string>
+    <string name="google_auth_error" translatable="true">Google Auth Error:</string>
+</resources>
